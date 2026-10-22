@@ -70,6 +70,7 @@ export function GatePanels({ items, labels, dir }: { items: GatePanel[]; labels:
             >
               <Link
                 href={item.href}
+                data-press={desktopOpen ? "" : undefined}
                 className="absolute inset-0 isolate block overflow-hidden rounded-[24px] text-white"
                 onPointerEnter={(event) => {
                   if (event.pointerType === "mouse") setActive(index);

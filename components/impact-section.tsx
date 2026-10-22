@@ -168,6 +168,7 @@ export function JoinSection({ cards, title, dir }: { cards: JoinCard[]; title: s
             <Link
               key={card.href}
               href={card.href}
+              data-press
               data-reveal-item={String(index + 1)}
               onPointerMove={spotlight}
               className={`group relative isolate flex min-h-[250px] flex-col overflow-hidden rounded-[24px] border p-6 sm:min-h-[320px] lg:min-h-[390px] xl:min-h-[350px] transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 ${

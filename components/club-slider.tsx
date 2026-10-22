@@ -223,6 +223,7 @@ export function ClubSlider({ slides, labels, dir }: { slides: ClubSlide[]; label
         </h2>
         <Link
           href={labels.allHref}
+          data-press
           className="group hidden items-center gap-2 self-center justify-self-end pb-[9px] text-base font-semibold text-club/80 transition-colors duration-300 hover:text-club md:inline-flex"
         >
           {labels.all}
@@ -257,6 +258,7 @@ export function ClubSlider({ slides, labels, dir }: { slides: ClubSlide[]; label
                   ) : null}
                   <Link
                     href={slide.href}
+                    data-press
                     className="group mx-auto mt-4 flex w-fit items-center gap-2 border border-club px-5 py-2 text-sm font-semibold text-club transition-colors duration-300 hover:bg-club hover:text-white lg:mt-6"
                   >
                     {labels.open}
@@ -269,6 +271,7 @@ export function ClubSlider({ slides, labels, dir }: { slides: ClubSlide[]; label
 
           <Link
             href={labels.allHref}
+            data-press
             className="group order-3 mt-5 inline-flex items-center gap-2 self-center text-sm font-semibold text-club/70 transition-colors duration-300 hover:text-club md:hidden"
           >
             {labels.all}

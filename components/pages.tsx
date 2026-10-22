@@ -246,6 +246,7 @@ export function HomePage({ locale }: { locale: Locale }) {
           </h1>
           <Link
             href={withLocale("/programs", locale)}
+            data-press
             className="mt-8 inline-block border border-white px-5 py-2 text-base text-white transition-colors duration-300 hover:bg-white hover:text-club motion-safe:animate-[hero-rise_1s_var(--ease)_650ms_both]"
           >
             {locale === "en" ? "Our programs" : "לתוכניות שלנו - לחצו כאן"}
@@ -272,6 +273,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             <div data-reveal-item={String(homeAboutCount + 1)} className="pt-2">
               <Link
                 href={withLocale("/about", locale)}
+                data-press
                 className="group mx-auto flex w-fit items-center gap-2 border border-club px-5 py-2 text-sm font-semibold text-club transition-colors duration-300 hover:bg-club hover:text-white"
               >
                 {locale === "en" ? "Read More" : "לפרטים נוספים"}
