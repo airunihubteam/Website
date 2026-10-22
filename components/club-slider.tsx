@@ -373,18 +373,19 @@ export function ClubSlider({ slides, labels, dir }: { slides: ClubSlide[]; label
                   className="group flex h-6 items-center"
                 >
                   <span
-                    className="relative block h-[3px] overflow-hidden rounded-full bg-club/15 transition-[width,background-color] duration-700 group-hover:bg-club/30"
+                    className={`relative block h-[3px] overflow-hidden rounded-full transition-[width,background-color] duration-700 group-hover:bg-club/30 ${isActive ? "bg-club/30" : "bg-club/15"}`}
                     style={{ width: isActive ? 44 : 14, transitionTimingFunction: EASE }}
                   >
                     {isActive ? (
+                      // While autoplay runs the bar fills as a countdown to the next club; whenever it is
+                      // paused (hover, focus, drag, off screen) the selected bar shows solid dark blue.
                       <span
                         key={active}
                         className="absolute inset-0 rounded-full bg-club"
                         style={{
                           transformOrigin: dir === "rtl" ? "right" : "left",
-                          transform: reduced ? "scaleX(1)" : undefined,
-                          animation: reduced ? undefined : `club-progress ${AUTOPLAY_MS}ms linear forwards`,
-                          animationPlayState: running ? "running" : "paused",
+                          transform: running ? undefined : "scaleX(1)",
+                          animation: running ? `club-progress ${AUTOPLAY_MS}ms linear forwards` : undefined,
                         }}
                         onAnimationEnd={() => go(1)}
                       />

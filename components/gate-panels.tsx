@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState, type FocusEvent, type MouseEvent } from "react";
+import { Chevron } from "@/components/icons";
 
 export type GatePanel = {
   href: string;
@@ -120,9 +121,9 @@ export function GatePanels({ items, labels, dir }: { items: GatePanel[]; labels:
                           {item.summary}
                         </span>
                       ) : null}
-                      <span className="mt-4 inline-flex items-center gap-2 border border-white px-4 py-2 text-sm font-semibold transition-colors duration-300 hover:border-club hover:bg-club">
+                      <span className="group/more mt-4 inline-flex items-center gap-2 border border-white px-4 py-2 text-sm font-semibold transition-colors duration-300 hover:border-club hover:bg-club">
                         {labels.more}
-                        <Chevron dir={dir} />
+                        <Chevron dir={dir} className="transition-transform duration-500 group-hover/more:translate-x-1 rtl:group-hover/more:-translate-x-1" />
                       </span>
                     </span>
                   </span>
@@ -133,22 +134,5 @@ export function GatePanels({ items, labels, dir }: { items: GatePanel[]; labels:
         })}
       </div>
     </section>
-  );
-}
-
-// Points towards the reading direction's end: right in LTR, left in RTL.
-function Chevron({ dir }: { dir: "rtl" | "ltr" }) {
-  return (
-    <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
-      <path
-        d="M12.5 4.5 7 10l5.5 5.5"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        transform={dir === "rtl" ? undefined : "rotate(180 10 10)"}
-      />
-    </svg>
   );
 }
