@@ -22,6 +22,7 @@ import { advisoryTeam, aboutTeam, peopleByIds, peopleIn, pitchTeam, type Person 
 import { ClubSlider, type ClubSlide, type ClubSliderLabels } from "@/components/club-slider";
 import { GatePanels, type GatePanel, type GatePanelsLabels } from "@/components/gate-panels";
 import { Chevron } from "@/components/icons";
+import { ImpactStats, JoinSection, type ImpactLabels, type ImpactStat, type JoinCard } from "@/components/impact-section";
 import { CatalogCard, PersonCard, Section, StarBullet } from "@/components/ui";
 import { pick, withLocale, type Locale, type Localized } from "@/lib/locale";
 
@@ -132,17 +133,46 @@ function clubSlides(locale: Locale): ClubSlide[] {
   });
 }
 
-export function HomePage({ locale }: { locale: Locale }) {
-  const actions =
-    locale === "he"
-      ? [
-          { href: "/join/chair", label: "הרשמה לוועדת האיתור לבחירת יו״ר" },
-          { href: "/join/programs", label: "הרשמה לניהול תוכניות" },
-          { href: "/join/new-program", label: "יש לכם רעיון למועדון חדש? לחצו כאן" },
-          { href: "/programs", label: "לתוכניות שלנו - לחצו כאן" },
-        ]
-      : [];
+const impactLabels: Record<Locale, ImpactLabels> = {
+  he: { stats: "המועדון במספרים", join: "הצטרפו לעשייה" },
+  en: { stats: "The Club in Numbers", join: "Get Involved" },
+};
 
+function impactStats(locale: Locale): ImpactStat[] {
+  return stats.map((stat) => ({
+    value: Number(stat.value),
+    prefix: "suffix" in stat ? stat.suffix : undefined,
+    label: pick(stat.label, locale) ?? stat.label.he,
+  }));
+}
+
+// The join pages exist only in Hebrew, so English shows the numbers alone.
+function joinCards(locale: Locale): JoinCard[] {
+  if (locale === "en") return [];
+  return [
+    {
+      href: "/join/chair",
+      title: "ועדת האיתור לבחירת יו״ר",
+      // The first two clauses of the chair page's pitch, so the card ends on a full stop.
+      summary: `${(joins.chair.paragraphs[0].split(". ")[1] ?? joins.chair.paragraphs[0]).split(", ").slice(0, 2).join(", ")}.`,
+      cta: "להרשמה",
+    },
+    { href: "/join/programs", title: "ניהול תוכניות", summary: aboutParagraphs[6].he, cta: "להרשמה" },
+    { href: "/join/new-program", title: "רעיון למועדון חדש", summary: joins["new-program"].paragraphs[1], cta: "לפרטים" },
+    {
+      href: "/programs",
+      title: "התוכניות שלנו",
+      summary: `${programs
+        .slice(0, 5)
+        .map((item) => item.name.he)
+        .join(" · ")} ועוד`,
+      cta: "לכל התוכניות",
+      featured: true,
+    },
+  ];
+}
+
+export function HomePage({ locale }: { locale: Locale }) {
   return (
     <>
       <section className="relative -mt-[4.5rem] flex min-h-[100vh] items-center">
@@ -172,27 +202,8 @@ export function HomePage({ locale }: { locale: Locale }) {
           </Link>
         </div>
       </section>
-      {actions.length > 0 ? (
-        <section className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-1 px-4 py-8 sm:grid-cols-2 md:px-8">
-          {actions.map((action) => (
-            <Link key={action.href} href={action.href} className="flex min-h-32 items-center justify-center bg-tile px-6 py-8 text-center text-2xl font-bold text-white">
-              {action.label}
-            </Link>
-          ))}
-        </section>
-      ) : null}
-      <section className="bg-paper">
-        <div className="mx-auto grid w-full max-w-5xl grid-cols-2 gap-3 px-5 py-10 md:grid-cols-4 md:px-8">
-          {stats.map((stat) => (
-            <div key={stat.label.he} className="bg-white px-3 py-6 text-center">
-              <p className="text-5xl font-bold text-club md:text-6xl" dir="ltr">
-                {stat.value === "1500" ? "+1,500" : stat.value}
-              </p>
-              <p className="mt-2 text-lg text-muted">{pick(stat.label, locale)}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <ImpactStats stats={impactStats(locale)} label={impactLabels[locale].stats} />
+      {locale === "he" ? <JoinSection cards={joinCards(locale)} title={impactLabels[locale].join} dir="rtl" /> : null}
       <section className="mx-auto w-full max-w-6xl px-5 py-14 md:px-8">
         <h2 className="text-center text-[32px] font-bold text-club">
           <span className="club-underline">{locale === "en" ? "About Us" : "קצת עלינו"}</span>
