@@ -149,6 +149,7 @@ export function ImpactStats({ stats, label }: { stats: ImpactStat[]; label: stri
 }
 
 export function JoinSection({ cards, title, dir }: { cards: JoinCard[]; title: string; dir: "rtl" | "ltr" }) {
+  const wide = cards.length < 4;
   const spotlight = (event: PointerEvent<HTMLAnchorElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     event.currentTarget.style.setProperty("--x", `${event.clientX - rect.left}px`);
@@ -163,7 +164,8 @@ export function JoinSection({ cards, title, dir }: { cards: JoinCard[]; title: s
         <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
           <span className="club-underline">{title}</span>
         </h2>
-        <div className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
+        {/* Four cards share a row on wide screens; fewer sit centered two to a row. */}
+        <div className={`mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2 sm:gap-5 ${wide ? "mx-auto max-w-4xl" : "lg:grid-cols-4"}`}>
           {cards.map((card, index) => (
             <Link
               key={card.href}
@@ -171,7 +173,7 @@ export function JoinSection({ cards, title, dir }: { cards: JoinCard[]; title: s
               data-press
               data-reveal-item={String(index + 1)}
               onPointerMove={spotlight}
-              className={`group relative isolate flex min-h-[190px] flex-col overflow-hidden rounded-[24px] border p-5 sm:min-h-[320px] sm:p-6 lg:min-h-[390px] xl:min-h-[350px] transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 ${
+              className={`group relative isolate flex min-h-[190px] flex-col overflow-hidden rounded-[24px] border p-5 sm:p-6 ${wide ? "sm:min-h-[260px]" : "sm:min-h-[320px] lg:min-h-[390px] xl:min-h-[350px]"} transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 ${
                 card.featured
                   ? "border-club bg-club text-white shadow-[0_24px_50px_-28px_rgba(15,45,150,0.7)]"
                   : "border-[#e6e9f5] bg-white text-club hover:border-club/30 hover:shadow-[0_24px_50px_-28px_rgba(15,45,150,0.45)]"
@@ -185,7 +187,7 @@ export function JoinSection({ cards, title, dir }: { cards: JoinCard[]; title: s
                   background: `radial-gradient(260px circle at var(--x, 50%) var(--y, 50%), ${card.featured ? "rgba(255,255,255,0.16)" : "rgba(15,45,150,0.08)"}, transparent 70%)`,
                 }}
               />
-              <JoinIcon name={card.icon} featured={card.featured} />
+              <JoinIcon name={card.icon} featured={card.featured} wide={wide} />
               <span className="text-lg font-bold sm:text-xl">{card.title}</span>
               <span className={`mt-1.5 line-clamp-3 text-justify text-sm leading-6 sm:mt-2 sm:line-clamp-4 sm:text-[15px] ${card.featured ? "text-white/80" : "text-ink/80"}`}>{card.summary}</span>
               <span className="mt-auto block pt-4 sm:pt-5">
@@ -230,12 +232,15 @@ const logoArc: [number, number, number, number][] = [
 // A line icon in the card's corner, behind the text, that acts out its meaning on hover.
 // The color is solid and the whole icon fades as one layer, so where lines meet or
 // overlap they stay the same shade.
-function JoinIcon({ name, featured }: { name: JoinIconName; featured?: boolean }) {
+function JoinIcon({ name, featured, wide }: { name: JoinIconName; featured?: boolean; wide?: boolean }) {
   return (
     <svg
       viewBox="-4 -4 32 32"
       aria-hidden="true"
-      className={`pointer-events-none absolute bottom-3 -z-10 h-16 w-16 transition-opacity duration-500 sm:bottom-4 sm:h-36 sm:w-36 lg:bottom-[76px] lg:h-24 lg:w-24 xl:bottom-4 xl:h-36 xl:w-36 ${
+      className={`pointer-events-none absolute bottom-3 -z-10 h-16 w-16 transition-opacity duration-500 sm:bottom-4 sm:h-36 sm:w-36 ${
+        // In the narrow four-up row the icon shrinks and lifts above the button on lg screens.
+        wide ? "" : "lg:bottom-[76px] lg:h-24 lg:w-24 xl:bottom-4 xl:h-36 xl:w-36"
+      } ${
         // The rocket sits beside the widest button, so it moves further into the corner;
         // the box may overhang the edge, but the drawing itself stays inside the card.
         featured ? "end-4 text-white opacity-30 group-hover:opacity-80 sm:-end-3" : "end-4 text-club opacity-20 group-hover:opacity-60"
