@@ -32,15 +32,17 @@ export function Footer({ locale }: { locale: Locale }) {
   ];
 
   return (
-    <footer className="relative z-10 border-t border-white/15">
+    <footer className="border-t border-[#e6e6e6] bg-white text-ink">
       <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-10 md:grid-cols-3 md:px-8">
         {columns.map((column) => (
           <div key={column.title}>
-            <p className="font-display text-xs font-semibold tracking-[0.2em] text-haze">{column.title}</p>
+            <p className="text-2xl font-medium text-club">{column.title}</p>
             <ul className="mt-3 flex flex-col gap-2">
               {column.links.map((link) => (
                 <li key={link.href + link.label}>
-                  <Link href={link.href}>{link.label}</Link>
+                  <Link href={link.href} className="text-ink hover:text-club">
+                    {link.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -48,20 +50,20 @@ export function Footer({ locale }: { locale: Locale }) {
         ))}
       </div>
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-5 pb-8 md:flex-row md:items-end md:justify-between md:px-8">
-        <p className="font-display text-xs font-semibold tracking-[0.18em] text-haze">
+        <p className="text-sm text-muted">
           {locale === "en" ? "Entrepreneurship Club · Reichman University" : "מועדון היזמות · אוניברסיטת רייכמן"}
         </p>
         <div className="flex flex-wrap gap-4 text-sm">
           {social.map((item) => (
-            <a key={item.href} href={item.href} rel="noreferrer">
+            <a key={item.href} href={item.href} className="text-club" rel="noreferrer">
               {item.label}
             </a>
           ))}
-          <a href={privacyHref} rel="noreferrer">
+          <a href={privacyHref} className="text-club" rel="noreferrer">
             {locale === "en" ? "Privacy policy" : "מדיניות פרטיות"}
           </a>
         </div>
-        <p className="text-sm text-haze">{locale === "en" ? "© Reichman University" : "© כל הזכויות שמורות לאוניברסיטת רייכמן"}</p>
+        <p className="text-sm text-muted">{locale === "en" ? "© Reichman University" : "© כל הזכויות שמורות לאוניברסיטת רייכמן"}</p>
       </div>
     </footer>
   );

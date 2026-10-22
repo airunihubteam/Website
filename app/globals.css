@@ -1,69 +1,44 @@
 @import "tailwindcss";
 
 :root {
-  --night: #0e1452;
-  --midnight: #1a1e65;
-  --dusk: #272d79;
-  --star: #ffffff;
-  --haze: #b9beea;
-  --paper: #f4f5fc;
-  --body: #daddf6;
-  --line: rgb(255 255 255 / 16%);
-  --sky: linear-gradient(180deg, #0a0f45 0%, #0e1452 30%, #1a1e65 70%, #272d79 100%);
-  --star-shape: polygon(
-    50% 0%,
-    61.8% 35.4%,
-    100% 38.2%,
-    69.1% 61.8%,
-    80.9% 100%,
-    50% 76.4%,
-    19.1% 100%,
-    30.9% 61.8%,
-    0% 38.2%,
-    38.2% 35.4%
-  );
+  --club: #0f2d96;
+  --tile: #2a44a0;
+  --band: #0c71ac;
+  --ink: #333333;
+  --muted: #272727;
+  --paper: #f7f7f7;
 }
 
 @theme inline {
-  --color-night: var(--night);
-  --color-midnight: var(--midnight);
-  --color-dusk: var(--dusk);
-  --color-star: var(--star);
-  --color-haze: var(--haze);
+  --color-club: var(--club);
+  --color-tile: var(--tile);
+  --color-band: var(--band);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
   --color-paper: var(--paper);
-  --color-body: var(--body);
-  --font-sans: var(--font-heebo), sans-serif;
-  --font-display: var(--font-assistant);
-  --font-body: var(--font-heebo);
-  --font-mono: var(--font-plex);
+  --font-sans: var(--font-noto), "Noto Sans Hebrew", sans-serif;
 }
 
-html {
-  background: var(--sky);
+html,
+body {
+  background: #fff;
+  color: var(--ink);
 }
 
 body {
   min-height: 100%;
-  background: var(--sky);
-  color: var(--star);
-  font-family: var(--font-heebo), sans-serif;
+  font-family: var(--font-noto), "Noto Sans Hebrew", sans-serif;
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 :focus-visible {
-  outline: 2px solid var(--star);
+  outline: 2px solid var(--club);
   outline-offset: 3px;
 }
 
-.star-mark {
+.club-underline {
   display: inline-block;
-  background: var(--star);
-  clip-path: var(--star-shape);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .starfield {
-    display: none;
-  }
+  border-bottom: 3px solid var(--club);
+  padding-bottom: 6px;
 }

@@ -22,88 +22,137 @@ import { advisoryTeam, aboutTeam, peopleByIds, peopleIn, pitchTeam, type Person 
 import { CatalogCard, PersonCard, Section, StarBullet } from "@/components/ui";
 import { pick, withLocale, type Locale } from "@/lib/locale";
 
+const gates = [
+  { href: "/programs", he: "תוכניות", en: "Programs", image: "/media/wp/gate-programs.jpg" },
+  { href: "/accelerator", he: "אקסלרטור", en: "Accelerator", image: "/media/wp/gate-accelerator.jpg" },
+  { href: "/conferences", he: "כנסים", en: "Conferences", image: "/media/wp/gate-conferences.jpg" },
+  { href: "/pitch-night", he: "Pitch Night", en: "Pitch Night", image: "/media/wp/gate-pitch.jpg" },
+  { href: "/internship", he: "מסלול לתעשייה", en: "Industry Internship", image: "/media/wp/gate-internship.jpg" },
+];
+
+const programLogos = [
+  { src: "/media/wp/logos/artemis.png", href: "/programs/artemis", name: "Artemis" },
+  { src: "/media/wp/logos/m-club.png", href: "/programs/m-club", name: "M-Club" },
+  { src: "/media/wp/logos/leaders.png", href: "/programs/leaders", name: "Leaders" },
+  { src: "/media/wp/logos/greenbiz.png", href: "/programs/greenbiz", name: "GreenBiz" },
+  { src: "/media/wp/logos/foodtech.png", href: "/programs/foodtech", name: "FoodTech" },
+  { src: "/media/wp/logos/impact.png", href: "/programs/impact", name: "Impact" },
+  { src: "/media/wp/logos/defense-tech.png", href: "/programs/defense-tech", name: "Defense Tech" },
+  { src: "/media/wp/logos/techtalk.png", href: "/programs/tech-talk", name: "Tech-Talk" },
+  { src: "/media/wp/logos/pulse.png", href: "/programs/pulse", name: "Pulse" },
+  { src: "/media/wp/logos/proptech.png", href: "/programs/proptech", name: "PropTech" },
+  { src: "/media/wp/logos/product-hub.png", href: "/programs/product-hub", name: "Product-Hub" },
+  { src: "/media/wp/logos/momentum.jpg", href: "/accelerator/momentum", name: "Momentum" },
+];
+
 export function HomePage({ locale }: { locale: Locale }) {
   const actions =
     locale === "he"
       ? [
           { href: "/join/chair", label: "הרשמה לוועדת האיתור לבחירת יו״ר" },
           { href: "/join/programs", label: "הרשמה לניהול תוכניות" },
-          { href: "/join/new-program", label: "יש לכם רעיון למועדון חדש?" },
-          { href: "/programs", label: "לתוכניות שלנו" },
+          { href: "/join/new-program", label: "יש לכם רעיון למועדון חדש? לחצו כאן" },
+          { href: "/programs", label: "לתוכניות שלנו - לחצו כאן" },
         ]
       : [];
-  const gates = [
-    { href: "/programs", he: "תוכניות", en: "Programs" },
-    { href: "/accelerator", he: "אקסלרטור", en: "Accelerator" },
-    { href: "/conferences", he: "כנסים", en: "Conferences" },
-    { href: "/pitch-night", he: "Pitch Night", en: "Pitch Night" },
-    { href: "/internship", he: "מסלול לתעשייה", en: "Industry Internship" },
-  ];
 
   return (
     <>
-      <section className="mx-auto grid min-h-[70vh] w-full max-w-6xl items-center gap-10 px-5 py-16 md:grid-cols-[1.2fr_0.8fr] md:px-8">
-        <div>
-          <p className="font-display text-xs font-semibold tracking-[0.2em] text-haze">
-            {locale === "en" ? "Entrepreneurship Club" : "מועדון היזמות"}
-          </p>
-          <h1 className="font-display mt-4 max-w-xl text-5xl font-extrabold leading-none tracking-[0.08em] md:text-7xl">
-            {locale === "en" ? "Welcome to the Entrepreneurship Club" : "ברוכים הבאים לאתר מועדון היזמות"}
+      <section className="relative -mt-[4.5rem] flex min-h-[100vh] items-center">
+        <Image
+          src="/media/building.jpg"
+          alt=""
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-club/60" />
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-5 py-28 md:px-8">
+          <h1 className="max-w-4xl text-5xl leading-tight font-extralight text-white md:text-[72px] md:leading-[1.15]">
+            {locale === "en" ? (
+              "Welcome to the Entrepreneurship Club"
+            ) : (
+              <>
+                ברוכים הבאים
+                <br />
+                לאתר מועדון היזמות
+              </>
+            )}
           </h1>
-          <p className="mt-6 max-w-xl text-lg font-light leading-8 text-body">{pick(aboutParagraphs[0], locale)}</p>
-          <Link
-            href={withLocale("/programs", locale)}
-            className="font-display mt-8 inline-block border border-star px-5 py-3 text-sm font-extrabold tracking-[0.1em]"
-          >
-            {locale === "en" ? "Programs" : "לתוכניות שלנו"}
+          <Link href={withLocale("/programs", locale)} className="mt-8 inline-block border border-white px-5 py-2 text-base text-white">
+            {locale === "en" ? "Our programs" : "לתוכניות שלנו - לחצו כאן"}
           </Link>
-        </div>
-        <div className="relative aspect-[4/5] overflow-hidden border border-white/15 bg-night">
-          <Image src="/media/building.jpg" alt={locale === "en" ? "Adelson School of Entrepreneurship" : "בניין אדלסון ליזמות"} fill className="object-cover opacity-80" priority sizes="(min-width: 768px) 40vw, 100vw" />
-          <div className="absolute inset-0 bg-night/20" />
         </div>
       </section>
       {actions.length > 0 ? (
-        <section className="mx-auto grid w-full max-w-6xl gap-3 px-5 md:grid-cols-4 md:px-8">
+        <section className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-1 px-4 py-8 sm:grid-cols-2 md:px-8">
           {actions.map((action) => (
-            <Link key={action.href} href={action.href} className="border border-white/15 bg-midnight px-4 py-8 text-center font-display text-lg font-bold tracking-[0.04em]">
+            <Link key={action.href} href={action.href} className="flex min-h-32 items-center justify-center bg-tile px-6 py-8 text-center text-2xl font-bold text-white">
               {action.label}
             </Link>
           ))}
         </section>
       ) : null}
-      <section className="mx-auto grid w-full max-w-6xl gap-3 px-5 py-14 md:grid-cols-4 md:px-8">
-        {stats.map((stat) => (
-          <div key={stat.label.he} className="border border-white/15 bg-night px-4 py-8 text-center">
-            <p className="font-mono text-4xl" dir="ltr">
-              {stat.value}
-              {"suffix" in stat ? stat.suffix : ""}
-            </p>
-            <p className="mt-2 font-display text-xs font-semibold tracking-[0.2em] text-haze">{pick(stat.label, locale)}</p>
-          </div>
-        ))}
-      </section>
-      <Section title={locale === "en" ? "About Us" : "קצת עלינו"}>
-        <div className="max-w-3xl space-y-4 text-lg font-light leading-8 text-body">
-          {aboutParagraphs.slice(0, homeAboutCount).map((paragraph) => (
-            <p key={paragraph.he}>{pick(paragraph, locale)}</p>
+      <section className="bg-paper">
+        <div className="mx-auto grid w-full max-w-5xl grid-cols-2 gap-3 px-5 py-10 md:grid-cols-4 md:px-8">
+          {stats.map((stat) => (
+            <div key={stat.label.he} className="bg-white px-3 py-6 text-center">
+              <p className="text-5xl font-bold text-club md:text-6xl" dir="ltr">
+                {stat.value === "1500" ? "+1,500" : stat.value}
+              </p>
+              <p className="mt-2 text-lg text-muted">{pick(stat.label, locale)}</p>
+            </div>
           ))}
         </div>
-        <Link href={withLocale("/about", locale)} className="font-display mt-8 inline-block border border-star px-5 py-3 text-sm font-extrabold tracking-[0.1em]">
-          {locale === "en" ? "Read More" : "לפרטים נוספים"}
-        </Link>
-      </Section>
-      <section className="mx-auto grid w-full max-w-6xl gap-3 px-5 pb-14 md:grid-cols-5 md:px-8">
+      </section>
+      <section className="mx-auto w-full max-w-6xl px-5 py-14 md:px-8">
+        <h2 className="text-center text-[32px] font-bold text-club">
+          <span className="club-underline">{locale === "en" ? "About Us" : "קצת עלינו"}</span>
+        </h2>
+        <div className="mt-8 grid items-center gap-8 md:grid-cols-2">
+          <div className="space-y-4 text-base leading-8 text-ink">
+            {aboutParagraphs.slice(0, homeAboutCount).map((paragraph) => (
+              <p key={paragraph.he}>{pick(paragraph, locale)}</p>
+            ))}
+            <p className="text-end">
+              <Link href={withLocale("/about", locale)} className="font-semibold text-club underline">
+                {locale === "en" ? "Read More" : "לפרטים נוספים"}
+              </Link>
+            </p>
+          </div>
+          <div className="relative aspect-[4/3] overflow-hidden rounded-[20px]">
+            <Image src="/media/wp/about-team.jpg" alt={locale === "en" ? "Club students" : "סטודנטים במועדון היזמות"} fill className="object-cover" sizes="(min-width: 768px) 40vw, 100vw" />
+          </div>
+        </div>
+      </section>
+      <section className="grid grid-cols-2 md:grid-cols-5">
         {gates.map((gate) => (
-          <Link key={gate.href} href={withLocale(gate.href, locale)} className="border border-white/15 bg-night px-4 py-8 text-center font-display font-bold tracking-[0.04em]">
-            {locale === "en" ? gate.en : gate.he}
+          <Link key={gate.href} href={withLocale(gate.href, locale)} className="relative flex min-h-64 items-center justify-center">
+            <Image src={gate.image} alt="" fill className="object-cover" sizes="20vw" />
+            <span className="absolute inset-0 bg-club/45" />
+            <span className="relative px-3 text-center text-2xl font-bold text-white">
+              <span className="border-b-2 border-white pb-1">{locale === "en" ? gate.en : gate.he}</span>
+            </span>
           </Link>
         ))}
       </section>
-      <Section title={locale === "en" ? "The Chairman" : "יו״ר המועדון"}>
-        <blockquote className="max-w-3xl border border-white/15 bg-midnight p-6 text-lg font-light leading-8 text-body">{pick(reichmanQuote, locale)}</blockquote>
-        <p className="mt-6 font-display text-sm font-semibold tracking-[0.12em]">{pick(chairLine, locale)}</p>
-      </Section>
+      <section className="mx-auto w-full max-w-6xl px-5 py-14 md:px-8">
+        <div className="grid grid-cols-2 gap-px bg-[#f3f3f3] sm:grid-cols-3 md:grid-cols-6">
+          {programLogos.map((logo) => (
+            <Link key={logo.href} href={withLocale(logo.href, locale === "en" && (logo.href.includes("momentum") || logo.href.includes("tech-talk")) ? "he" : locale)} className="flex items-center justify-center bg-white p-4">
+              <Image src={logo.src} alt={logo.name} width={180} height={90} className="h-16 w-auto object-contain" style={{ width: "auto" }} />
+            </Link>
+          ))}
+        </div>
+      </section>
+      <section className="bg-gradient-to-b from-band to-club px-5 py-16 text-white md:px-8">
+        <div className="mx-auto w-full max-w-4xl">
+          <h2 className="text-center text-[32px] font-bold">{locale === "en" ? "The Chairman" : "יו״ר המועדון"}</h2>
+          <blockquote className="mt-8 text-lg leading-8">{pick(reichmanQuote, locale)}</blockquote>
+          <p className="mt-6 font-medium">{pick(chairLine, locale)}</p>
+        </div>
+      </section>
     </>
   );
 }
@@ -113,7 +162,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
     <>
       <PageHero title={locale === "en" ? "About" : "אודות"} />
       <Section>
-        <div className="max-w-3xl space-y-4 text-lg font-light leading-8 text-body">
+        <div className="max-w-3xl space-y-4 text-lg font-light leading-8 text-ink">
           {aboutParagraphs.map((paragraph) => {
             const text = pick(paragraph, locale);
             return text ? <p key={paragraph.he}>{text}</p> : null;
@@ -136,7 +185,7 @@ export function ProgramIndex({ locale }: { locale: Locale }) {
     <>
       <PageHero title={locale === "en" ? "Programs" : "תוכניות"} />
       <Section>
-        <p className="max-w-3xl text-lg font-light leading-8 text-body">{pick(aboutParagraphs[5], locale)}</p>
+        <p className="max-w-3xl text-lg font-light leading-8 text-ink">{pick(aboutParagraphs[5], locale)}</p>
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           {items.map((item) => (
             <CatalogCard key={item.slug} item={item} locale={locale} />
@@ -197,18 +246,18 @@ export function PitchPage({ locale }: { locale: Locale }) {
     <>
       <PageHero eyebrow="Entrepreneurship Club" title="Pitch Night" />
       <Section>
-        <p className="max-w-3xl text-lg font-light leading-8 text-body">{pick(pitchIntro, locale)}</p>
+        <p className="max-w-3xl text-lg font-light leading-8 text-ink">{pick(pitchIntro, locale)}</p>
         <p className="mt-6 max-w-3xl text-lg font-light leading-8">Are You Ready to Pitch?</p>
-        <a href="https://www.linkedin.com/company/ruec/" className="font-display mt-6 inline-block border border-star px-5 py-3 text-sm font-extrabold tracking-[0.1em]" rel="noreferrer">
+        <a href="https://www.linkedin.com/company/ruec/" className="mt-6 inline-block border border-club px-5 py-3 text-sm font-extrabold tracking-[0.1em]" rel="noreferrer">
           Visit Our LinkedIn
         </a>
       </Section>
       <Section title="Our Competition Journey">
         <div className="grid gap-4">
           {pitchStages.map((stage) => (
-            <article key={stage.title} className="border border-white/15 bg-night p-5">
-              <h3 className="font-display text-2xl font-bold tracking-[0.04em]">{stage.title}</h3>
-              <p className="mt-3 text-base font-light leading-7 text-body">{stage.body}</p>
+            <article key={stage.title} className="border border-[#e6e6e6] bg-white p-5">
+              <h3 className="text-2xl font-bold text-club">{stage.title}</h3>
+              <p className="mt-3 text-base font-light leading-7 text-ink">{stage.body}</p>
             </article>
           ))}
         </div>
@@ -226,26 +275,26 @@ export function InternshipPage({ locale }: { locale: Locale }) {
     <>
       <PageHero title={locale === "en" ? "Industry Internship" : "מסלול לתעשייה"} />
       <Section>
-        <p className="font-display text-xs font-semibold tracking-[0.2em] text-haze">{copy.kicker}</p>
+        <p className="text-xs font-semibold tracking-[0.2em] text-muted">{copy.kicker}</p>
         <p className="mt-3 font-mono text-sm" dir="ltr">
           {copy.data}
         </p>
-        <div className="mt-6 max-w-3xl space-y-4 text-lg font-light leading-8 text-body">
+        <div className="mt-6 max-w-3xl space-y-4 text-lg font-light leading-8 text-ink">
           {copy.body.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
         </div>
-        <h2 className="font-display mt-10 text-2xl font-bold tracking-[0.04em]">{copy.requirementsTitle}</h2>
+        <h2 className="mt-10 text-2xl font-bold tracking-[0.04em]">{copy.requirementsTitle}</h2>
         <ul className="mt-4 max-w-3xl space-y-3">
           {copy.requirements.map((item) => (
-            <li key={item} className="flex gap-3 text-body">
+            <li key={item} className="flex gap-3 text-ink">
               <StarBullet />
               <span>{item}</span>
             </li>
           ))}
         </ul>
-        <h2 className="font-display mt-10 text-2xl font-bold tracking-[0.04em]">{copy.moreTitle}</h2>
-        <div className="mt-4 max-w-3xl space-y-3 text-body">
+        <h2 className="mt-10 text-2xl font-bold tracking-[0.04em]">{copy.moreTitle}</h2>
+        <div className="mt-4 max-w-3xl space-y-3 text-ink">
           {copy.more.map((item) => (
             <p key={item}>{item}</p>
           ))}
@@ -256,9 +305,9 @@ export function InternshipPage({ locale }: { locale: Locale }) {
         <Section title={internshipHe.quotesTitle}>
           <div className="grid gap-4">
             {internshipHe.quotes.map((item) => (
-              <blockquote key={item.by} className="border border-white/15 bg-midnight p-5">
-                <p className="font-light leading-7 text-body">{item.quote}</p>
-                <footer className="mt-4 font-display text-sm font-semibold tracking-[0.06em]">{item.by}</footer>
+              <blockquote key={item.by} className="border border-[#e6e6e6] bg-white p-5">
+                <p className="font-light leading-7 text-ink">{item.quote}</p>
+                <footer className="mt-4 text-sm font-semibold tracking-[0.06em]">{item.by}</footer>
               </blockquote>
             ))}
           </div>
@@ -274,24 +323,24 @@ export function CommunityPage({ locale }: { locale: Locale }) {
     <>
       <PageHero title={copy.title} />
       <Section>
-        <div className="max-w-3xl space-y-3 text-lg font-light leading-8 text-body">
+        <div className="max-w-3xl space-y-3 text-lg font-light leading-8 text-ink">
           {copy.intro.map((line) => (
             <p key={line}>{line}</p>
           ))}
         </div>
         <div className="mt-8 grid gap-4 md:grid-cols-2">
-          <article className="border border-white/15 bg-night p-5">
-            <h2 className="font-display text-2xl font-bold tracking-[0.04em]">{copy.studentsTitle}</h2>
+          <article className="border border-[#e6e6e6] bg-white p-5">
+            <h2 className="text-2xl font-bold text-club">{copy.studentsTitle}</h2>
             {copy.students.map((paragraph) => (
-              <p key={paragraph} className="mt-3 font-light leading-7 text-body">
+              <p key={paragraph} className="mt-3 font-light leading-7 text-ink">
                 {paragraph}
               </p>
             ))}
           </article>
-          <article className="border border-white/15 bg-night p-5">
-            <h2 className="font-display text-2xl font-bold tracking-[0.04em]">{copy.alumniTitle}</h2>
+          <article className="border border-[#e6e6e6] bg-white p-5">
+            <h2 className="text-2xl font-bold text-club">{copy.alumniTitle}</h2>
             {copy.alumni.map((paragraph) => (
-              <p key={paragraph} className="mt-3 font-light leading-7 text-body">
+              <p key={paragraph} className="mt-3 font-light leading-7 text-ink">
                 {paragraph}
               </p>
             ))}
@@ -311,12 +360,12 @@ export function AiPage({ locale }: { locale: Locale }) {
     <>
       <PageHero title="AI" eyebrow={locale === "en" ? "Innovation & AI" : "מדור החדשנות וה-AI"} />
       <Section>
-        <p className="max-w-3xl text-lg font-light leading-8 text-body">{copy.intro}</p>
+        <p className="max-w-3xl text-lg font-light leading-8 text-ink">{copy.intro}</p>
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           {copy.blocks.map((block) => (
-            <article key={block.title} className="border border-white/15 bg-night p-5">
-              <h2 className="font-display text-xl font-bold tracking-[0.04em]">{block.title}</h2>
-              <p className="mt-3 font-light leading-7 text-body">{block.body}</p>
+            <article key={block.title} className="border border-[#e6e6e6] bg-white p-5">
+              <h2 className="text-xl font-bold text-club">{block.title}</h2>
+              <p className="mt-3 font-light leading-7 text-ink">{block.body}</p>
             </article>
           ))}
         </div>
@@ -334,7 +383,7 @@ export function JoinPage({ slug }: { slug: "chair" | "programs" | "new-program" 
     <>
       <PageHero title={page.title.he} />
       <Section>
-        <div className="max-w-3xl space-y-4 text-lg font-light leading-8 text-body">
+        <div className="max-w-3xl space-y-4 text-lg font-light leading-8 text-ink">
           {page.paragraphs.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
@@ -352,11 +401,10 @@ function ItemPage({ locale, item }: { locale: Locale; item: CatalogItem }) {
       <PageHero title={name} />
       <Section>
         <div className="grid gap-8 md:grid-cols-[0.9fr_1.1fr] md:items-start">
-          <div className="relative aspect-[16/10] overflow-hidden border border-white/15 bg-night">
-            <Image src={item.image} alt={name} fill className="object-cover opacity-80" sizes="(min-width: 768px) 40vw, 100vw" />
-            <div className="absolute inset-0 bg-night/20" />
+          <div className="relative aspect-[16/10] overflow-hidden">
+            <Image src={item.image} alt={name} fill className="object-cover" sizes="(min-width: 768px) 40vw, 100vw" />
           </div>
-          <p className="text-lg font-light leading-8 text-body">{summary}</p>
+          <p className="text-lg font-light leading-8 text-ink">{summary}</p>
         </div>
       </Section>
     </>
@@ -365,9 +413,9 @@ function ItemPage({ locale, item }: { locale: Locale; item: CatalogItem }) {
 
 function PageHero({ title, eyebrow }: { title: string; eyebrow?: string }) {
   return (
-    <section className="mx-auto w-full max-w-6xl px-5 pt-16 md:px-8">
-      {eyebrow ? <p className="font-display text-xs font-semibold tracking-[0.2em] text-haze">{eyebrow}</p> : null}
-      <h1 className="font-display mt-3 text-5xl font-extrabold tracking-[0.08em] md:text-6xl">{title}</h1>
+    <section className="mx-auto w-full max-w-6xl px-5 pt-12 md:px-8">
+      {eyebrow ? <p className="text-sm font-medium text-muted">{eyebrow}</p> : null}
+      <h1 className="mt-2 text-4xl font-bold text-club md:text-5xl">{title}</h1>
     </section>
   );
 }
