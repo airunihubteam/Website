@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { Chevron } from "@/components/icons";
 
 export type TeamMember = {
@@ -79,7 +79,10 @@ export function TeamSection({
   const [filter, setFilter] = useState("all");
   const [filtered, setFiltered] = useState(false);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  // Which way the profile content slides in when stepping: negative from the left, 0 rises up.
+  const [swapX, setSwapX] = useState(0);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const pillRef = useRef<HTMLSpanElement>(null);
 
@@ -116,8 +119,45 @@ export function TeamSection({
     return () => observer.disconnect();
   }, [filter, filtered]);
 
+  // Points the panel's open and close animations at a card, so the panel grows out of the card
+  // and shrinks back into it. A card scrolled out of view gets a plain fade instead.
+  const aimAt = (index: number) => {
+    const dialog = dialogRef.current;
+    const card = gridRef.current?.children[index];
+    if (!dialog) return;
+    const width = document.documentElement.clientWidth;
+    const from = card?.getBoundingClientRect();
+    const inView = from && from.bottom > 0 && from.top < window.innerHeight;
+    dialog.style.setProperty("--from-x", inView ? `${from.left + from.width / 2 - width / 2}px` : "0px");
+    dialog.style.setProperty("--from-y", inView ? `${from.top + from.height / 2 - window.innerHeight / 2}px` : "24px");
+    dialog.style.setProperty("--from-scale", inView ? String(Math.max(0.2, from.width / Math.min(940, width - 24))) : "0.94");
+  };
+
+  const openProfile = (index: number) => {
+    aimAt(index);
+    setSwapX(0);
+    setOpenIndex(index);
+  };
+
+  const closeProfile = () => {
+    const dialog = dialogRef.current;
+    if (!dialog?.open || dialog.dataset.closing !== undefined) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setOpenIndex(null);
+      return;
+    }
+    if (openIndex !== null) aimAt(openIndex);
+    dialog.dataset.closing = "";
+    window.setTimeout(() => {
+      dialog.close();
+      delete dialog.dataset.closing;
+      setOpenIndex(null);
+    }, 420);
+  };
+
   const step = (delta: number) => {
     if (openIndex === null) return;
+    setSwapX(delta * (dir === "rtl" ? -1 : 1) * 32);
     setOpenIndex((openIndex + delta + visible.length) % visible.length);
   };
 
@@ -174,6 +214,7 @@ export function TeamSection({
       <div data-reveal-item={groups.length > 0 ? "2" : "1"} className="mt-6 md:mt-10">
       <div
         key={filter}
+        ref={gridRef}
         className={`grid gap-3 sm:gap-5 ${variant === "pair" ? "mx-auto max-w-2xl grid-cols-2" : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"}`}
       >
         {visible.map((member, index) => (
@@ -182,7 +223,7 @@ export function TeamSection({
             type="button"
             aria-haspopup="dialog"
             aria-label={`${member.name}${member.role ? `, ${member.role}` : ""}: ${labels.profile}`}
-            onClick={() => setOpenIndex(index)}
+            onClick={() => openProfile(index)}
             className={`group relative block aspect-[3/4] w-full overflow-hidden rounded-[22px] bg-club text-start shadow-[0_18px_40px_-28px_rgba(15,45,150,0.7)] transition-[translate,box-shadow] duration-500 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_rgba(15,45,150,0.8)] ${
               filtered ? "motion-safe:animate-[team-in_700ms_var(--ease)_backwards]" : ""
             }`}
@@ -228,31 +269,54 @@ export function TeamSection({
       <dialog
         ref={dialogRef}
         aria-labelledby="team-profile-name"
-        onClose={() => setOpenIndex(null)}
+        onClose={(event) => {
+          delete event.currentTarget.dataset.closing;
+          setOpenIndex(null);
+        }}
+        onCancel={(event) => {
+          event.preventDefault();
+          closeProfile();
+        }}
         onKeyDown={onDialogKey}
         onClick={(event) => {
-          if (event.target === event.currentTarget) setOpenIndex(null);
+          if (event.target === event.currentTarget) closeProfile();
         }}
         className="team-dialog m-auto w-[min(940px,calc(100%-1.5rem))] max-w-none overflow-hidden rounded-[28px] bg-white p-0 text-ink shadow-[0_40px_120px_-40px_rgba(6,19,71,0.8)]"
       >
         {current ? (
-          <div key={current.id} className="grid motion-safe:animate-[profile-swap_500ms_var(--ease)_backwards] md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
-            <div className="relative aspect-[16/11] bg-club md:aspect-auto md:min-h-[480px]">
-              <Portrait member={current} sizes="(min-width: 768px) 400px, 100vw" />
+          // Rebuilt per person, so the photo and each line of text play in again on every step.
+          <div key={current.id} className="grid md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]" style={{ "--swap-x": `${swapX}px` } as CSSProperties}>
+            <div className="relative aspect-[16/11] overflow-hidden bg-club md:aspect-auto md:min-h-[480px]">
+              <Portrait member={current} sizes="(min-width: 768px) 400px, 100vw" className="profile-photo" />
               <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[#061347]/40 to-transparent md:hidden" />
             </div>
             <div className="flex max-h-[55dvh] flex-col p-6 md:max-h-[80dvh] md:p-9">
               {/* The scroll area reaches into the panel's padding, so its scrollbar stays clear of the text. */}
               <div className="-me-4 min-h-0 overflow-y-auto pe-4">
-                {groupLabel(current.group) ? <p className="text-sm font-semibold text-club/60">{groupLabel(current.group)}</p> : null}
-                <h3 id="team-profile-name" className="mt-1 text-2xl font-bold text-club md:text-3xl">
+                {groupLabel(current.group) ? (
+                  <p className="profile-item text-sm font-semibold text-club/60" style={{ "--i": 0 } as CSSProperties}>
+                    {groupLabel(current.group)}
+                  </p>
+                ) : null}
+                <h3 id="team-profile-name" className="profile-item mt-1 text-2xl font-bold text-club md:text-3xl" style={{ "--i": 1 } as CSSProperties}>
                   {current.name}
                 </h3>
-                {current.role ? <p className="mt-1 text-base font-medium text-ink/80">{current.role}</p> : null}
-                <span aria-hidden="true" className="mt-4 block h-[3px] w-12 bg-club" />
-                {current.bio ? <p className="mt-5 text-justify text-[15px] leading-8 text-ink/85">{current.bio}</p> : null}
+                {current.role ? (
+                  <p className="profile-item mt-1 text-base font-medium text-ink/80" style={{ "--i": 2 } as CSSProperties}>
+                    {current.role}
+                  </p>
+                ) : null}
+                <span aria-hidden="true" className="profile-line mt-4 block h-[3px] w-12 bg-club ltr:origin-left rtl:origin-right" />
+                {current.bio ? (
+                  <p className="profile-item mt-5 text-justify text-[15px] leading-8 text-ink/85" style={{ "--i": 3 } as CSSProperties}>
+                    {current.bio}
+                  </p>
+                ) : null}
               </div>
-              <div className="mt-6 flex flex-col items-center gap-4 border-t border-[#e9ecf6] pt-5 md:flex-row md:flex-wrap md:justify-between">
+              <div
+                className="profile-item mt-6 flex flex-col items-center gap-4 border-t border-[#e9ecf6] pt-5 md:flex-row md:flex-wrap md:justify-between"
+                style={{ "--i": 4 } as CSSProperties}
+              >
                 {current.linkedin ? (
                   <a
                     href={current.linkedin}
@@ -291,9 +355,9 @@ export function TeamSection({
         ) : null}
         <button
           type="button"
-          onClick={() => setOpenIndex(null)}
+          onClick={closeProfile}
           aria-label={labels.close}
-          className="absolute end-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-club text-white shadow-md transition-[rotate,background-color] duration-300 hover:rotate-90 hover:bg-[#0a1f6e]"
+          className="profile-close absolute end-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-club text-white shadow-md transition-[rotate,background-color] duration-300 hover:rotate-90 hover:bg-[#0a1f6e]"
         >
           <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
             <path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
