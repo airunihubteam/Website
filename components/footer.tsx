@@ -33,10 +33,11 @@ export function Footer({ locale }: { locale: Locale }) {
 
   return (
     <footer className="border-t border-[#e6e6e6] bg-white text-ink">
-      <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-10 md:grid-cols-3 md:px-8">
-        {columns.map((column) => (
-          <div key={column.title}>
-            <p className="text-2xl font-medium text-club">{column.title}</p>
+      {/* Phones: the long programs list fills one column and the two short lists stack beside it. */}
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-x-6 gap-y-8 px-5 py-10 md:grid-cols-3 md:gap-8 md:px-8">
+        {columns.map((column, index) => (
+          <div key={column.title} className={index === 0 ? "row-span-2 md:row-span-1" : undefined}>
+            <p className="text-xl font-medium text-club md:text-2xl">{column.title}</p>
             <ul className="mt-3 flex flex-col gap-2">
               {column.links.map((link) => (
                 <li key={link.href + link.label}>
