@@ -555,12 +555,16 @@ export function AboutPage({ locale }: { locale: Locale }) {
               data-reveal-item={String(index + 1)}
               className="group flex h-20 items-center justify-center rounded-[22px] border border-[#e6e9f5] bg-white px-5 sm:h-32 sm:px-6 transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-club/30 hover:shadow-[0_24px_50px_-28px_rgba(15,45,150,0.45)]"
             >
-              <Image
-                src={locale === "en" ? partner.en : partner.he}
-                alt={pick(partner.name, locale) ?? partner.name.he}
-                width={partner.width}
-                height={partner.height}
-                className="h-auto max-h-12 w-auto max-w-full sm:max-h-16 opacity-75 grayscale transition-[filter,opacity] duration-500 group-hover:opacity-100 group-hover:grayscale-0"
+              {/* The logo is a mask filled with the club's blue, so all three share the site's color. */}
+              <span
+                role="img"
+                aria-label={pick(partner.name, locale) ?? partner.name.he}
+                className="block h-12 max-w-full bg-club transition-[scale,background-color] duration-500 [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain] group-hover:scale-[1.04] group-hover:bg-[#0a1f6e] sm:h-16"
+                style={{
+                  aspectRatio: `${partner.width} / ${partner.height}`,
+                  maskImage: `url(${locale === "en" ? partner.en : partner.he})`,
+                  transitionTimingFunction: "var(--ease)",
+                }}
               />
             </a>
           ))}
