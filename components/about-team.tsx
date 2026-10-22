@@ -169,14 +169,7 @@ export function TeamSection({
       <div data-reveal-item={groups.length > 0 ? "2" : "1"} className="mt-6 md:mt-10">
       <div
         key={filter}
-        className={`grid gap-3 sm:gap-5 ${
-          variant === "pair"
-            ? "mx-auto max-w-2xl grid-cols-2"
-            : visible.length > 4
-              ? // Phones: two rows that swipe sideways instead of one long column of cards.
-                "-mx-5 auto-cols-[44%] grid-flow-col grid-rows-2 snap-x snap-mandatory scroll-px-5 overflow-x-auto px-5 pb-2 [scrollbar-width:none] md:mx-0 md:auto-cols-auto md:grid-flow-row md:grid-cols-3 md:grid-rows-none md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-4 xl:grid-cols-5"
-              : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
-        }`}
+        className={`grid gap-3 sm:gap-5 ${variant === "pair" ? "mx-auto max-w-2xl grid-cols-2" : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"}`}
       >
         {visible.map((member, index) => (
           <button
@@ -185,7 +178,7 @@ export function TeamSection({
             aria-haspopup="dialog"
             aria-label={`${member.name}${member.role ? `, ${member.role}` : ""}: ${labels.profile}`}
             onClick={() => setOpenIndex(index)}
-            className={`group relative block aspect-[3/4] w-full snap-start overflow-hidden rounded-[22px] bg-club text-start shadow-[0_18px_40px_-28px_rgba(15,45,150,0.7)] transition-[translate,box-shadow] duration-500 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_rgba(15,45,150,0.8)] ${
+            className={`group relative block aspect-[3/4] w-full overflow-hidden rounded-[22px] bg-club text-start shadow-[0_18px_40px_-28px_rgba(15,45,150,0.7)] transition-[translate,box-shadow] duration-500 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_rgba(15,45,150,0.8)] ${
               filtered ? "motion-safe:animate-[team-in_700ms_var(--ease)_backwards]" : ""
             }`}
             style={{ transitionTimingFunction: EASE, animationDelay: `${index * 55}ms` }}
