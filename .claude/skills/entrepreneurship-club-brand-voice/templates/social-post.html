@@ -1,0 +1,31 @@
+<!doctype html>
+<!-- Social post / story. Render: render.py social-post.html out.png --size 1080x1350  (story: 1080x1920, square: 1080x1080) -->
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<link rel="stylesheet" href="brand/brand.css">
+<style>
+html,body{width:100vw;height:100vh;overflow:hidden}
+.frame{position:relative;height:100%;padding:7vw;display:flex;flex-direction:column;justify-content:space-between;z-index:1}
+.top{display:flex;justify-content:space-between;align-items:center}
+.top img{height:7vw}
+.top .label{font-size:2.4vw}
+.mid{display:flex;flex-direction:column;gap:3vw}
+.mid .h1{font-size:9vw}
+.mid .body{font-size:3.4vw;color:var(--haze);max-width:80%}
+.meta{display:flex;gap:5vw;align-items:center}
+.meta .data{font-size:3vw}
+.btn{font-size:3vw}
+.symbol{position:absolute;left:7vw;bottom:7vw;height:22vw;opacity:.9}
+</style></head><body>
+<div class="frame">
+  <div class="top"><span class="label">מועדון היזמות</span><img src="brand/logo/reichman-he-white.png" alt=""></div>
+  <div class="mid">
+    <span class="label" style="font-size:2.6vw">[[סוג האירוע]]</span>
+    <h1 class="h1">[[כותרת קצרה<br>בשתי שורות]]</h1>
+    <p class="body">[[משפט אחד: מה קורה ולמי זה מתאים]]</p>
+  </div>
+  <div class="meta"><span class="data">[[DD.MM · HH:MM]]</span><span class="btn btn-primary">[[להרשמה]]</span></div>
+</div>
+<img class="symbol" src="brand/logo/symbol-white.png" alt="">
+<script src="brand/starfield.js"></script>
+<script>starfield(document.body,{seed:7})</script>
+</body></html>

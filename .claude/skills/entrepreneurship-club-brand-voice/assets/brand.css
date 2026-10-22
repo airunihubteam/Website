@@ -1,0 +1,44 @@
+/* Entrepreneurship Club – מועדון היזמות · brand tokens. Link this file; never retype the values. */
+@font-face{font-family:"Assistant";font-weight:400;src:url(fonts/Assistant-Regular.ttf)}
+@font-face{font-family:"Assistant";font-weight:600;src:url(fonts/Assistant-SemiBold.ttf)}
+@font-face{font-family:"Assistant";font-weight:700;src:url(fonts/Assistant-Bold.ttf)}
+@font-face{font-family:"Assistant";font-weight:800;src:url(fonts/Assistant-ExtraBold.ttf)}
+@font-face{font-family:"Heebo";font-weight:300;src:url(fonts/Heebo-Light.ttf)}
+@font-face{font-family:"Heebo";font-weight:400;src:url(fonts/Heebo-Regular.ttf)}
+@font-face{font-family:"Heebo";font-weight:500;src:url(fonts/Heebo-Medium.ttf)}
+@font-face{font-family:"IBM Plex Mono";font-weight:400;src:url(fonts/IBMPlexMono-Regular.ttf)}
+@font-face{font-family:"IBM Plex Mono";font-weight:500;src:url(fonts/IBMPlexMono-Medium.ttf)}
+
+:root{
+  --night:#0E1452;     /* primary background, top of gradient */
+  --midnight:#1A1E65;  /* surfaces, middle of gradient */
+  --dusk:#272D79;      /* secondary, bottom of gradient */
+  --star:#FFFFFF;      /* logo, headlines, primary button */
+  --haze:#B9BEEA;      /* secondary text on navy */
+  --paper:#F4F5FC;     /* light background (inverse logo only) */
+  --line:rgba(255,255,255,.16);
+  --sky:linear-gradient(180deg,#0A0F45 0%,#0E1452 30%,#1A1E65 70%,#272D79 100%);
+  --font-display:"Assistant","Heebo",sans-serif;
+  --font-body:"Heebo","Assistant",sans-serif;
+  --font-mono:"IBM Plex Mono",monospace;
+  --star-shape:polygon(50% 0%,61.8% 35.4%,100% 38.2%,69.1% 61.8%,80.9% 100%,50% 76.4%,19.1% 100%,30.9% 61.8%,0% 38.2%,38.2% 35.4%);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{background:var(--sky);color:var(--star);font-family:var(--font-body);font-weight:400;line-height:1.6;direction:rtl}
+
+/* type scale (ratios hold at any size; scale the whole set together) */
+.h1{font-family:var(--font-display);font-weight:800;letter-spacing:.08em;line-height:1.05}
+.h2{font-family:var(--font-display);font-weight:700;letter-spacing:.06em;line-height:1.15}
+.h3{font-family:var(--font-display);font-weight:700;letter-spacing:.04em;line-height:1.25}
+.label{font-family:var(--font-display);font-weight:600;letter-spacing:.2em;color:var(--haze)}
+.body{font-family:var(--font-body);font-weight:300}
+.data{font-family:var(--font-mono);direction:ltr;unicode-bidi:isolate}
+
+/* motifs */
+.star{display:inline-block;aspect-ratio:1;background:var(--star);clip-path:var(--star-shape)}
+.btn{font-family:var(--font-display);font-weight:800;letter-spacing:.1em;border-radius:2px;padding:.55em 1.4em;display:inline-block}
+.btn-primary{background:var(--star);color:var(--night)}
+.btn-secondary{border:1px solid var(--star);color:var(--star)}
+.panel{border:1px solid var(--line);border-radius:6px;background:var(--night)}
+.rule{height:1px;background:var(--line)}

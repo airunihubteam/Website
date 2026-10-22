@@ -1,0 +1,40 @@
+<!doctype html>
+<!-- A4 one-page document (flyer, one-pager, summary). Render: render.py a4-document.html out.pdf -->
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<link rel="stylesheet" href="brand/brand.css">
+<style>
+@page{size:A4;margin:0}
+html,body{width:210mm;height:297mm;overflow:hidden}
+.page{position:relative;z-index:1;height:297mm;padding:14mm 14mm 10mm;display:flex;flex-direction:column;gap:7mm}
+.top{display:flex;justify-content:space-between;align-items:center;padding-bottom:5mm;border-bottom:1px solid var(--line)}
+.top .h1{font-size:24pt}
+.top small{display:block;margin-top:2mm;font-size:9pt}
+.top img{height:13mm}
+.sec{display:flex;flex-direction:column;gap:3mm}
+.sec-title{display:flex;align-items:center;gap:3mm;font-size:9pt}
+.sec-title::after{content:"";flex:1;height:1px;background:var(--line)}
+.sec .body{font-size:10pt;max-width:150mm}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm}
+.grid .panel{padding:5mm;display:flex;flex-direction:column;gap:2mm}
+.grid .h3{font-size:12pt}
+.grid p{font-size:9pt;color:var(--haze)}
+.foot{margin-top:auto;display:flex;justify-content:space-between;font-size:7pt;border-top:1px solid var(--line);padding-top:3mm}
+</style></head><body>
+<div class="page">
+  <header class="top">
+    <div><h1 class="h1">[[כותרת המסמך]]</h1><small class="label">[[כותרת משנה]]</small></div>
+    <img src="brand/logo/reichman-he-white.png" alt="">
+  </header>
+  <section class="sec"><div class="sec-title label">[[נושא]]</div>
+    <p class="body">[[פסקת פתיחה קצרה]]</p></section>
+  <section class="sec"><div class="sec-title label">[[נושא נוסף]]</div>
+    <div class="grid">
+      <div class="panel"><span class="star" style="width:5mm"></span><h3 class="h3">[[פריט]]</h3><p>[[תיאור קצר]]</p></div>
+      <div class="panel"><span class="star" style="width:5mm"></span><h3 class="h3">[[פריט]]</h3><p>[[תיאור קצר]]</p></div>
+      <div class="panel"><span class="star" style="width:5mm"></span><h3 class="h3">[[פריט]]</h3><p>[[תיאור קצר]]</p></div>
+    </div></section>
+  <footer class="foot label"><span>מועדון היזמות · אוניברסיטת רייכמן</span><span>[[תאריך / גרסה]]</span></footer>
+</div>
+<script src="brand/starfield.js"></script>
+<script>starfield(document.body,{seed:42})</script>
+</body></html>

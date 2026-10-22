@@ -1,6 +1,6 @@
 # Design system
 
-מקור האמת הוא הסקיל שהותקן ב-`~/.cursor/skills/entrepreneurship-club-brand-voice`, ומדריך העמוד האחד `references/brand-guide-onepager.pdf`. הקובץ `~/Downloads/brand-onepager.pdf` הוא אותו מדריך. הערכים המדויקים נמצאים ב-`assets/brand.css` וב-`references/brand-spec.md`. לא ממציאים צבע, לא מציירים את הלוגו מחדש.
+מקור האמת הוא הסקיל שבריפו, ב-[`.claude/skills/entrepreneurship-club-brand-voice`](../.claude/skills/entrepreneurship-club-brand-voice/SKILL.md), ומדריך העמוד האחד שבתוכו, [`references/brand-guide-onepager.pdf`](../.claude/skills/entrepreneurship-club-brand-voice/references/brand-guide-onepager.pdf). הערכים המדויקים נמצאים ב-`assets/brand.css` וב-`references/brand-spec.md`. לא ממציאים צבע, לא מציירים את הלוגו מחדש.
 
 ## התחושה
 

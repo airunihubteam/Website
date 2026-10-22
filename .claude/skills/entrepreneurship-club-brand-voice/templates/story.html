@@ -1,0 +1,38 @@
+<!doctype html>
+<!-- Story / reel cover. Render: render.py story.html out.png --size 1080x1920 --scale 1
+     Instagram covers the top ~250px and bottom ~250px with UI: all text sits inside .safe (middle 1080x1420). -->
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<link rel="stylesheet" href="brand/brand.css">
+<style>
+html,body{width:1080px;height:1920px;overflow:hidden}
+.safe{position:absolute;z-index:2;top:250px;bottom:250px;left:80px;right:80px;display:flex;flex-direction:column;justify-content:space-between}
+.top{display:flex;justify-content:space-between;align-items:center;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.top img{height:76px}
+.top .label{font-size:26px}
+.mid{display:flex;flex-direction:column;gap:36px}
+.mid .h1{font-size:104px}
+.mid .body{font-size:38px;color:#DADDF6}
+.facts{display:flex;flex-direction:column;gap:18px;font-size:40px}
+.facts div{display:flex;align-items:center;gap:20px}
+.facts .star{width:26px}
+.cta{display:flex;justify-content:center}
+.cta .btn{font-size:38px}
+.watermark{position:absolute;z-index:1;left:-120px;bottom:-60px;height:900px;opacity:.08}
+</style></head><body>
+<img class="watermark" src="brand/logo/symbol-white.png" alt="">
+<div class="safe">
+  <div class="top"><span class="label">מועדון היזמות</span><img src="brand/logo/reichman-he-white.png" alt=""></div>
+  <div class="mid">
+    <span class="label" style="font-size:30px">[[סוג האירוע]]</span>
+    <h1 class="h1">[[כותרת קצרה<br>בשתי שורות]]</h1>
+    <p class="body">[[משפט אחד: מה קורה ולמי זה מתאים]]</p>
+    <div class="facts">
+      <div><span class="star"></span><span class="data">[[DD.MM · HH:MM]]</span></div>
+      <div><span class="star"></span><span class="h3">[[מקום]]</span></div>
+    </div>
+  </div>
+  <div class="cta"><span class="btn btn-primary">[[להרשמה בלינק בביו]]</span></div>
+</div>
+<script src="brand/starfield.js"></script>
+<script>starfield(document.body,{seed:11})</script>
+</body></html>
