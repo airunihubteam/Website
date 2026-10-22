@@ -67,8 +67,8 @@ const gates: { href: string; title: Localized; summary: Localized; image: string
 ];
 
 const gatePanelsLabels: Record<Locale, GatePanelsLabels> = {
-  he: { title: "מוקדי העיסוק שלנו", more: "לפרטים נוספים" },
-  en: { title: "Our Activity Centers", more: "Read More" },
+  he: { title: "מוקדי העיסוק שלנו", more: "לפרטים נוספים", close: "סגירה" },
+  en: { title: "Our Activity Centers", more: "Read More", close: "Close" },
 };
 
 function gatePanels(locale: Locale): GatePanel[] {
