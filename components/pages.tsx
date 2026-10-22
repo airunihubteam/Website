@@ -21,6 +21,7 @@ import {
 import { advisoryTeam, aboutTeam, peopleByIds, peopleIn, pitchTeam, type Person } from "@/content/people";
 import { ClubSlider, type ClubSlide, type ClubSliderLabels } from "@/components/club-slider";
 import { GatePanels, type GatePanel, type GatePanelsLabels } from "@/components/gate-panels";
+import { Chevron } from "@/components/icons";
 import { CatalogCard, PersonCard, Section, StarBullet } from "@/components/ui";
 import { pick, withLocale, type Locale, type Localized } from "@/lib/locale";
 
@@ -197,15 +198,19 @@ export function HomePage({ locale }: { locale: Locale }) {
           <span className="club-underline">{locale === "en" ? "About Us" : "קצת עלינו"}</span>
         </h2>
         <div className="mt-8 grid items-center gap-8 md:grid-cols-2">
-          <div className="space-y-4 text-base leading-8 text-ink">
+          <div className="space-y-4 text-justify text-base leading-8 text-ink">
             {aboutParagraphs.slice(0, homeAboutCount).map((paragraph) => (
               <p key={paragraph.he}>{pick(paragraph, locale)}</p>
             ))}
-            <p className="text-end">
-              <Link href={withLocale("/about", locale)} className="font-semibold text-club underline">
+            <div className="pt-2">
+              <Link
+                href={withLocale("/about", locale)}
+                className="group mx-auto flex w-fit items-center gap-2 border border-club px-5 py-2 text-sm font-semibold text-club transition-colors duration-300 hover:bg-club hover:text-white"
+              >
                 {locale === "en" ? "Read More" : "לפרטים נוספים"}
+                <Chevron dir={locale === "en" ? "ltr" : "rtl"} className="transition-transform duration-500 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
               </Link>
-            </p>
+            </div>
           </div>
           <div className="relative aspect-[4/3] overflow-hidden rounded-[20px]">
             <Image src="/media/wp/about-team.jpg" alt={locale === "en" ? "Club students" : "סטודנטים במועדון היזמות"} fill className="object-cover" sizes="(min-width: 768px) 40vw, 100vw" />
