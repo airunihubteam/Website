@@ -234,13 +234,13 @@ export function HomePage({ locale }: { locale: Locale }) {
         />
         <div className="absolute inset-0 bg-club/60" />
         <div className="relative z-10 mx-auto w-full max-w-6xl px-5 py-28 md:px-8">
-          <h1 className="max-w-4xl text-5xl leading-tight font-extralight text-white md:text-[72px] md:leading-[1.15]">
+          <h1 className="max-w-4xl text-5xl leading-tight font-bold text-white md:text-[72px] md:leading-[1.15]">
             {locale === "en" ? (
               <span className="block motion-safe:animate-[hero-rise_1.2s_var(--ease)_200ms_both]">Welcome to the Entrepreneurship Club</span>
             ) : (
               <>
                 <span className="block motion-safe:animate-[hero-rise_1.2s_var(--ease)_200ms_both]">ברוכים הבאים</span>
-                <span className="block motion-safe:animate-[hero-rise_1.2s_var(--ease)_380ms_both]">לאתר מועדון היזמות</span>
+                <span className="block motion-safe:animate-[hero-rise_1.2s_var(--ease)_380ms_both]">למועדון היזמות</span>
               </>
             )}
           </h1>
