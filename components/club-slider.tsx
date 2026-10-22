@@ -315,7 +315,7 @@ export function ClubSlider({ slides, labels, dir }: { slides: ClubSlide[]; label
                   aria-label={`${slide.name}, ${index + 1} ${labels.of} ${count}`}
                   aria-hidden={!isActive}
                   inert={!shown}
-                  className="relative w-[min(580px,80vw,60vh)] [grid-area:1/1] lg:w-[min(640px,71%,62vh)]"
+                  className="relative w-[min(580px,66vw,60vh)] [grid-area:1/1] sm:w-[min(580px,80vw,60vh)] lg:w-[min(640px,71%,62vh)]"
                   style={{
                     transform: `translate3d(${rel * SPACING * sign}%, 0, 0) scale(${scale})`,
                     opacity,
