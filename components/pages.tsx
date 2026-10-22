@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { CSSProperties } from "react";
 import { accelerator, catalogPath, conferences, findConference, findProgram, programs, type CatalogItem } from "@/content/catalog";
 import {
   aboutParagraphs,
@@ -566,19 +567,126 @@ export function AboutPage({ locale }: { locale: Locale }) {
   );
 }
 
+const programSections: Record<Locale, RailSection[]> = {
+  he: [
+    { id: "programs-top", label: "תוכניות" },
+    { id: "catalog", label: "כל התוכניות" },
+    { id: "join", label: "הצטרפו לעשייה" },
+  ],
+  en: [
+    { id: "programs-top", label: "Programs" },
+    { id: "catalog", label: "All Programs" },
+    { id: "join", label: "Get Involved" },
+  ],
+};
+
+// A program in the catalog: its photo under a wash of the program's own color that deepens to
+// navy at the foot, with its logo, name, summary and a link to its page. Hover (or a tap on
+// phones) zooms the photo, lets the color rise over it, stretches the accent line and fills the
+// button.
+function ProgramCard({ item, logo, locale, dir, reveal }: { item: CatalogItem; logo?: string; locale: Locale; dir: "rtl" | "ltr"; reveal: number }) {
+  const name = pick(item.name, locale) ?? item.name.he;
+  const summary = pick(item.summary, locale);
+  const target = locale === "en" && !item.summary.en ? "he" : locale;
+  return (
+    <Link
+      href={withLocale(catalogPath(item), target)}
+      data-press
+      data-reveal-item={String(reveal)}
+      className="group relative isolate flex min-h-[21rem] flex-col justify-end overflow-hidden rounded-[24px] bg-[#061347] text-white shadow-[0_18px_40px_-28px_rgba(6,19,71,0.8)] transition-[translate,box-shadow] duration-500 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_rgba(6,19,71,0.9)] sm:aspect-[4/5] sm:min-h-0"
+      style={{ "--tone": item.color ?? "#0f2d96", transitionTimingFunction: "var(--ease)" } as CSSProperties}
+    >
+      <Image
+        src={item.image}
+        alt=""
+        fill
+        sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
+        className="-z-10 object-cover transition-[scale] duration-[1400ms] group-hover:scale-[1.07]"
+        style={{ transitionTimingFunction: "var(--ease)" }}
+      />
+      <span
+        aria-hidden="true"
+        className="absolute inset-0 -z-10"
+        style={{
+          backgroundImage:
+            "linear-gradient(to top, #061347 0%, color-mix(in oklab, var(--tone) 70%, #061347) 38%, color-mix(in oklab, var(--tone) 50%, transparent) 62%, transparent 85%)",
+        }}
+      />
+      <span
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+        style={{
+          backgroundImage:
+            "linear-gradient(to top, #061347 0%, color-mix(in oklab, var(--tone) 75%, #061347) 45%, color-mix(in oklab, var(--tone) 45%, transparent) 100%)",
+        }}
+      />
+      {logo ? (
+        <span className="absolute start-4 top-4 flex h-12 w-28 items-center justify-center rounded-xl bg-white px-3 shadow-[0_10px_24px_-12px_rgba(6,19,71,0.6)] transition-[translate] duration-500 group-hover:-translate-y-0.5">
+          <span className="relative block h-full w-full">
+            <Image src={logo} alt="" fill sizes="112px" className="object-contain py-2" />
+          </span>
+        </span>
+      ) : null}
+      <div className="p-6">
+        <span aria-hidden="true" className="block h-[3px] w-10 bg-(--tone) transition-[width] duration-500 group-hover:w-16" style={{ transitionTimingFunction: "var(--ease)" }} />
+        <h2 className="mt-3 text-2xl font-bold">{name}</h2>
+        {summary ? <p className="mt-2 text-justify text-[15px] leading-6 text-white/90">{summary}</p> : null}
+        <span className="mt-5 inline-flex items-center gap-2 border border-white/80 px-4 py-2 text-sm font-semibold transition-colors duration-300 group-hover:border-club group-hover:bg-club">
+          {clubSliderLabels[locale].open}
+          <Chevron dir={dir} className="transition-transform duration-500 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+        </span>
+      </div>
+    </Link>
+  );
+}
+
 export function ProgramIndex({ locale }: { locale: Locale }) {
   const items = locale === "en" ? programs.filter((item) => item.summary.en) : programs;
+  const dir = locale === "en" ? "ltr" : "rtl";
+  const intro = pick(aboutParagraphs[5], locale) ?? "";
+  const lead = firstSentence(intro);
+  const logos = new Map(clubLogos.map((entry) => [entry.slug, entry.logo]));
+
   return (
     <>
-      <PageHero title={locale === "en" ? "Programs" : "תוכניות"} />
-      <Section>
-        <p className="max-w-3xl text-lg font-light leading-8 text-ink">{pick(aboutParagraphs[5], locale)}</p>
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          {items.map((item) => (
-            <CatalogCard key={item.slug} item={item} locale={locale} />
+      <RevealController />
+      <SectionRail sections={programSections[locale]} label={locale === "en" ? "Page sections" : "ניווט בין חלקי העמוד"} />
+
+      <PageBanner
+        id="programs-top"
+        image="/media/wp/gate-programs.jpg"
+        locale={locale}
+        title={locale === "en" ? "Programs" : "תוכניות"}
+        subtitle={intro.slice(lead.length).trim()}
+      />
+
+      <section id="catalog" className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 pt-10 pb-12 md:px-8 md:pt-20 md:pb-16">
+        <div data-reveal>
+          <p
+            data-reveal-item="0"
+            className="mx-auto max-w-3xl text-justify text-lg leading-8 font-bold text-club [text-align-last:center] md:text-2xl md:leading-[1.6]"
+          >
+            {lead}
+          </p>
+        </div>
+        {/* Each card reveals as it scrolls into view, one column after another. */}
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 sm:gap-5 md:mt-12 lg:grid-cols-3">
+          {items.map((item, index) => (
+            <div key={item.slug} data-reveal>
+              <ProgramCard item={item} logo={logos.get(item.slug)} locale={locale} dir={dir} reveal={(index % 3) + 1} />
+            </div>
           ))}
         </div>
-      </Section>
+      </section>
+
+      {/* The two ways into a program, as on the home page's "get involved" cards. */}
+      <div id="join" data-reveal className="scroll-mt-[4.5rem]">
+        <JoinSection
+          cards={joinCards(locale).filter((card) => card.href === "/join/programs" || card.href === "/join/new-program")}
+          title={impactLabels[locale].join}
+          dir={dir}
+        />
+      </div>
     </>
   );
 }
