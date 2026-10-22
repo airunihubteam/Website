@@ -23,6 +23,7 @@ import { ClubSlider, type ClubSlide, type ClubSliderLabels } from "@/components/
 import { GatePanels, type GatePanel, type GatePanelsLabels } from "@/components/gate-panels";
 import { Chevron } from "@/components/icons";
 import { ImpactStats, JoinSection, type ImpactLabels, type ImpactStat, type JoinCard } from "@/components/impact-section";
+import { RevealController, SectionRail, type RailSection } from "@/components/home-motion";
 import { CatalogCard, PersonCard, Section, StarBullet } from "@/components/ui";
 import { pick, withLocale, type Locale, type Localized } from "@/lib/locale";
 
@@ -172,48 +173,81 @@ function joinCards(locale: Locale): JoinCard[] {
   ];
 }
 
+const homeSections: Record<Locale, RailSection[]> = {
+  he: [
+    { id: "home", label: "ראשי" },
+    { id: "numbers", label: "במספרים" },
+    { id: "join", label: "הצטרפו" },
+    { id: "about-us", label: "קצת עלינו" },
+    { id: "activity", label: "מוקדי עיסוק" },
+    { id: "our-programs", label: "התוכניות" },
+    { id: "chair", label: "יו״ר המועדון" },
+  ],
+  en: [
+    { id: "home", label: "Home" },
+    { id: "numbers", label: "Numbers" },
+    { id: "about-us", label: "About" },
+    { id: "activity", label: "Activity" },
+    { id: "our-programs", label: "Programs" },
+    { id: "chair", label: "Chair" },
+  ],
+};
+
 export function HomePage({ locale }: { locale: Locale }) {
+  const dir = locale === "en" ? "ltr" : "rtl";
   return (
     <>
-      <section className="relative -mt-[4.5rem] flex min-h-[100vh] items-center">
+      <RevealController />
+      <SectionRail sections={homeSections[locale]} label={locale === "en" ? "Page sections" : "ניווט בין חלקי העמוד"} />
+      <section id="home" className="relative -mt-[4.5rem] flex min-h-[100vh] items-center overflow-hidden">
         <Image
           src="/media/building.jpg"
           alt=""
           fill
           priority
-          className="object-cover"
+          className="object-cover motion-safe:animate-[hero-zoom_3.2s_var(--ease)_both]"
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-club/60" />
         <div className="relative z-10 mx-auto w-full max-w-6xl px-5 py-28 md:px-8">
           <h1 className="max-w-4xl text-5xl leading-tight font-extralight text-white md:text-[72px] md:leading-[1.15]">
             {locale === "en" ? (
-              "Welcome to the Entrepreneurship Club"
+              <span className="block motion-safe:animate-[hero-rise_1.2s_var(--ease)_200ms_both]">Welcome to the Entrepreneurship Club</span>
             ) : (
               <>
-                ברוכים הבאים
-                <br />
-                לאתר מועדון היזמות
+                <span className="block motion-safe:animate-[hero-rise_1.2s_var(--ease)_200ms_both]">ברוכים הבאים</span>
+                <span className="block motion-safe:animate-[hero-rise_1.2s_var(--ease)_380ms_both]">לאתר מועדון היזמות</span>
               </>
             )}
           </h1>
-          <Link href={withLocale("/programs", locale)} className="mt-8 inline-block border border-white px-5 py-2 text-base text-white">
+          <Link
+            href={withLocale("/programs", locale)}
+            className="mt-8 inline-block border border-white px-5 py-2 text-base text-white transition-colors duration-300 hover:bg-white hover:text-club motion-safe:animate-[hero-rise_1s_var(--ease)_650ms_both]"
+          >
             {locale === "en" ? "Our programs" : "לתוכניות שלנו - לחצו כאן"}
           </Link>
         </div>
       </section>
-      <ImpactStats stats={impactStats(locale)} label={impactLabels[locale].stats} />
-      {locale === "he" ? <JoinSection cards={joinCards(locale)} title={impactLabels[locale].join} dir="rtl" /> : null}
-      <section className="mx-auto w-full max-w-6xl px-5 py-14 md:px-8">
-        <h2 className="text-center text-[32px] font-bold text-club">
+      <div id="numbers" data-reveal className="scroll-mt-[4.5rem]">
+        <ImpactStats stats={impactStats(locale)} label={impactLabels[locale].stats} />
+      </div>
+      {locale === "he" ? (
+        <div id="join" data-reveal className="scroll-mt-[4.5rem]">
+          <JoinSection cards={joinCards(locale)} title={impactLabels[locale].join} dir="rtl" />
+        </div>
+      ) : null}
+      <section id="about-us" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 py-14 md:px-8">
+        <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
           <span className="club-underline">{locale === "en" ? "About Us" : "קצת עלינו"}</span>
         </h2>
         <div className="mt-8 grid items-center gap-8 md:grid-cols-2">
           <div className="space-y-4 text-justify text-base leading-8 text-ink">
-            {aboutParagraphs.slice(0, homeAboutCount).map((paragraph) => (
-              <p key={paragraph.he}>{pick(paragraph, locale)}</p>
+            {aboutParagraphs.slice(0, homeAboutCount).map((paragraph, index) => (
+              <p key={paragraph.he} data-reveal-item={String(index + 1)}>
+                {pick(paragraph, locale)}
+              </p>
             ))}
-            <div className="pt-2">
+            <div data-reveal-item={String(homeAboutCount + 1)} className="pt-2">
               <Link
                 href={withLocale("/about", locale)}
                 className="group mx-auto flex w-fit items-center gap-2 border border-club px-5 py-2 text-sm font-semibold text-club transition-colors duration-300 hover:bg-club hover:text-white"
@@ -223,18 +257,28 @@ export function HomePage({ locale }: { locale: Locale }) {
               </Link>
             </div>
           </div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-[20px]">
+          <div data-reveal-item="2" className="relative aspect-[4/3] overflow-hidden rounded-[20px]">
             <Image src="/media/wp/about-team.jpg" alt={locale === "en" ? "Club students" : "סטודנטים במועדון היזמות"} fill className="object-cover" sizes="(min-width: 768px) 40vw, 100vw" />
           </div>
         </div>
       </section>
-      <GatePanels items={gatePanels(locale)} labels={gatePanelsLabels[locale]} dir={locale === "en" ? "ltr" : "rtl"} />
-      <ClubSlider slides={clubSlides(locale)} labels={clubSliderLabels[locale]} dir={locale === "en" ? "ltr" : "rtl"} />
-      <section className="bg-gradient-to-b from-band to-club px-5 py-16 text-white md:px-8">
+      <div id="activity" data-reveal className="scroll-mt-[4.5rem]">
+        <GatePanels items={gatePanels(locale)} labels={gatePanelsLabels[locale]} dir={dir} />
+      </div>
+      <div id="our-programs" data-reveal className="scroll-mt-[4.5rem]">
+        <ClubSlider slides={clubSlides(locale)} labels={clubSliderLabels[locale]} dir={dir} />
+      </div>
+      <section id="chair" data-reveal className="scroll-mt-[4.5rem] bg-gradient-to-b from-band to-club px-5 py-16 text-white md:px-8">
         <div className="mx-auto w-full max-w-4xl">
-          <h2 className="text-center text-[32px] font-bold">{locale === "en" ? "The Chairman" : "יו״ר המועדון"}</h2>
-          <blockquote className="mt-8 text-lg leading-8">{pick(reichmanQuote, locale)}</blockquote>
-          <p className="mt-6 font-medium">{pick(chairLine, locale)}</p>
+          <h2 data-reveal-item="0" className="text-center text-[32px] font-bold">
+            {locale === "en" ? "The Chairman" : "יו״ר המועדון"}
+          </h2>
+          <blockquote data-reveal-item="1" className="mt-8 text-lg leading-8">
+            {pick(reichmanQuote, locale)}
+          </blockquote>
+          <p data-reveal-item="2" className="mt-6 font-medium">
+            {pick(chairLine, locale)}
+          </p>
         </div>
       </section>
     </>

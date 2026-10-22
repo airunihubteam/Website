@@ -7,6 +7,7 @@
   --ink: #333333;
   --muted: #272727;
   --paper: #f7f7f7;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @theme inline {
@@ -67,8 +68,113 @@ body {
   }
 }
 
+@keyframes hero-zoom {
+  from {
+    scale: 1.12;
+  }
+  to {
+    scale: 1;
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    translate: 0 36px;
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    filter: blur(0);
+  }
+}
+
+@keyframes header-drop {
+  from {
+    opacity: 0;
+    translate: 0 -14px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes reveal-item {
+  from {
+    opacity: 0;
+    translate: 0 28px;
+    filter: blur(6px);
+  }
+}
+
+/* Home page sections fade into view; see RevealController. */
+[data-reveal] {
+  transition:
+    opacity 900ms var(--ease),
+    translate 1100ms var(--ease);
+}
+
+[data-reveal].reveal-pending {
+  opacity: 0;
+  translate: 0 24px;
+}
+
+/* Inside a section, headings, text and cards then rise in one after another, in the order of
+   their data-reveal-item number. The animation fills only backwards, so once it ends the
+   element's own hover and transition styles are untouched. */
+.reveal-pending [data-reveal-item] {
+  opacity: 0;
+}
+
+[data-reveal]:not(.reveal-pending) [data-reveal-item] {
+  animation: reveal-item 900ms var(--ease) backwards;
+  animation-delay: calc(140ms + var(--reveal-i, 0) * 110ms);
+}
+
+[data-reveal-item="1"] {
+  --reveal-i: 1;
+}
+[data-reveal-item="2"] {
+  --reveal-i: 2;
+}
+[data-reveal-item="3"] {
+  --reveal-i: 3;
+}
+[data-reveal-item="4"] {
+  --reveal-i: 4;
+}
+[data-reveal-item="5"] {
+  --reveal-i: 5;
+}
+[data-reveal-item="6"] {
+  --reveal-i: 6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal-item] {
+    animation: none !important;
+  }
+}
+
+/* The heading line draws out from the middle once its section is revealed. */
 .club-underline {
+  position: relative;
   display: inline-block;
-  border-bottom: 3px solid var(--club);
-  padding-bottom: 6px;
+  padding-bottom: 9px;
+}
+
+.club-underline::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--club);
+  transition: scale 1000ms var(--ease) 550ms;
+}
+
+.reveal-pending .club-underline::after {
+  scale: 0 1;
 }

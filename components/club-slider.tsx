@@ -216,7 +216,7 @@ export function ClubSlider({ slides, labels, dir }: { slides: ClubSlide[]; label
       onKeyDown={onKeyDown}
     >
       {/* Heading stays centered; from md the "all programs" link sits on the same line at the end side. */}
-      <div className="relative mx-auto grid w-full max-w-7xl px-5 md:grid-cols-[1fr_auto_1fr] md:px-8">
+      <div data-reveal-item="0" className="relative mx-auto grid w-full max-w-7xl px-5 md:grid-cols-[1fr_auto_1fr] md:px-8">
         <span aria-hidden="true" className="hidden md:block" />
         <h2 className="text-center text-[32px] font-bold text-club">
           <span className="club-underline">{labels.title}</span>
@@ -233,7 +233,7 @@ export function ClubSlider({ slides, labels, dir }: { slides: ClubSlide[]; label
       {/* Phones and tablets stack slider, then text; from lg the text column sits beside the slider. */}
       <div className="relative mx-auto mt-4 flex w-full max-w-7xl flex-col px-5 md:px-8 lg:mt-6 lg:grid lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:items-center lg:gap-10">
         <div className="contents lg:flex lg:flex-col lg:items-start lg:gap-8">
-          <div className="order-2 grid text-center lg:order-none lg:self-stretch lg:text-start">
+          <div data-reveal-item="2" className="order-2 grid text-center lg:order-none lg:self-stretch lg:text-start">
             {slides.map((slide, index) => {
               const isActive = index === active;
               return (
@@ -276,7 +276,7 @@ export function ClubSlider({ slides, labels, dir }: { slides: ClubSlide[]; label
           </Link>
         </div>
 
-        <div className="relative order-1 lg:order-none">
+        <div data-reveal-item="1" className="relative order-1 lg:order-none">
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-x-0 top-1/2 h-[560px] -translate-y-1/2 bg-[radial-gradient(closest-side,rgba(15,45,150,0.08),transparent)]"

@@ -40,7 +40,7 @@ export function GatePanels({ items, labels, dir }: { items: GatePanel[]; labels:
 
   return (
     <section className="relative bg-white py-12 md:py-14">
-      <h2 className="px-5 text-center text-[32px] font-bold text-club">
+      <h2 data-reveal-item="0" className="px-5 text-center text-[32px] font-bold text-club">
         <span className="club-underline">{labels.title}</span>
       </h2>
 
@@ -60,6 +60,7 @@ export function GatePanels({ items, labels, dir }: { items: GatePanel[]; labels:
             <Link
               key={item.href}
               href={item.href}
+              data-reveal-item={String(index + 1)}
               data-phone-open={phoneOpen}
               data-desktop-open={desktopOpen}
               data-dimmed={dimmed}

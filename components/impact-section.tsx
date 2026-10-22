@@ -114,10 +114,13 @@ export function ImpactStats({ stats, label }: { stats: ImpactStat[]; label: stri
       <FloatingStars spots={statStars} />
 
       <div className="relative mx-auto w-full max-w-7xl px-5 md:px-8">
-        <p className="text-center text-sm font-semibold text-club/60 ltr:tracking-[0.2em] ltr:uppercase">{label}</p>
+        <p data-reveal-item="0" className="text-center text-sm font-semibold text-club/60 ltr:tracking-[0.2em] ltr:uppercase">
+          {label}
+        </p>
 
         <div
           ref={panelRef}
+          data-reveal-item="1"
           className="relative mt-3 overflow-hidden rounded-[28px] bg-gradient-to-l from-club to-[#0a1f6e] px-4 py-7 text-white shadow-[0_30px_60px_-30px_rgba(15,45,150,0.6)] md:px-6"
         >
           <span
@@ -154,7 +157,7 @@ export function JoinSection({ cards, title, dir }: { cards: JoinCard[]; title: s
       <FloatingStars spots={joinStars} />
 
       <div className="relative mx-auto w-full max-w-7xl px-5 md:px-8">
-        <h2 className="text-center text-[32px] font-bold text-club">
+        <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
           <span className="club-underline">{title}</span>
         </h2>
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -162,6 +165,7 @@ export function JoinSection({ cards, title, dir }: { cards: JoinCard[]; title: s
             <Link
               key={card.href}
               href={card.href}
+              data-reveal-item={String(index + 1)}
               onPointerMove={spotlight}
               className={`group relative isolate flex min-h-[300px] flex-col overflow-hidden rounded-[24px] border p-6 transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 ${
                 card.featured
