@@ -163,7 +163,7 @@ export function JoinSection({ cards, title, dir }: { cards: JoinCard[]; title: s
         <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
           <span className="club-underline">{title}</span>
         </h2>
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
           {cards.map((card, index) => (
             <Link
               key={card.href}
@@ -171,7 +171,7 @@ export function JoinSection({ cards, title, dir }: { cards: JoinCard[]; title: s
               data-press
               data-reveal-item={String(index + 1)}
               onPointerMove={spotlight}
-              className={`group relative isolate flex min-h-[250px] flex-col overflow-hidden rounded-[24px] border p-6 sm:min-h-[320px] lg:min-h-[390px] xl:min-h-[350px] transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 ${
+              className={`group relative isolate flex min-h-[190px] flex-col overflow-hidden rounded-[24px] border p-5 sm:min-h-[320px] sm:p-6 lg:min-h-[390px] xl:min-h-[350px] transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 ${
                 card.featured
                   ? "border-club bg-club text-white shadow-[0_24px_50px_-28px_rgba(15,45,150,0.7)]"
                   : "border-[#e6e9f5] bg-white text-club hover:border-club/30 hover:shadow-[0_24px_50px_-28px_rgba(15,45,150,0.45)]"
@@ -186,9 +186,9 @@ export function JoinSection({ cards, title, dir }: { cards: JoinCard[]; title: s
                 }}
               />
               <JoinIcon name={card.icon} featured={card.featured} />
-              <span className="text-xl font-bold">{card.title}</span>
-              <span className={`mt-2 line-clamp-4 text-justify text-[15px] leading-6 ${card.featured ? "text-white/80" : "text-ink/80"}`}>{card.summary}</span>
-              <span className="mt-auto block pt-5">
+              <span className="text-lg font-bold sm:text-xl">{card.title}</span>
+              <span className={`mt-1.5 line-clamp-3 text-justify text-sm leading-6 sm:mt-2 sm:line-clamp-4 sm:text-[15px] ${card.featured ? "text-white/80" : "text-ink/80"}`}>{card.summary}</span>
+              <span className="mt-auto block pt-4 sm:pt-5">
                 <span
                   className={`inline-flex items-center gap-2 border px-4 py-2 text-sm font-semibold transition-colors duration-300 ${
                     card.featured ? "border-white hover:bg-white hover:text-club" : "border-club hover:bg-club hover:text-white"
@@ -235,7 +235,7 @@ function JoinIcon({ name, featured }: { name: JoinIconName; featured?: boolean }
     <svg
       viewBox="-4 -4 32 32"
       aria-hidden="true"
-      className={`pointer-events-none absolute bottom-4 -z-10 h-24 w-24 transition-opacity duration-500 sm:h-36 sm:w-36 lg:bottom-[76px] lg:h-24 lg:w-24 xl:bottom-4 xl:h-36 xl:w-36 ${
+      className={`pointer-events-none absolute bottom-3 -z-10 h-16 w-16 transition-opacity duration-500 sm:bottom-4 sm:h-36 sm:w-36 lg:bottom-[76px] lg:h-24 lg:w-24 xl:bottom-4 xl:h-36 xl:w-36 ${
         // The rocket sits beside the widest button, so it moves further into the corner;
         // the box may overhang the edge, but the drawing itself stays inside the card.
         featured ? "-end-3 text-white opacity-30 group-hover:opacity-80" : "end-4 text-club opacity-20 group-hover:opacity-60"
