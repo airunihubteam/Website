@@ -170,7 +170,7 @@ export function JoinSection({ cards, title, dir }: { cards: JoinCard[]; title: s
               href={card.href}
               data-reveal-item={String(index + 1)}
               onPointerMove={spotlight}
-              className={`group relative isolate flex min-h-[320px] flex-col overflow-hidden rounded-[24px] border p-6 lg:min-h-[390px] xl:min-h-[350px] transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 ${
+              className={`group relative isolate flex min-h-[250px] flex-col overflow-hidden rounded-[24px] border p-6 sm:min-h-[320px] lg:min-h-[390px] xl:min-h-[350px] transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 ${
                 card.featured
                   ? "border-club bg-club text-white shadow-[0_24px_50px_-28px_rgba(15,45,150,0.7)]"
                   : "border-[#e6e9f5] bg-white text-club hover:border-club/30 hover:shadow-[0_24px_50px_-28px_rgba(15,45,150,0.45)]"
@@ -234,7 +234,7 @@ function JoinIcon({ name, featured }: { name: JoinIconName; featured?: boolean }
     <svg
       viewBox="-4 -4 32 32"
       aria-hidden="true"
-      className={`pointer-events-none absolute bottom-4 -z-10 h-36 w-36 transition-opacity duration-500 lg:bottom-[76px] lg:h-24 lg:w-24 xl:bottom-4 xl:h-36 xl:w-36 ${
+      className={`pointer-events-none absolute bottom-4 -z-10 h-24 w-24 transition-opacity duration-500 sm:h-36 sm:w-36 lg:bottom-[76px] lg:h-24 lg:w-24 xl:bottom-4 xl:h-36 xl:w-36 ${
         // The rocket sits beside the widest button, so it moves further into the corner;
         // the box may overhang the edge, but the drawing itself stays inside the card.
         featured ? "-end-3 text-white opacity-30 group-hover:opacity-80" : "end-4 text-club opacity-20 group-hover:opacity-60"
