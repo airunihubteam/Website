@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Chevron } from "@/components/icons";
 
 export type TeamMember = {
@@ -21,11 +21,6 @@ export type TeamLabels = {
   title: string;
   all: string;
   profile: string;
-  close: string;
-  previous: string;
-  next: string;
-  linkedin: string;
-  of: string;
 };
 
 const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
@@ -42,7 +37,7 @@ function initials(name: string) {
 
 // The portraits are already small WebP files (public/media/team), so they are served as they are:
 // one file per person, fetched with the page at low priority so each photo is there when its card
-// appears, and reused straight from the cache by the profile panel.
+// appears.
 function Portrait({ member, className = "", fetchPriority }: { member: TeamMember; className?: string; fetchPriority?: "low" | "high" }) {
   if (!member.photo) {
     return (
@@ -65,9 +60,110 @@ function Portrait({ member, className = "", fetchPriority }: { member: TeamMembe
   );
 }
 
-// Portrait cards for a team. With groups, tabs above the grid filter it and a pill slides to the
-// chosen tab; any card opens a profile panel with the bio and LinkedIn link, and the panel can
-// step through the people currently shown.
+// One portrait card, after the old site's team cards: the front shows the photo with the name and
+// role; the back fades in over the same photo in the club's blue with the bio and LinkedIn link.
+// Hover or keyboard focus shows the back on desktop; on phones a tap shows it and another hides it.
+function TeamCard({
+  member,
+  groupText,
+  labels,
+  dir,
+  open,
+  onToggle,
+  infoId,
+}: {
+  member: TeamMember;
+  groupText?: string;
+  labels: TeamLabels;
+  dir: "rtl" | "ltr";
+  open: boolean;
+  onToggle: () => void;
+  infoId: string;
+}) {
+  // The back's lines rise in one after another as it fades in.
+  const rise = (step: number, transitions = "") =>
+    `translate-y-2 opacity-0 transition-[translate,opacity${transitions}] duration-500 group-hover:translate-y-0 group-hover:opacity-100 group-has-focus-visible:translate-y-0 group-has-focus-visible:opacity-100 group-data-open:translate-y-0 group-data-open:opacity-100 ${
+      ["delay-75", "delay-150", "delay-200", "delay-300"][step]
+    }`;
+
+  return (
+    <div
+      data-open={open ? "" : undefined}
+      className="group relative aspect-[3/4] w-full overflow-hidden rounded-[22px] bg-club shadow-[0_18px_40px_-28px_rgba(15,45,150,0.7)] transition-[translate,box-shadow] duration-500 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_rgba(15,45,150,0.8)]"
+      style={{ transitionTimingFunction: EASE }}
+    >
+      <Portrait
+        member={member}
+        fetchPriority="low"
+        className="transition-[scale] duration-[1200ms] group-hover:scale-[1.08] group-has-focus-visible:scale-[1.08] group-data-open:scale-[1.08]"
+      />
+      <span aria-hidden="true" className="absolute inset-0 bg-club/20" />
+      <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-[#061347]/95 via-[#061347]/45 to-transparent" />
+      <span
+        aria-hidden="true"
+        className="absolute end-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm"
+      >
+        <svg viewBox="0 0 20 20" width="14" height="14">
+          <path d="M10 4v12M4 10h12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      </span>
+      <span className="absolute inset-x-0 bottom-0 block p-3 text-white sm:p-4">
+        {groupText ? (
+          <span className="mb-1.5 inline-block bg-white/15 px-2 py-0.5 text-[11px] font-semibold text-white/90 backdrop-blur-sm">{groupText}</span>
+        ) : null}
+        <span className="block text-base leading-tight font-bold sm:text-lg">{member.name}</span>
+        {member.role ? <span className="mt-0.5 block text-xs leading-snug text-white/80 sm:text-sm">{member.role}</span> : null}
+      </span>
+
+      {/* The whole front is one button: it opens the back for touch and keyboard users. */}
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={infoId}
+        aria-label={`${member.name}${member.role ? `, ${member.role}` : ""}: ${labels.profile}`}
+        onClick={onToggle}
+        className="absolute inset-0 z-10 rounded-[22px]"
+      />
+
+      <div
+        id={infoId}
+        onClick={(event) => {
+          if (open && !(event.target as Element).closest("a")) onToggle();
+        }}
+        className="invisible absolute inset-0 z-20 flex flex-col bg-club/85 p-3 text-white opacity-0 transition-[opacity,visibility] duration-500 group-hover:visible group-hover:opacity-100 group-has-focus-visible:visible group-has-focus-visible:opacity-100 group-data-open:visible group-data-open:opacity-100 sm:p-4"
+        style={{ transitionTimingFunction: EASE }}
+      >
+        <p className={`text-sm leading-tight font-bold sm:text-base ${rise(0)}`}>{member.name}</p>
+        <span aria-hidden="true" className={`mt-2 block h-[2px] w-8 bg-white/70 ${rise(1)}`} />
+        {member.bio ? (
+          // Long bios scroll inside the card; the scroll area reaches into the padding so its
+          // scrollbar keeps clear of the text.
+          <p
+            className={`-me-3 mt-2 min-h-0 flex-1 overflow-y-auto pe-3 text-justify text-xs leading-5 text-white/95 [scrollbar-color:rgba(255,255,255,0.45)_transparent] [scrollbar-width:thin] sm:-me-4 sm:pe-4 sm:text-[13px] ${rise(2)}`}
+          >
+            {member.bio}
+          </p>
+        ) : (
+          <span className="flex-1" />
+        )}
+        {member.linkedin ? (
+          <a
+            href={member.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`group/link mt-3 inline-flex items-center gap-1.5 self-start border border-white/80 px-3 py-1.5 text-xs font-semibold hover:bg-white hover:text-club ${rise(3, ",background-color,color")}`}
+          >
+            LinkedIn
+            <Chevron dir={dir} className="transition-transform duration-500 group-hover/link:translate-x-1 rtl:group-hover/link:-translate-x-1" />
+          </a>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+// Portrait cards for a team. With groups, tabs above the grid filter it and a bar slides to the
+// chosen tab. Each card shows its person's bio on hover (or on tap on phones; one at a time).
 export function TeamSection({
   members,
   groups = [],
@@ -83,23 +179,13 @@ export function TeamSection({
 }) {
   const [filter, setFilter] = useState("all");
   const [filtered, setFiltered] = useState(false);
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-  // Which way the profile content slides in when stepping: negative from the left, 0 rises up.
-  const [swapX, setSwapX] = useState(0);
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const uid = useId();
   const tabsRef = useRef<HTMLDivElement>(null);
   const pillRef = useRef<HTMLSpanElement>(null);
 
   const visible = filter === "all" ? members : members.filter((member) => member.group === filter);
-  const current = openIndex === null ? null : visible[openIndex];
   const groupLabel = (key?: string) => groups.find((group) => group.key === key)?.label;
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    if (openIndex !== null && !dialog.open) dialog.showModal();
-    if (openIndex === null && dialog.open) dialog.close();
-  }, [openIndex]);
 
   // The pill follows the active tab; it is placed directly so it can glide between tabs. Where
   // the tabs scroll sideways (phones), the chosen tab also glides to the middle.
@@ -122,42 +208,6 @@ export function TeamSection({
     observer.observe(tabs);
     return () => observer.disconnect();
   }, [filter, filtered]);
-
-  const openProfile = (index: number) => {
-    setSwapX(0);
-    setOpenIndex(index);
-  };
-
-  // The panel plays a short exit (see .team-dialog[data-closing]) before it really closes.
-  const closeProfile = () => {
-    const dialog = dialogRef.current;
-    if (!dialog?.open || dialog.dataset.closing !== undefined) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setOpenIndex(null);
-      return;
-    }
-    dialog.dataset.closing = "";
-    window.setTimeout(() => {
-      dialog.close();
-      delete dialog.dataset.closing;
-      setOpenIndex(null);
-    }, 220);
-  };
-
-  const step = (delta: number) => {
-    if (openIndex === null) return;
-    setSwapX(delta * (dir === "rtl" ? -1 : 1) * 32);
-    setOpenIndex((openIndex + delta + visible.length) % visible.length);
-  };
-
-  const onDialogKey = (event: KeyboardEvent<HTMLDialogElement>) => {
-    const forward = dir === "rtl" ? "ArrowLeft" : "ArrowRight";
-    const back = dir === "rtl" ? "ArrowRight" : "ArrowLeft";
-    if (event.key === forward) step(1);
-    else if (event.key === back) step(-1);
-    else return;
-    event.preventDefault();
-  };
 
   return (
     <>
@@ -185,6 +235,7 @@ export function TeamSection({
                   onClick={() => {
                     setFilter(group.key);
                     setFiltered(true);
+                    setOpenId(null);
                   }}
                   className={`relative z-10 shrink-0 px-4 py-2 text-sm font-semibold whitespace-nowrap transition-colors duration-300 ${
                     active ? "text-white" : "text-club/70 hover:text-club"
@@ -201,157 +252,29 @@ export function TeamSection({
       {/* The outer box takes part in the section's reveal; the inner grid is rebuilt per filter
           so its cards can rise in again. */}
       <div data-reveal-item={groups.length > 0 ? "2" : "1"} className="mt-6 md:mt-10">
-      <div
-        key={filter}
-        className={`grid gap-3 sm:gap-5 ${variant === "pair" ? "mx-auto max-w-2xl grid-cols-2" : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"}`}
-      >
-        {visible.map((member, index) => (
-          <button
-            key={member.id}
-            type="button"
-            aria-haspopup="dialog"
-            aria-label={`${member.name}${member.role ? `, ${member.role}` : ""}: ${labels.profile}`}
-            onClick={() => openProfile(index)}
-            className={`group relative block aspect-[3/4] w-full overflow-hidden rounded-[22px] bg-club text-start shadow-[0_18px_40px_-28px_rgba(15,45,150,0.7)] transition-[translate,box-shadow] duration-500 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_rgba(15,45,150,0.8)] ${
-              filtered ? "motion-safe:animate-[team-in_700ms_var(--ease)_backwards]" : ""
-            }`}
-            style={{ transitionTimingFunction: EASE, animationDelay: `${index * 55}ms` }}
-          >
-            <Portrait
-              member={member}
-              fetchPriority="low"
-              className="transition-[scale] duration-[1200ms] group-hover:scale-[1.06]"
-            />
-            <span aria-hidden="true" className="absolute inset-0 bg-club/20 transition-opacity duration-500 group-hover:opacity-0" />
-            <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-[#061347]/95 via-[#061347]/45 to-transparent" />
-            <span
-              aria-hidden="true"
-              className="absolute end-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-[rotate,background-color] duration-500 group-hover:rotate-90 group-hover:bg-white/35"
-            >
-              <svg viewBox="0 0 20 20" width="14" height="14">
-                <path d="M10 4v12M4 10h12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-            </span>
-            <span className="absolute inset-x-0 bottom-0 block p-3 text-white sm:p-4">
-              {groupLabel(member.group) && filter === "all" ? (
-                <span className="mb-1.5 inline-block bg-white/15 px-2 py-0.5 text-[11px] font-semibold text-white/90 backdrop-blur-sm">
-                  {groupLabel(member.group)}
-                </span>
-              ) : null}
-              <span className="block text-base leading-tight font-bold sm:text-lg">{member.name}</span>
-              {member.role ? <span className="mt-0.5 block text-xs leading-snug text-white/80 sm:text-sm">{member.role}</span> : null}
-              <span className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 group-hover:grid-rows-[1fr]" style={{ transitionTimingFunction: EASE }}>
-                <span className="block overflow-hidden">
-                  <span className="group/profile mt-3 inline-flex items-center gap-2 border border-white/70 px-3 py-1.5 text-xs font-semibold transition-colors duration-300 hover:border-club hover:bg-club">
-                    {labels.profile}
-                    <Chevron dir={dir} className="transition-transform duration-500 group-hover/profile:translate-x-1 rtl:group-hover/profile:-translate-x-1" />
-                  </span>
-                </span>
-              </span>
-            </span>
-          </button>
-        ))}
-      </div>
-      </div>
-
-      <dialog
-        ref={dialogRef}
-        aria-labelledby="team-profile-name"
-        onClose={(event) => {
-          delete event.currentTarget.dataset.closing;
-          setOpenIndex(null);
-        }}
-        onCancel={(event) => {
-          event.preventDefault();
-          closeProfile();
-        }}
-        onKeyDown={onDialogKey}
-        onClick={(event) => {
-          if (event.target === event.currentTarget) closeProfile();
-        }}
-        className="team-dialog m-auto w-[min(940px,calc(100%-1.5rem))] max-w-none overflow-hidden rounded-[28px] bg-white p-0 text-ink shadow-[0_40px_120px_-40px_rgba(6,19,71,0.8)]"
-      >
-        {current ? (
-          // Rebuilt per person, so the photo and each line of text play in again on every step.
-          <div key={current.id} className="grid md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]" style={{ "--swap-x": `${swapX}px` } as CSSProperties}>
-            <div className="relative aspect-[16/11] overflow-hidden bg-club md:aspect-auto md:min-h-[480px]">
-              <Portrait member={current} fetchPriority="high" className="profile-photo" />
-              <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[#061347]/40 to-transparent md:hidden" />
-            </div>
-            <div className="flex max-h-[55dvh] flex-col p-6 md:max-h-[80dvh] md:p-9">
-              {/* The scroll area reaches into the panel's padding, so its scrollbar stays clear of the text. */}
-              <div className="-me-4 min-h-0 overflow-y-auto pe-4">
-                {groupLabel(current.group) ? (
-                  <p className="profile-item text-sm font-semibold text-club/60" style={{ "--i": 0 } as CSSProperties}>
-                    {groupLabel(current.group)}
-                  </p>
-                ) : null}
-                <h3 id="team-profile-name" className="profile-item mt-1 text-2xl font-bold text-club md:text-3xl" style={{ "--i": 1 } as CSSProperties}>
-                  {current.name}
-                </h3>
-                {current.role ? (
-                  <p className="profile-item mt-1 text-base font-medium text-ink/80" style={{ "--i": 2 } as CSSProperties}>
-                    {current.role}
-                  </p>
-                ) : null}
-                <span aria-hidden="true" className="profile-line mt-4 block h-[3px] w-12 bg-club ltr:origin-left rtl:origin-right" />
-                {current.bio ? (
-                  <p className="profile-item mt-5 text-justify text-[15px] leading-8 text-ink/85" style={{ "--i": 3 } as CSSProperties}>
-                    {current.bio}
-                  </p>
-                ) : null}
-              </div>
-              <div
-                className="profile-item mt-6 flex flex-col items-center gap-4 border-t border-[#e9ecf6] pt-5 md:flex-row md:flex-wrap md:justify-between"
-                style={{ "--i": 4 } as CSSProperties}
-              >
-                {current.linkedin ? (
-                  <a
-                    href={current.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group/link inline-flex items-center gap-2 border border-club px-4 py-2 text-sm font-semibold text-club transition-colors duration-300 hover:bg-club hover:text-white"
-                  >
-                    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-                      <path
-                        fill="currentColor"
-                        d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"
-                      />
-                    </svg>
-                    {labels.linkedin}
-                    <Chevron dir={dir} className="transition-transform duration-500 group-hover/link:translate-x-1 rtl:group-hover/link:-translate-x-1" />
-                  </a>
-                ) : (
-                  <span className="hidden md:block" />
-                )}
-                {visible.length > 1 ? (
-                  <div className="flex items-center gap-3">
-                    <button type="button" onClick={() => step(-1)} aria-label={labels.previous} className="flex h-10 w-10 items-center justify-center border border-club/20 text-club transition-colors duration-300 hover:bg-club hover:text-white">
-                      <Chevron dir={dir === "rtl" ? "ltr" : "rtl"} />
-                    </button>
-                    <span className="text-sm text-ink/60 tabular-nums" dir="ltr">
-                      {(openIndex ?? 0) + 1} / {visible.length}
-                    </span>
-                    <button type="button" onClick={() => step(1)} aria-label={labels.next} className="flex h-10 w-10 items-center justify-center border border-club/20 text-club transition-colors duration-300 hover:bg-club hover:text-white">
-                      <Chevron dir={dir} />
-                    </button>
-                  </div>
-                ) : null}
-              </div>
-            </div>
-          </div>
-        ) : null}
-        <button
-          type="button"
-          onClick={closeProfile}
-          aria-label={labels.close}
-          className="profile-close absolute end-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-club text-white shadow-md transition-[rotate,background-color] duration-300 hover:rotate-90 hover:bg-[#0a1f6e]"
+        <div
+          key={filter}
+          className={`grid gap-3 sm:gap-5 ${variant === "pair" ? "mx-auto max-w-2xl grid-cols-2" : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"}`}
         >
-          <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
-            <path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-          </svg>
-        </button>
-      </dialog>
+          {visible.map((member, index) => (
+            <div
+              key={member.id}
+              className={filtered ? "motion-safe:animate-[team-in_700ms_var(--ease)_backwards]" : undefined}
+              style={{ animationDelay: `${index * 55}ms` }}
+            >
+              <TeamCard
+                member={member}
+                groupText={filter === "all" ? groupLabel(member.group) : undefined}
+                labels={labels}
+                dir={dir}
+                open={openId === member.id}
+                onToggle={() => setOpenId((current) => (current === member.id ? null : member.id))}
+                infoId={`${uid}-${member.id}`}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
     </>
   );
 }

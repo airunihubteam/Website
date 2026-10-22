@@ -330,8 +330,8 @@ function teamMember(person: Person, locale: Locale, group?: string): TeamMember 
 }
 
 const teamLabels: Record<Locale, TeamLabels> = {
-  he: { title: "צוות הניהול", all: "כולם", profile: "לפרופיל המלא", close: "סגירה", previous: "הקודם", next: "הבא", linkedin: "לפרופיל בלינקדאין", of: "מתוך" },
-  en: { title: "The Management Team", all: "All", profile: "Full profile", close: "Close", previous: "Previous", next: "Next", linkedin: "LinkedIn profile", of: "of" },
+  he: { title: "צוות הניהול", all: "כולם", profile: "פרטים נוספים" },
+  en: { title: "The Management Team", all: "All", profile: "More details" },
 };
 
 const aboutSections: Record<Locale, RailSection[]> = {
