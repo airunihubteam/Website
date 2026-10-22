@@ -76,24 +76,39 @@ export function Header({ locale }: { locale: Locale }) {
       style={{ transitionTimingFunction: "var(--ease)" }}
     >
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-8">
-        <Link href={home} className={`flex items-center gap-2 ${dropIn}`} style={dropDelay(0)}>
-          <Image src="/brand/wp/logo.png" alt="" width={40} height={50} className="h-11 w-auto" style={{ width: "auto" }} />
-          <span className="hidden text-sm leading-tight font-medium sm:block">
-            {locale === "en" ? (
-              <>
-                Entrepreneurship Club
-                <br />
-                Reichman University
-              </>
-            ) : (
-              <>
-                מועדון היזמות
-                <br />
-                אוניברסיטת רייכמן
-              </>
-            )}
+        {/* On phones both logos sit together and the menu button takes the other side. */}
+        <div className="flex items-center gap-3">
+          <Link href={home} className={`flex items-center gap-2 ${dropIn}`} style={dropDelay(0)}>
+            <Image src="/brand/wp/logo.png" alt="" width={40} height={50} className="h-11 w-auto" style={{ width: "auto" }} />
+            <span className="hidden text-sm leading-tight font-medium sm:block">
+              {locale === "en" ? (
+                <>
+                  Entrepreneurship Club
+                  <br />
+                  Reichman University
+                </>
+              ) : (
+                <>
+                  מועדון היזמות
+                  <br />
+                  אוניברסיטת רייכמן
+                </>
+              )}
+            </span>
+          </Link>
+          <span aria-hidden="true" className="h-8 w-px bg-white/30 md:hidden" />
+          {/* The university mark without the Adelson School lines: the image is cropped to its
+              stars and name, which sit on the right of the Hebrew file and the left of the English one. */}
+          <span className="relative block aspect-[8/5] h-10 overflow-hidden md:hidden">
+            <Image
+              src={locale === "en" ? "/brand/reichman-en-white.png" : "/brand/reichman-he-white.png"}
+              alt={locale === "en" ? "Reichman University" : "אוניברסיטת רייכמן"}
+              fill
+              sizes="64px"
+              className={`object-cover ${locale === "en" ? "object-left" : "object-right"}`}
+            />
           </span>
-        </Link>
+        </div>
         <nav
           id="site-nav"
           aria-label={locale === "en" ? "Primary" : "ראשי"}
@@ -157,7 +172,7 @@ export function Header({ locale }: { locale: Locale }) {
             </span>
             {open ? (locale === "en" ? "Close" : "סגירה") : locale === "en" ? "Menu" : "תפריט"}
           </button>
-          <Image src={reichman} alt={locale === "en" ? "Reichman University" : "אוניברסיטת רייכמן, בית ספר אדלסון ליזמות"} width={150} height={48} className="h-10 w-auto md:h-12" style={{ width: "auto" }} />
+          <Image src={reichman} alt={locale === "en" ? "Reichman University" : "אוניברסיטת רייכמן, בית ספר אדלסון ליזמות"} width={150} height={48} className="hidden h-12 w-auto md:block" style={{ width: "auto" }} />
         </div>
       </div>
       <span ref={progressRef} aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] bg-white/70 ltr:origin-left rtl:origin-right" style={{ scale: "0 1" }} />
