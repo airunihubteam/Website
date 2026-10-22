@@ -437,35 +437,35 @@ export function AboutPage({ locale }: { locale: Locale }) {
       <RevealController />
       <SectionRail sections={aboutSections[locale]} label={locale === "en" ? "Page sections" : "ניווט בין חלקי העמוד"} />
 
-      <section id="about-top" className="relative -mt-[4.5rem] flex min-h-[64vh] items-end overflow-hidden">
+      <section id="about-top" className="relative -mt-[4.5rem] flex min-h-[46vh] items-end overflow-hidden md:min-h-[64vh]">
         <Image src="/media/building.jpg" alt="" fill priority sizes="100vw" className="object-cover motion-safe:animate-[hero-zoom_3.2s_var(--ease)_both]" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#061347]/90 via-club/60 to-club/35" />
-        <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pt-40 pb-16 text-center md:px-8 md:pb-20">
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pt-28 pb-10 text-center md:px-8 md:pt-40 md:pb-20">
           <p className="text-sm font-semibold text-white/75 motion-safe:animate-[hero-rise_1s_var(--ease)_100ms_both]">
             {locale === "en" ? "Entrepreneurship Club · Reichman University" : "מועדון היזמות · אוניברסיטת רייכמן"}
           </p>
           <h1 className="mt-4 text-5xl font-bold text-white motion-safe:animate-[hero-rise_1.2s_var(--ease)_220ms_both] md:text-7xl">
             <span className="club-underline on-dark">{locale === "en" ? "About" : "אודות"}</span>
           </h1>
-          <p className="mx-auto mt-7 max-w-2xl text-lg text-white/90 motion-safe:animate-[hero-rise_1.1s_var(--ease)_420ms_both] md:text-2xl">
+          <p className="mx-auto mt-5 max-w-2xl text-base text-white/90 md:mt-7 motion-safe:animate-[hero-rise_1.1s_var(--ease)_420ms_both] md:text-2xl md:leading-snug">
             {pick(aboutParagraphs[6], locale)}
           </p>
         </div>
       </section>
 
-      <section id="story" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 pt-16 pb-8 md:px-8 md:pt-24 md:pb-10">
-        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
+      <section id="story" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 pt-10 pb-6 md:px-8 md:pt-24 md:pb-10">
+        <div className="grid items-center gap-9 md:gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
           <div>
             <p data-reveal-item="0" className="text-sm font-semibold text-club/60 ltr:tracking-[0.2em] ltr:uppercase">
               {locale === "en" ? "Our Story" : "הסיפור שלנו"}
             </p>
-            <p data-reveal-item="1" className="mt-3 text-justify text-2xl leading-[1.5] font-bold text-club md:text-[28px]">
+            <p data-reveal-item="1" className="mt-3 text-justify text-xl leading-[1.55] font-bold text-club md:text-[28px] md:leading-[1.5]">
               {pick(aboutParagraphs[0], locale)}
             </p>
-            <p data-reveal-item="2" className="mt-6 text-justify text-base leading-8 text-ink md:text-lg">
+            <p data-reveal-item="2" className="mt-4 text-justify text-base leading-7 text-ink md:mt-6 md:text-lg md:leading-8">
               {pick(aboutParagraphs[5], locale)}
             </p>
-            <p data-reveal-item="3" className="mt-4 text-justify text-base leading-8 text-ink md:text-lg">
+            <p data-reveal-item="3" className="mt-3 text-justify text-base leading-7 text-ink md:mt-4 md:text-lg md:leading-8">
               {pick(aboutParagraphs[1], locale)}
             </p>
             <div data-reveal-item="4" className="mt-6 flex flex-wrap gap-2">
@@ -485,7 +485,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
           <div data-reveal-item="2" className="relative mx-auto w-full max-w-md lg:max-w-none">
             <span aria-hidden="true" className="absolute -end-4 -bottom-4 h-full w-full rounded-[28px] border-2 border-club/15" />
             <span aria-hidden="true" className="absolute -start-5 -top-5 h-24 w-24 rounded-[22px] bg-club/10" />
-            <div className="group relative aspect-[5/4] overflow-hidden rounded-[28px] shadow-[0_30px_60px_-30px_rgba(15,45,150,0.6)]">
+            <div className="group relative aspect-[16/10] overflow-hidden md:aspect-[5/4] rounded-[28px] shadow-[0_30px_60px_-30px_rgba(15,45,150,0.6)]">
               <Image
                 src="/media/wp/about-team.jpg"
                 alt={locale === "en" ? "Club students" : "סטודנטים במועדון היזמות"}
@@ -497,12 +497,12 @@ export function AboutPage({ locale }: { locale: Locale }) {
           </div>
         </div>
 
-        <div className="mt-16 grid gap-5 md:mt-20 md:grid-cols-3">
+        <div className="-mx-5 mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] md:mx-0 md:mt-20 md:grid md:grid-cols-3 md:gap-5 md:overflow-visible md:px-0 md:pb-0">
           {aboutPillars.map((pillar, index) => (
             <article
               key={pillar.title.he}
               data-reveal-item={String(index + 4)}
-              className="group relative isolate overflow-hidden rounded-[24px] border border-[#e6e9f5] bg-white p-7 transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-club/30 hover:shadow-[0_24px_50px_-28px_rgba(15,45,150,0.45)]"
+              className="group relative isolate w-[84%] shrink-0 snap-center overflow-hidden rounded-[24px] border border-[#e6e9f5] bg-white p-6 md:w-auto md:p-7 transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-club/30 hover:shadow-[0_24px_50px_-28px_rgba(15,45,150,0.45)]"
             >
               <PillarIcon name={pillar.icon} />
               <h3 className="relative flex min-h-24 items-center pe-24 text-2xl font-bold text-club">{pick(pillar.title, locale)}</h3>
@@ -516,7 +516,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
         <ImpactStats stats={impactStats(locale)} label={impactLabels[locale].stats} />
       </div>
 
-      <section id="team" data-reveal className="scroll-mt-[4.5rem] bg-gradient-to-b from-white via-[#f5f7fd] to-white pt-12 pb-16 md:pt-16 md:pb-24">
+      <section id="team" data-reveal className="scroll-mt-[4.5rem] bg-gradient-to-b from-white via-[#f5f7fd] to-white pt-10 pb-10 md:pt-16 md:pb-24">
         <div className="mx-auto w-full max-w-7xl px-5 md:px-8">
           <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
             <span className="club-underline">{teamLabels[locale].title}</span>
@@ -525,7 +525,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
         </div>
       </section>
 
-      <section id="advisory" data-reveal className="scroll-mt-[4.5rem] py-16 md:py-20">
+      <section id="advisory" data-reveal className="scroll-mt-[4.5rem] py-10 md:py-20">
         <div className="mx-auto w-full max-w-7xl px-5 md:px-8">
           <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
             <span className="club-underline">{locale === "en" ? "Advisory Committee & Academic Support" : "ועדה מייעצת וליווי אקדמי"}</span>
@@ -534,11 +534,11 @@ export function AboutPage({ locale }: { locale: Locale }) {
         </div>
       </section>
 
-      <section id="partners" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 pt-4 pb-20 md:px-8">
+      <section id="partners" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 pt-2 pb-14 md:px-8 md:pt-4 md:pb-20">
         <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
           <span className="club-underline">{locale === "en" ? "Academic Partners" : "שותפים אקדמיים"}</span>
         </h2>
-        <div className="mt-10 grid gap-4 sm:grid-cols-3">
+        <div className="mt-8 grid gap-2 sm:mt-10 sm:grid-cols-3 sm:gap-4">
           {academicPartners.map((partner, index) => (
             <a
               key={partner.he}
@@ -546,14 +546,14 @@ export function AboutPage({ locale }: { locale: Locale }) {
               target="_blank"
               rel="noopener noreferrer"
               data-reveal-item={String(index + 1)}
-              className="group flex h-32 items-center justify-center rounded-[22px] border border-[#e6e9f5] bg-white px-6 transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-club/30 hover:shadow-[0_24px_50px_-28px_rgba(15,45,150,0.45)]"
+              className="group flex h-20 items-center justify-center rounded-[22px] border border-[#e6e9f5] bg-white px-5 sm:h-32 sm:px-6 transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-club/30 hover:shadow-[0_24px_50px_-28px_rgba(15,45,150,0.45)]"
             >
               <Image
                 src={locale === "en" ? partner.en : partner.he}
                 alt={pick(partner.name, locale) ?? partner.name.he}
                 width={partner.width}
                 height={partner.height}
-                className="h-auto max-h-16 w-auto max-w-full opacity-75 grayscale transition-[filter,opacity] duration-500 group-hover:opacity-100 group-hover:grayscale-0"
+                className="h-auto max-h-12 w-auto max-w-full sm:max-h-16 opacity-75 grayscale transition-[filter,opacity] duration-500 group-hover:opacity-100 group-hover:grayscale-0"
               />
             </a>
           ))}
