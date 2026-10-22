@@ -252,7 +252,7 @@ export function ClubSlider({ slides, labels, dir }: { slides: ClubSlide[]; label
                   <p className="text-center text-sm font-semibold text-club/60 ltr:text-xs ltr:tracking-[0.24em] ltr:uppercase">{slide.kind}</p>
                   <h3 className="mt-1 text-center text-2xl font-bold text-club lg:mt-2 lg:text-4xl">{slide.name}</h3>
                   {slide.summary ? (
-                    <p className="mx-auto mt-2 line-clamp-2 max-w-xl text-justify text-base leading-7 text-ink [text-align-last:center] lg:mx-0 lg:mt-4 lg:line-clamp-4 lg:text-lg lg:leading-8 lg:[text-align-last:auto]">
+                    <p className="mx-auto mt-2 max-w-xl text-justify text-base leading-7 text-ink [text-align-last:center] lg:mx-0 lg:mt-4 lg:line-clamp-4 lg:text-lg lg:leading-8 lg:[text-align-last:auto]">
                       {slide.summary}
                     </p>
                   ) : null}
