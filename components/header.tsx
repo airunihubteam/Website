@@ -29,6 +29,10 @@ export function Header({ locale }: { locale: Locale }) {
   const home = withLocale("/", locale);
   const isHome = pathname === home;
   const reichman = locale === "en" ? "/brand/reichman-en-white.png" : "/brand/wp/logo.webp";
+  // The university mark leads to the university's own site, in a new tab; the club logo leads home.
+  const universityHref = locale === "en" ? "https://www.runi.ac.il/en/" : "https://www.runi.ac.il/";
+  const universityLabel =
+    locale === "en" ? "Reichman University website (opens in a new tab)" : "אתר אוניברסיטת רייכמן (נפתח בכרטיסייה חדשה)";
 
   // Solid once the page moves, tucked away while scrolling down, back on the way up,
   // with a reading-progress line along its bottom edge.
@@ -80,7 +84,12 @@ export function Header({ locale }: { locale: Locale }) {
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-8">
         {/* On phones both logos sit together and the menu button takes the other side. */}
         <div className="flex items-center gap-3">
-          <Link href={home} className={`flex items-center gap-2 ${dropIn}`} style={dropDelay(0)}>
+          <Link
+            href={home}
+            aria-label={locale === "en" ? "Entrepreneurship Club, home page" : "מועדון היזמות, דף הבית"}
+            className={`flex items-center gap-2 ${dropIn}`}
+            style={dropDelay(0)}
+          >
             <Image src="/brand/wp/logo.png" alt="" width={40} height={50} className="h-11 w-auto" style={{ width: "auto" }} />
             <span className="hidden text-sm leading-tight font-medium sm:block">
               {locale === "en" ? (
@@ -101,17 +110,23 @@ export function Header({ locale }: { locale: Locale }) {
           <span aria-hidden="true" className="h-8 w-px bg-white/30 md:hidden" />
           {/* The university mark without the Adelson School lines: the image is cropped to its
               stars and name, which sit on the right of the Hebrew file and the left of the English one. */}
-          <span className="relative block aspect-[8/5] h-10 overflow-hidden md:hidden">
+          <a
+            href={universityHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={universityLabel}
+            className="relative block aspect-[8/5] h-10 overflow-hidden md:hidden"
+          >
             <Image
               src={locale === "en" ? "/brand/reichman-en-white.png" : "/brand/reichman-he-white.png"}
-              alt={locale === "en" ? "Reichman University" : "אוניברסיטת רייכמן"}
+              alt=""
               fill
               // The whole image renders about 120-140px wide before the crop, so request that
               // width; asking for the visible 64px made the browser load a blurry small copy.
               sizes="160px"
               className={`object-cover ${locale === "en" ? "object-left" : "object-right"}`}
             />
-          </span>
+          </a>
         </div>
         <nav
           id="site-nav"
@@ -225,7 +240,9 @@ export function Header({ locale }: { locale: Locale }) {
               <span className={`absolute inset-x-0 h-0.5 rounded bg-current transition-[top,rotate] duration-300 ${open ? "top-[7px] -rotate-45" : "top-[14px]"}`} />
             </span>
           </button>
-          <Image src={reichman} alt={locale === "en" ? "Reichman University" : "אוניברסיטת רייכמן, בית ספר אדלסון ליזמות"} width={150} height={48} className="hidden h-12 w-auto md:block" style={{ width: "auto" }} />
+          <a href={universityHref} target="_blank" rel="noopener noreferrer" aria-label={universityLabel} className="hidden md:block">
+            <Image src={reichman} alt="" width={150} height={48} className="h-12 w-auto" style={{ width: "auto" }} />
+          </a>
         </div>
       </div>
       <span ref={progressRef} aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] bg-white/70 ltr:origin-left rtl:origin-right" style={{ scale: "0 1" }} />
