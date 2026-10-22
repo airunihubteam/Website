@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { accelerator, conferences, findConference, findProgram, programs, type CatalogItem } from "@/content/catalog";
+import { accelerator, catalogPath, conferences, findConference, findProgram, programs, type CatalogItem } from "@/content/catalog";
 import {
   aboutParagraphs,
   aiEn,
@@ -19,6 +19,7 @@ import {
   stats,
 } from "@/content/copy";
 import { advisoryTeam, aboutTeam, peopleByIds, peopleIn, pitchTeam, type Person } from "@/content/people";
+import { ClubSlider, type ClubSlide, type ClubSliderLabels } from "@/components/club-slider";
 import { CatalogCard, PersonCard, Section, StarBullet } from "@/components/ui";
 import { pick, withLocale, type Locale } from "@/lib/locale";
 
@@ -30,20 +31,59 @@ const gates = [
   { href: "/internship", he: "מסלול לתעשייה", en: "Industry Internship", image: "/media/wp/gate-internship.jpg" },
 ];
 
-const programLogos = [
-  { src: "/media/wp/logos/artemis.png", href: "/programs/artemis", name: "Artemis" },
-  { src: "/media/wp/logos/m-club.png", href: "/programs/m-club", name: "M-Club" },
-  { src: "/media/wp/logos/leaders.png", href: "/programs/leaders", name: "Leaders" },
-  { src: "/media/wp/logos/greenbiz.png", href: "/programs/greenbiz", name: "GreenBiz" },
-  { src: "/media/wp/logos/foodtech.png", href: "/programs/foodtech", name: "FoodTech" },
-  { src: "/media/wp/logos/impact.png", href: "/programs/impact", name: "Impact" },
-  { src: "/media/wp/logos/defense-tech.png", href: "/programs/defense-tech", name: "Defense Tech" },
-  { src: "/media/wp/logos/techtalk.png", href: "/programs/tech-talk", name: "Tech-Talk" },
-  { src: "/media/wp/logos/pulse.png", href: "/programs/pulse", name: "Pulse" },
-  { src: "/media/wp/logos/proptech.png", href: "/programs/proptech", name: "PropTech" },
-  { src: "/media/wp/logos/product-hub.png", href: "/programs/product-hub", name: "Product-Hub" },
-  { src: "/media/wp/logos/momentum.jpg", href: "/accelerator/momentum", name: "Momentum" },
+const clubLogos = [
+  { slug: "artemis", logo: "/media/wp/logos/artemis.png" },
+  { slug: "m-club", logo: "/media/wp/logos/m-club.png" },
+  { slug: "leaders", logo: "/media/wp/logos/leaders.png" },
+  { slug: "greenbiz", logo: "/media/wp/logos/greenbiz.png" },
+  { slug: "foodtech", logo: "/media/wp/logos/foodtech.png" },
+  { slug: "impact", logo: "/media/wp/logos/impact.png" },
+  { slug: "defense-tech", logo: "/media/wp/logos/defense-tech.png" },
+  { slug: "tech-talk", logo: "/media/wp/logos/techtalk.png" },
+  { slug: "pulse", logo: "/media/wp/logos/pulse.png" },
+  { slug: "proptech", logo: "/media/wp/logos/proptech.png" },
+  { slug: "product-hub", logo: "/media/wp/logos/product-hub.png" },
+  { slug: "momentum", logo: "/media/wp/logos/momentum.jpg" },
 ];
+
+const clubSliderLabels: Record<Locale, ClubSliderLabels> = {
+  he: {
+    title: "התוכניות שלנו",
+    all: "לכל התוכניות",
+    allHref: "/programs",
+    open: "לעמוד התוכנית",
+    of: "מתוך",
+    goTo: "מעבר אל",
+  },
+  en: {
+    title: "Our Programs",
+    all: "All programs",
+    allHref: "/en/programs",
+    open: "View program",
+    of: "of",
+    goTo: "Go to",
+  },
+};
+
+function clubSlides(locale: Locale): ClubSlide[] {
+  return clubLogos.flatMap(({ slug, logo }) => {
+    const item = slug === accelerator.slug ? accelerator : findProgram(slug);
+    if (!item) return [];
+    // English pages exist only for items with an English summary.
+    const target = locale === "en" && !item.summary.en ? "he" : locale;
+    const kind = item.kind === "accelerator" ? { he: "אקסלרטור", en: "Accelerator" } : { he: "תוכנית", en: "Program" };
+    return [
+      {
+        slug,
+        logo,
+        name: pick(item.name, locale) ?? item.name.he,
+        summary: pick(item.summary, locale),
+        href: withLocale(catalogPath(item), target),
+        kind: kind[locale],
+      },
+    ];
+  });
+}
 
 export function HomePage({ locale }: { locale: Locale }) {
   const actions =
@@ -137,15 +177,7 @@ export function HomePage({ locale }: { locale: Locale }) {
           </Link>
         ))}
       </section>
-      <section className="mx-auto w-full max-w-6xl px-5 py-14 md:px-8">
-        <div className="grid grid-cols-2 gap-px bg-[#f3f3f3] sm:grid-cols-3 md:grid-cols-6">
-          {programLogos.map((logo) => (
-            <Link key={logo.href} href={withLocale(logo.href, locale === "en" && (logo.href.includes("momentum") || logo.href.includes("tech-talk")) ? "he" : locale)} className="flex items-center justify-center bg-white p-4">
-              <Image src={logo.src} alt={logo.name} width={180} height={90} className="h-16 w-auto object-contain" style={{ width: "auto" }} />
-            </Link>
-          ))}
-        </div>
-      </section>
+      <ClubSlider slides={clubSlides(locale)} labels={clubSliderLabels[locale]} dir={locale === "en" ? "ltr" : "rtl"} />
       <section className="bg-gradient-to-b from-band to-club px-5 py-16 text-white md:px-8">
         <div className="mx-auto w-full max-w-4xl">
           <h2 className="text-center text-[32px] font-bold">{locale === "en" ? "The Chairman" : "יו״ר המועדון"}</h2>

@@ -37,6 +37,15 @@ body {
   outline-offset: 3px;
 }
 
+@keyframes club-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
 .club-underline {
   display: inline-block;
   border-bottom: 3px solid var(--club);
