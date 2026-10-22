@@ -157,9 +157,10 @@ function joinCards(locale: Locale): JoinCard[] {
       // The first two clauses of the chair page's pitch, so the card ends on a full stop.
       summary: `${(joins.chair.paragraphs[0].split(". ")[1] ?? joins.chair.paragraphs[0]).split(", ").slice(0, 2).join(", ")}.`,
       cta: "להרשמה",
+      icon: "search",
     },
-    { href: "/join/programs", title: "ניהול תוכניות", summary: aboutParagraphs[6].he, cta: "להרשמה" },
-    { href: "/join/new-program", title: "רעיון למועדון חדש", summary: joins["new-program"].paragraphs[1], cta: "לפרטים" },
+    { href: "/join/programs", title: "ניהול תוכניות", summary: aboutParagraphs[6].he, cta: "להרשמה", icon: "checklist" },
+    { href: "/join/new-program", title: "רעיון למועדון חדש", summary: joins["new-program"].paragraphs[1], cta: "לפרטים", icon: "bulb" },
     {
       href: "/programs",
       title: "התוכניות שלנו",
@@ -168,6 +169,7 @@ function joinCards(locale: Locale): JoinCard[] {
         .map((item) => item.name.he)
         .join(" · ")} ועוד`,
       cta: "לכל התוכניות",
+      icon: "rocket",
       featured: true,
     },
   ];
