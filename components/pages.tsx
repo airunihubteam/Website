@@ -438,21 +438,13 @@ export function AboutPage({ locale }: { locale: Locale }) {
       <RevealController />
       <SectionRail sections={aboutSections[locale]} label={locale === "en" ? "Page sections" : "ניווט בין חלקי העמוד"} />
 
-      <section id="about-top" className="relative -mt-[4.5rem] flex min-h-[46vh] items-end overflow-hidden md:min-h-[64vh]">
-        <Image src="/media/building.jpg" alt="" fill priority sizes="100vw" className="object-cover motion-safe:animate-[hero-zoom_3.2s_var(--ease)_both]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#061347]/90 via-club/60 to-club/35" />
-        <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pt-28 pb-10 text-center md:px-8 md:pt-40 md:pb-20">
-          <p className="text-sm font-semibold text-white/75 motion-safe:animate-[hero-rise_1s_var(--ease)_100ms_both]">
-            {locale === "en" ? "Entrepreneurship Club · Reichman University" : "מועדון היזמות · אוניברסיטת רייכמן"}
-          </p>
-          <h1 className="mt-4 text-5xl font-bold text-white motion-safe:animate-[hero-rise_1.2s_var(--ease)_220ms_both] md:text-7xl">
-            <span className="club-underline on-dark">{locale === "en" ? "About" : "אודות"}</span>
-          </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-base text-white/90 md:mt-7 motion-safe:animate-[hero-rise_1.1s_var(--ease)_420ms_both] md:text-2xl md:leading-snug">
-            {pick(aboutParagraphs[6], locale)}
-          </p>
-        </div>
-      </section>
+      <PageBanner
+        id="about-top"
+        image="/media/building.jpg"
+        locale={locale}
+        title={locale === "en" ? "About" : "אודות"}
+        subtitle={pick(aboutParagraphs[6], locale)}
+      />
 
       <section id="story" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 pt-10 pb-6 md:px-8 md:pt-24 md:pb-10">
         <div className="grid items-center gap-9 md:gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
@@ -803,6 +795,30 @@ function ItemPage({ locale, item }: { locale: Locale; item: CatalogItem }) {
         </div>
       </Section>
     </>
+  );
+}
+
+// The photo banner that opens a page and runs under the header: the photo settles in slowly
+// behind a blue wash while the eyebrow, the underlined title and the line under it rise in.
+function PageBanner({ id, image, locale, title, subtitle }: { id: string; image: string; locale: Locale; title: string; subtitle?: string }) {
+  return (
+    <section id={id} className="relative -mt-[4.5rem] flex min-h-[46vh] items-end overflow-hidden md:min-h-[64vh]">
+      <Image src={image} alt="" fill preload sizes="100vw" className="object-cover motion-safe:animate-[hero-zoom_3.2s_var(--ease)_both]" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#061347]/90 via-club/60 to-club/35" />
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pt-28 pb-10 text-center md:px-8 md:pt-40 md:pb-20">
+        <p className="text-sm font-semibold text-white/75 motion-safe:animate-[hero-rise_1s_var(--ease)_100ms_both]">
+          {locale === "en" ? "Entrepreneurship Club · Reichman University" : "מועדון היזמות · אוניברסיטת רייכמן"}
+        </p>
+        <h1 className="mt-4 text-5xl font-bold text-white motion-safe:animate-[hero-rise_1.2s_var(--ease)_220ms_both] md:text-7xl">
+          <span className="club-underline on-dark">{title}</span>
+        </h1>
+        {subtitle ? (
+          <p className="mx-auto mt-5 max-w-2xl text-base text-white/90 md:mt-7 motion-safe:animate-[hero-rise_1.1s_var(--ease)_420ms_both] md:text-2xl md:leading-snug">
+            {subtitle}
+          </p>
+        ) : null}
+      </div>
+    </section>
   );
 }
 
