@@ -40,7 +40,10 @@ function initials(name: string) {
     .join("");
 }
 
-function Portrait({ member, sizes, className = "" }: { member: TeamMember; sizes: string; className?: string }) {
+// The portraits are already small WebP files (public/media/team), so they are served as they are:
+// one file per person, fetched with the page at low priority so each photo is there when its card
+// appears, and reused straight from the cache by the profile panel.
+function Portrait({ member, className = "", fetchPriority }: { member: TeamMember; className?: string; fetchPriority?: "low" | "high" }) {
   if (!member.photo) {
     return (
       <span aria-hidden="true" className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-club to-[#061347] text-5xl font-bold text-white/90">
@@ -53,7 +56,9 @@ function Portrait({ member, sizes, className = "" }: { member: TeamMember; sizes
       src={member.photo}
       alt=""
       fill
-      sizes={sizes}
+      unoptimized
+      loading="eager"
+      fetchPriority={fetchPriority}
       className={`object-cover ${className}`}
       style={{ objectPosition: member.position ?? "50% 25%", transitionTimingFunction: EASE }}
     />
@@ -231,7 +236,7 @@ export function TeamSection({
           >
             <Portrait
               member={member}
-              sizes="(min-width: 1280px) 240px, (min-width: 1024px) 300px, (min-width: 768px) 33vw, 50vw"
+              fetchPriority="low"
               className="transition-[scale] duration-[1200ms] group-hover:scale-[1.06]"
             />
             <span aria-hidden="true" className="absolute inset-0 bg-club/20 transition-opacity duration-500 group-hover:opacity-0" />
@@ -287,7 +292,7 @@ export function TeamSection({
           // Rebuilt per person, so the photo and each line of text play in again on every step.
           <div key={current.id} className="grid md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]" style={{ "--swap-x": `${swapX}px` } as CSSProperties}>
             <div className="relative aspect-[16/11] overflow-hidden bg-club md:aspect-auto md:min-h-[480px]">
-              <Portrait member={current} sizes="(min-width: 768px) 400px, 100vw" className="profile-photo" />
+              <Portrait member={current} fetchPriority="high" className="profile-photo" />
               <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[#061347]/40 to-transparent md:hidden" />
             </div>
             <div className="flex max-h-[55dvh] flex-col p-6 md:max-h-[80dvh] md:p-9">
