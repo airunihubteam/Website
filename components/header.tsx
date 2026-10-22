@@ -161,6 +161,7 @@ export function Header({ locale }: { locale: Locale }) {
           </ul>
         </nav>
         <div className={`flex items-center gap-3 ${dropIn}`} style={dropDelay(nav.length + 2)}>
+          {/* Three lines; when open, the middle one fades and the outer two cross into an X. */}
           <button
             type="button"
             className="-m-2 flex h-10 w-10 items-center justify-center text-white md:hidden"
@@ -169,9 +170,10 @@ export function Header({ locale }: { locale: Locale }) {
             aria-label={open ? (locale === "en" ? "Close menu" : "סגירת התפריט") : locale === "en" ? "Open menu" : "פתיחת התפריט"}
             onClick={() => setOpen((value) => !value)}
           >
-            <span aria-hidden="true" className="relative block h-3 w-4">
-              <span className={`absolute inset-x-0 h-0.5 rounded bg-current transition-[top,rotate] duration-300 ${open ? "top-[5px] rotate-45" : "top-0"}`} />
-              <span className={`absolute inset-x-0 h-0.5 rounded bg-current transition-[top,rotate] duration-300 ${open ? "top-[5px] -rotate-45" : "top-[10px]"}`} />
+            <span aria-hidden="true" className="relative block h-4 w-6">
+              <span className={`absolute inset-x-0 h-0.5 rounded bg-current transition-[top,rotate] duration-300 ${open ? "top-[7px] rotate-45" : "top-0"}`} />
+              <span className={`absolute inset-x-0 top-[7px] h-0.5 rounded bg-current transition-opacity duration-200 ${open ? "opacity-0" : "opacity-100"}`} />
+              <span className={`absolute inset-x-0 h-0.5 rounded bg-current transition-[top,rotate] duration-300 ${open ? "top-[7px] -rotate-45" : "top-[14px]"}`} />
             </span>
           </button>
           <Image src={reichman} alt={locale === "en" ? "Reichman University" : "אוניברסיטת רייכמן, בית ספר אדלסון ליזמות"} width={150} height={48} className="hidden h-12 w-auto md:block" style={{ width: "auto" }} />
