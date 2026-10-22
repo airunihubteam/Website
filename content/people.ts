@@ -289,6 +289,46 @@ export function aboutTeam(): Person[] {
   return peopleByIds(aboutIds);
 }
 
+// The About page's team, in the order and groups it shows them.
+export const aboutGroups: { key: string; label: Localized; ids: string[] }[] = [
+  { key: "lead", label: { he: "הנהלה", en: "Leadership" }, ids: ["omer-biran", "shir-shani", "shani-aharon", "gal-atzmon"] },
+  { key: "brand", label: { he: "מותג ושיווק", en: "Brand & Marketing" }, ids: ["michal-shoris", "noa-paster", "shiri-izhaki", "daniel-pinkasovich"] },
+  { key: "ai", label: { he: "חדשנות ו-AI", en: "Innovation & AI" }, ids: ["nir-frost", "shay-taub", "yarin-layani", "tal-frankenthal"] },
+  { key: "operations", label: { he: "אופרציה", en: "Operations" }, ids: ["tomer-epstein", "gili", "noam-bar"] },
+  { key: "community", label: { he: "קהילה", en: "Community" }, ids: ["shir-dayan", "shir-rubin", "maya-ron"] },
+  { key: "finance", label: { he: "כספים וחסויות", en: "Finance & Sponsorships" }, ids: ["dana-dabash", "shahar"] },
+  { key: "consulting", label: { he: "ייעוץ", en: "Consulting" }, ids: ["lior-aidan", "ofir-mor"] },
+];
+
+// Portraits and LinkedIn profiles as published on the old site's About page (ruec.co.il/about),
+// compressed into public/media/team. `position` is the photo's focal point when it is cropped.
+// Gal Atzmon's profile link there pointed at someone else, so it is left out.
+export const personMedia: Record<string, { photo: string; position?: string; linkedin?: string }> = {
+  "shir-shani": { photo: "/media/team/shir-shani.webp", linkedin: "https://www.linkedin.com/in/shir--shani/" },
+  "shani-aharon": { photo: "/media/team/shani-aharon.webp" },
+  "gal-atzmon": { photo: "/media/team/gal-atzmon.webp" },
+  "michal-shoris": { photo: "/media/team/michal-shoris.webp", position: "55% 30%", linkedin: "https://www.linkedin.com/in/michal-shoris-5204262a5/" },
+  "noa-paster": { photo: "/media/team/noa-paster.webp", linkedin: "https://www.linkedin.com/in/noa-paster" },
+  "shiri-izhaki": { photo: "/media/team/shiri-izhaki.webp" },
+  "daniel-pinkasovich": { photo: "/media/team/daniel-pinkasovich.webp" },
+  "nir-frost": { photo: "/media/team/nir-frost.webp", position: "38% 30%", linkedin: "https://www.linkedin.com/in/nir-frost" },
+  "shay-taub": { photo: "/media/team/shay-taub.webp", linkedin: "https://www.linkedin.com/in/shay-taub-25bb6a2ba/" },
+  "yarin-layani": { photo: "/media/team/yarin-layani.webp", linkedin: "https://www.linkedin.com/in/yarin--layani" },
+  "tal-frankenthal": { photo: "/media/team/tal-frankenthal.webp", linkedin: "https://www.linkedin.com/in/tal-frankenthal" },
+  "tomer-epstein": { photo: "/media/team/tomer-epstein.webp", linkedin: "https://www.linkedin.com/in/tomer-epstein-435a05234" },
+  gili: { photo: "/media/team/gili.webp" },
+  "noam-bar": { photo: "/media/team/noam-bar.webp", linkedin: "https://www.linkedin.com/in/noam-bar-686290340" },
+  "shir-dayan": { photo: "/media/team/shir-dayan.webp", linkedin: "https://www.linkedin.com/in/shirdayan/" },
+  "shir-rubin": { photo: "/media/team/shir-rubin.webp", linkedin: "https://www.linkedin.com/in/shir-rubin-a97a44199/" },
+  "maya-ron": { photo: "/media/team/maya-ron.webp", linkedin: "https://www.linkedin.com/in/maya--ron/" },
+  "dana-dabash": { photo: "/media/team/dana-dabash.webp", position: "68% 30%", linkedin: "https://www.linkedin.com/in/danadvash/" },
+  shahar: { photo: "/media/team/shahar.webp", linkedin: "https://www.linkedin.com/in/shachar-shnaidman-05a4b4332" },
+  "lior-aidan": { photo: "/media/team/lior-aidan.webp", linkedin: "https://www.linkedin.com/in/lior-aidan-631090241" },
+  "ofir-mor": { photo: "/media/team/ofir-mor.webp", linkedin: "https://www.linkedin.com/in/ofir-mor/" },
+  yossi: { photo: "/media/team/yossi.webp", linkedin: "https://www.linkedin.com/in/yossimaaravi/" },
+  "ofir-richman": { photo: "/media/team/ofir-richman.webp", linkedin: "https://www.linkedin.com/in/ofirrichman/" },
+};
+
 export function advisoryTeam(): Person[] {
   return peopleIn("advisory").filter((person) => person.id === "yossi" || person.id === "ofir-richman");
 }

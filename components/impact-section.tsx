@@ -113,7 +113,7 @@ export function ImpactStats({ stats, label }: { stats: ImpactStat[]; label: stri
   };
 
   return (
-    <section className="relative overflow-hidden bg-white py-10 md:py-14">
+    <section className="relative overflow-hidden bg-white py-6 md:py-8">
       <FloatingStars spots={statStars} />
 
       <div className="relative mx-auto w-full max-w-7xl px-5 md:px-8">

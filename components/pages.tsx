@@ -18,7 +18,8 @@ import {
   reichmanQuote,
   stats,
 } from "@/content/copy";
-import { advisoryTeam, aboutTeam, peopleByIds, peopleIn, pitchTeam, type Person } from "@/content/people";
+import { aboutGroups, advisoryTeam, peopleByIds, peopleIn, personMedia, pitchTeam, type Person } from "@/content/people";
+import { TeamSection, type TeamLabels, type TeamMember } from "@/components/about-team";
 import { ClubSlider, type ClubSlide, type ClubSliderLabels } from "@/components/club-slider";
 import { GatePanels, type GatePanel, type GatePanelsLabels } from "@/components/gate-panels";
 import { Chevron } from "@/components/icons";
@@ -313,24 +314,251 @@ export function HomePage({ locale }: { locale: Locale }) {
   );
 }
 
+function teamMember(person: Person, locale: Locale, group?: string): TeamMember {
+  const media = personMedia[person.id];
+  return {
+    id: person.id,
+    name: pick(person.name, locale) ?? person.name.he,
+    role: pick(person.role, locale) ?? person.role?.he,
+    bio: pick(person.bio, locale),
+    photo: media?.photo,
+    position: media?.position,
+    linkedin: media?.linkedin,
+    group,
+  };
+}
+
+const teamLabels: Record<Locale, TeamLabels> = {
+  he: { title: "צוות הניהול", all: "כולם", profile: "לפרופיל המלא", close: "סגירה", previous: "הקודם", next: "הבא", linkedin: "לפרופיל בלינקדאין", of: "מתוך" },
+  en: { title: "The Management Team", all: "All", profile: "Full profile", close: "Close", previous: "Previous", next: "Next", linkedin: "LinkedIn profile", of: "of" },
+};
+
+const aboutSections: Record<Locale, RailSection[]> = {
+  he: [
+    { id: "about-top", label: "אודות" },
+    { id: "story", label: "הסיפור שלנו" },
+    { id: "about-numbers", label: "במספרים" },
+    { id: "team", label: "הצוות" },
+    { id: "advisory", label: "ועדה מייעצת" },
+    { id: "partners", label: "שותפים" },
+  ],
+  en: [
+    { id: "about-top", label: "About" },
+    { id: "story", label: "Our Story" },
+    { id: "about-numbers", label: "Numbers" },
+    { id: "team", label: "The Team" },
+    { id: "advisory", label: "Advisory" },
+    { id: "partners", label: "Partners" },
+  ],
+};
+
+// Three of the about paragraphs, each given a short title and an icon.
+const aboutPillars: { title: Localized; text: Localized; icon: PillarIconName }[] = [
+  { title: { he: "החזון שלנו", en: "Our Vision" }, text: aboutParagraphs[2], icon: "eye" },
+  { title: { he: "המחויבות שלנו", en: "Our Commitment" }, text: aboutParagraphs[3], icon: "heart" },
+  { title: { he: "מקום של חיבור", en: "A Place to Connect" }, text: aboutParagraphs[4], icon: "network" },
+];
+
+type PillarIconName = "eye" | "heart" | "network";
+
+const PILLAR_FILL = "#dbe3ff";
+
+// A large light-blue icon set beside the card's heading and cropped by the card's side edge.
+// On hover it slides further into view and acts out its meaning: the eye blinks, the heart
+// beats, and the network's nodes pulse one after another.
+function PillarIcon({ name }: { name: PillarIconName }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className="pointer-events-none absolute -end-7 top-2 h-28 w-28 transition-[translate] duration-700 ltr:group-hover:-translate-x-3 rtl:group-hover:translate-x-3"
+      style={{ transitionTimingFunction: "var(--ease)" }}
+    >
+      {name === "eye" ? (
+        <g className="origin-center motion-safe:group-hover:animate-[eye-blink_2.6s_ease-in-out_infinite]" style={{ transformBox: "fill-box" }}>
+          <path d="M1.5 12C3.8 7.4 7.6 4.8 12 4.8s8.2 2.6 10.5 7.2c-2.3 4.6-6.1 7.2-10.5 7.2S3.8 16.6 1.5 12z" fill={PILLAR_FILL} />
+          <circle cx="12" cy="12" r="3.9" fill="#ffffff" />
+          <circle cx="12" cy="12" r="1.9" fill={PILLAR_FILL} />
+        </g>
+      ) : null}
+      {name === "heart" ? (
+        <path
+          d="M12 21s-8.6-5.2-8.6-11.3A4.9 4.9 0 0 1 12 6.6a4.9 4.9 0 0 1 8.6 3.1C20.6 15.8 12 21 12 21z"
+          fill={PILLAR_FILL}
+          className="origin-center motion-safe:group-hover:animate-[heart-beat_1.4s_ease-in-out_infinite]"
+          style={{ transformBox: "fill-box" }}
+        />
+      ) : null}
+      {name === "network" ? (
+        <>
+          <path d="M5.5 6h13M5.5 6l6.5 12M18.5 6L12 18" fill="none" stroke={PILLAR_FILL} strokeWidth="1.8" strokeLinecap="round" />
+          {[
+            [5.5, 6],
+            [18.5, 6],
+            [12, 18],
+          ].map(([cx, cy], index) => (
+            <circle
+              key={index}
+              cx={cx}
+              cy={cy}
+              r="3.2"
+              fill={PILLAR_FILL}
+              className="origin-center motion-safe:group-hover:animate-[node-pulse_1.8s_ease-in-out_infinite]"
+              style={{ transformBox: "fill-box", animationDelay: `${index * 0.25}s` }}
+            />
+          ))}
+        </>
+      ) : null}
+    </svg>
+  );
+}
+
+const activityLinks = [
+  { href: "/programs", label: { he: "תוכניות", en: "Programs" } },
+  { href: "/conferences", label: { he: "כנסים", en: "Conferences" } },
+  { href: "/accelerator", label: { he: "אקסלרטור", en: "Accelerator" } },
+  { href: "/pitch-night", label: { he: "Pitch Night", en: "Pitch Night" } },
+];
+
+const academicPartners = [
+  { he: "/brand/reichman-he-color.png", en: "/brand/reichman-en-color.png", width: 484, height: 163, name: { he: "בית הספר אדלסון ליזמות", en: "Adelson School of Entrepreneurship" } },
+  { he: "/media/partners/sustainability.png", en: "/media/partners/sustainability.png", width: 526, height: 130, name: { he: "בית הספר לקיימות", en: "School of Sustainability" } },
+  { he: "/media/partners/recanati.png", en: "/media/partners/recanati.png", width: 567, height: 150, name: { he: "בית הספר הבינלאומי רפאל רקנאטי", en: "Raphael Recanati International School" } },
+];
+
 export function AboutPage({ locale }: { locale: Locale }) {
+  const dir = locale === "en" ? "ltr" : "rtl";
+  const groups = aboutGroups.map((group) => ({ key: group.key, label: pick(group.label, locale) ?? group.label.he }));
+  const members = aboutGroups.flatMap((group) => peopleByIds(group.ids).map((person) => teamMember(person, locale, group.key)));
+  const advisors = advisoryTeam().map((person) => teamMember(person, locale));
+
   return (
     <>
-      <PageHero title={locale === "en" ? "About" : "אודות"} />
-      <Section>
-        <div className="max-w-3xl space-y-4 text-lg font-light leading-8 text-ink">
-          {aboutParagraphs.map((paragraph) => {
-            const text = pick(paragraph, locale);
-            return text ? <p key={paragraph.he}>{text}</p> : null;
-          })}
+      <RevealController />
+      <SectionRail sections={aboutSections[locale]} label={locale === "en" ? "Page sections" : "ניווט בין חלקי העמוד"} />
+
+      <section id="about-top" className="relative -mt-[4.5rem] flex min-h-[64vh] items-end overflow-hidden">
+        <Image src="/media/building.jpg" alt="" fill priority sizes="100vw" className="object-cover motion-safe:animate-[hero-zoom_3.2s_var(--ease)_both]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#061347]/90 via-club/60 to-club/35" />
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pt-40 pb-16 text-center md:px-8 md:pb-20">
+          <p className="text-sm font-semibold text-white/75 motion-safe:animate-[hero-rise_1s_var(--ease)_100ms_both]">
+            {locale === "en" ? "Entrepreneurship Club · Reichman University" : "מועדון היזמות · אוניברסיטת רייכמן"}
+          </p>
+          <h1 className="mt-4 text-5xl font-bold text-white motion-safe:animate-[hero-rise_1.2s_var(--ease)_220ms_both] md:text-7xl">
+            <span className="club-underline on-dark">{locale === "en" ? "About" : "אודות"}</span>
+          </h1>
+          <p className="mx-auto mt-7 max-w-2xl text-lg text-white/90 motion-safe:animate-[hero-rise_1.1s_var(--ease)_420ms_both] md:text-2xl">
+            {pick(aboutParagraphs[6], locale)}
+          </p>
         </div>
-      </Section>
-      <Section title={locale === "en" ? "The Management Team" : "צוות הניהול"}>
-        <PeopleGrid people={aboutTeam()} locale={locale} />
-      </Section>
-      <Section title={locale === "en" ? "Advisory Committee & Academic Support" : "ועדה מייעצת וליווי אקדמי"}>
-        <PeopleGrid people={advisoryTeam()} locale={locale} />
-      </Section>
+      </section>
+
+      <section id="story" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 pt-16 pb-8 md:px-8 md:pt-24 md:pb-10">
+        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
+          <div>
+            <p data-reveal-item="0" className="text-sm font-semibold text-club/60 ltr:tracking-[0.2em] ltr:uppercase">
+              {locale === "en" ? "Our Story" : "הסיפור שלנו"}
+            </p>
+            <p data-reveal-item="1" className="mt-3 text-justify text-2xl leading-[1.5] font-bold text-club md:text-[28px]">
+              {pick(aboutParagraphs[0], locale)}
+            </p>
+            <p data-reveal-item="2" className="mt-6 text-justify text-base leading-8 text-ink md:text-lg">
+              {pick(aboutParagraphs[5], locale)}
+            </p>
+            <p data-reveal-item="3" className="mt-4 text-justify text-base leading-8 text-ink md:text-lg">
+              {pick(aboutParagraphs[1], locale)}
+            </p>
+            <div data-reveal-item="4" className="mt-6 flex flex-wrap gap-2">
+              {activityLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={withLocale(link.href, locale)}
+                  data-press
+                  className="group inline-flex items-center gap-1.5 border border-club/25 px-4 py-2 text-sm font-semibold text-club transition-colors duration-300 hover:border-club hover:bg-club hover:text-white"
+                >
+                  {pick(link.label, locale)}
+                  <Chevron dir={dir} className="transition-transform duration-500 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div data-reveal-item="2" className="relative mx-auto w-full max-w-md lg:max-w-none">
+            <span aria-hidden="true" className="absolute -end-4 -bottom-4 h-full w-full rounded-[28px] border-2 border-club/15" />
+            <span aria-hidden="true" className="absolute -start-5 -top-5 h-24 w-24 rounded-[22px] bg-club/10" />
+            <div className="group relative aspect-[5/4] overflow-hidden rounded-[28px] shadow-[0_30px_60px_-30px_rgba(15,45,150,0.6)]">
+              <Image
+                src="/media/wp/about-team.jpg"
+                alt={locale === "en" ? "Club students" : "סטודנטים במועדון היזמות"}
+                fill
+                sizes="(min-width: 1024px) 40vw, 100vw"
+                className="object-cover transition-[scale] duration-[1400ms] group-hover:scale-105"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-16 grid gap-5 md:mt-20 md:grid-cols-3">
+          {aboutPillars.map((pillar, index) => (
+            <article
+              key={pillar.title.he}
+              data-reveal-item={String(index + 4)}
+              className="group relative isolate overflow-hidden rounded-[24px] border border-[#e6e9f5] bg-white p-7 transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-club/30 hover:shadow-[0_24px_50px_-28px_rgba(15,45,150,0.45)]"
+            >
+              <PillarIcon name={pillar.icon} />
+              <h3 className="relative flex min-h-24 items-center pe-24 text-2xl font-bold text-club">{pick(pillar.title, locale)}</h3>
+              <p className="relative mt-2 text-justify text-[15px] leading-7 text-ink/85">{pick(pillar.text, locale)}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <div id="about-numbers" data-reveal className="scroll-mt-[4.5rem]">
+        <ImpactStats stats={impactStats(locale)} label={impactLabels[locale].stats} />
+      </div>
+
+      <section id="team" data-reveal className="scroll-mt-[4.5rem] bg-gradient-to-b from-white via-[#f5f7fd] to-white pt-12 pb-16 md:pt-16 md:pb-24">
+        <div className="mx-auto w-full max-w-7xl px-5 md:px-8">
+          <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
+            <span className="club-underline">{teamLabels[locale].title}</span>
+          </h2>
+          <TeamSection members={members} groups={groups} labels={teamLabels[locale]} dir={dir} />
+        </div>
+      </section>
+
+      <section id="advisory" data-reveal className="scroll-mt-[4.5rem] py-16 md:py-20">
+        <div className="mx-auto w-full max-w-7xl px-5 md:px-8">
+          <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
+            <span className="club-underline">{locale === "en" ? "Advisory Committee & Academic Support" : "ועדה מייעצת וליווי אקדמי"}</span>
+          </h2>
+          <TeamSection members={advisors} labels={teamLabels[locale]} dir={dir} variant="pair" />
+        </div>
+      </section>
+
+      <section id="partners" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 pt-4 pb-20 md:px-8">
+        <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
+          <span className="club-underline">{locale === "en" ? "Academic Partners" : "שותפים אקדמיים"}</span>
+        </h2>
+        <div className="mt-10 grid gap-4 sm:grid-cols-3">
+          {academicPartners.map((partner, index) => (
+            <a
+              key={partner.he}
+              href={locale === "en" ? "https://www.runi.ac.il/en/" : "https://www.runi.ac.il/"}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-reveal-item={String(index + 1)}
+              className="group flex h-32 items-center justify-center rounded-[22px] border border-[#e6e9f5] bg-white px-6 transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-club/30 hover:shadow-[0_24px_50px_-28px_rgba(15,45,150,0.45)]"
+            >
+              <Image
+                src={locale === "en" ? partner.en : partner.he}
+                alt={pick(partner.name, locale) ?? partner.name.he}
+                width={partner.width}
+                height={partner.height}
+                className="h-auto max-h-16 w-auto max-w-full opacity-75 grayscale transition-[filter,opacity] duration-500 group-hover:opacity-100 group-hover:grayscale-0"
+              />
+            </a>
+          ))}
+        </div>
+      </section>
     </>
   );
 }
