@@ -121,11 +121,24 @@ export function Header({ locale }: { locale: Locale }) {
           }`}
         >
           <ul className="flex flex-col gap-3 md:flex-row md:items-center md:gap-6">
+            {/* Phones only: desktop reaches the home page through the logo. */}
+            <li
+              className={`max-md:transition-[opacity,translate] max-md:duration-500 md:hidden ${open ? "max-md:translate-y-0 max-md:opacity-100" : "max-md:-translate-y-2 max-md:opacity-0"}`}
+            >
+              <Link
+                href={home}
+                aria-current={isHome ? "page" : undefined}
+                className={`text-base text-white ${linkLine}`}
+                onClick={() => setOpen(false)}
+              >
+                {locale === "en" ? "Home" : "ראשי"}
+              </Link>
+            </li>
             {[...nav, null].map((item, index) => (
               <li
                 key={item?.href ?? "language"}
                 className={`group relative max-md:transition-[opacity,translate] max-md:duration-500 ${dropIn} ${open ? "max-md:translate-y-0 max-md:opacity-100" : "max-md:-translate-y-2 max-md:opacity-0"}`}
-                style={{ ...dropDelay(index + 1), transitionDelay: open ? `${index * 45}ms` : "0ms" }}
+                style={{ ...dropDelay(index + 1), transitionDelay: open ? `${(index + 1) * 45}ms` : "0ms" }}
               >
                 {item ? (
                   <>
