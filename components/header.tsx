@@ -163,16 +163,16 @@ export function Header({ locale }: { locale: Locale }) {
         <div className={`flex items-center gap-3 ${dropIn}`} style={dropDelay(nav.length + 2)}>
           <button
             type="button"
-            className="flex items-center gap-2 text-sm text-white md:hidden"
+            className="-m-2 flex h-10 w-10 items-center justify-center text-white md:hidden"
             aria-expanded={open}
             aria-controls="site-nav"
+            aria-label={open ? (locale === "en" ? "Close menu" : "סגירת התפריט") : locale === "en" ? "Open menu" : "פתיחת התפריט"}
             onClick={() => setOpen((value) => !value)}
           >
             <span aria-hidden="true" className="relative block h-3 w-4">
               <span className={`absolute inset-x-0 h-0.5 rounded bg-current transition-[top,rotate] duration-300 ${open ? "top-[5px] rotate-45" : "top-0"}`} />
               <span className={`absolute inset-x-0 h-0.5 rounded bg-current transition-[top,rotate] duration-300 ${open ? "top-[5px] -rotate-45" : "top-[10px]"}`} />
             </span>
-            {open ? (locale === "en" ? "Close" : "סגירה") : locale === "en" ? "Menu" : "תפריט"}
           </button>
           <Image src={reichman} alt={locale === "en" ? "Reichman University" : "אוניברסיטת רייכמן, בית ספר אדלסון ליזמות"} width={150} height={48} className="hidden h-12 w-auto md:block" style={{ width: "auto" }} />
         </div>
