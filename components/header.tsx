@@ -104,7 +104,9 @@ export function Header({ locale }: { locale: Locale }) {
               src={locale === "en" ? "/brand/reichman-en-white.png" : "/brand/reichman-he-white.png"}
               alt={locale === "en" ? "Reichman University" : "אוניברסיטת רייכמן"}
               fill
-              sizes="64px"
+              // The whole image renders about 120-140px wide before the crop, so request that
+              // width; asking for the visible 64px made the browser load a blurry small copy.
+              sizes="160px"
               className={`object-cover ${locale === "en" ? "object-left" : "object-right"}`}
             />
           </span>
