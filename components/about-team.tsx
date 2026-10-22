@@ -242,7 +242,8 @@ export function TeamSection({
               <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[#061347]/40 to-transparent md:hidden" />
             </div>
             <div className="flex max-h-[55dvh] flex-col p-6 md:max-h-[80dvh] md:p-9">
-              <div className="overflow-y-auto pe-1">
+              {/* The scroll area reaches into the panel's padding, so its scrollbar stays clear of the text. */}
+              <div className="-me-4 min-h-0 overflow-y-auto pe-4">
                 {groupLabel(current.group) ? <p className="text-sm font-semibold text-club/60">{groupLabel(current.group)}</p> : null}
                 <h3 id="team-profile-name" className="mt-1 text-2xl font-bold text-club md:text-3xl">
                   {current.name}
