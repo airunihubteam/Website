@@ -87,7 +87,6 @@ export function TeamSection({
   // Which way the profile content slides in when stepping: negative from the left, 0 rises up.
   const [swapX, setSwapX] = useState(0);
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const pillRef = useRef<HTMLSpanElement>(null);
 
@@ -124,26 +123,12 @@ export function TeamSection({
     return () => observer.disconnect();
   }, [filter, filtered]);
 
-  // Points the panel's open and close animations at a card, so the panel grows out of the card
-  // and shrinks back into it. A card scrolled out of view gets a plain fade instead.
-  const aimAt = (index: number) => {
-    const dialog = dialogRef.current;
-    const card = gridRef.current?.children[index];
-    if (!dialog) return;
-    const width = document.documentElement.clientWidth;
-    const from = card?.getBoundingClientRect();
-    const inView = from && from.bottom > 0 && from.top < window.innerHeight;
-    dialog.style.setProperty("--from-x", inView ? `${from.left + from.width / 2 - width / 2}px` : "0px");
-    dialog.style.setProperty("--from-y", inView ? `${from.top + from.height / 2 - window.innerHeight / 2}px` : "24px");
-    dialog.style.setProperty("--from-scale", inView ? String(Math.max(0.2, from.width / Math.min(940, width - 24))) : "0.94");
-  };
-
   const openProfile = (index: number) => {
-    aimAt(index);
     setSwapX(0);
     setOpenIndex(index);
   };
 
+  // The panel plays a short exit (see .team-dialog[data-closing]) before it really closes.
   const closeProfile = () => {
     const dialog = dialogRef.current;
     if (!dialog?.open || dialog.dataset.closing !== undefined) return;
@@ -151,13 +136,12 @@ export function TeamSection({
       setOpenIndex(null);
       return;
     }
-    if (openIndex !== null) aimAt(openIndex);
     dialog.dataset.closing = "";
     window.setTimeout(() => {
       dialog.close();
       delete dialog.dataset.closing;
       setOpenIndex(null);
-    }, 420);
+    }, 220);
   };
 
   const step = (delta: number) => {
@@ -219,7 +203,6 @@ export function TeamSection({
       <div data-reveal-item={groups.length > 0 ? "2" : "1"} className="mt-6 md:mt-10">
       <div
         key={filter}
-        ref={gridRef}
         className={`grid gap-3 sm:gap-5 ${variant === "pair" ? "mx-auto max-w-2xl grid-cols-2" : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"}`}
       >
         {visible.map((member, index) => (
