@@ -24,6 +24,7 @@ import { ClubSlider, type ClubSlide, type ClubSliderLabels } from "@/components/
 import { GatePanels, type GatePanel, type GatePanelsLabels } from "@/components/gate-panels";
 import { Chevron } from "@/components/icons";
 import { ImpactStats, JoinSection, type ImpactLabels, type ImpactStat, type JoinCard } from "@/components/impact-section";
+import { FocusRow } from "@/components/focus-row";
 import { RevealController, SectionRail, type RailSection } from "@/components/home-motion";
 import { CatalogCard, PersonCard, Section, StarBullet } from "@/components/ui";
 import { pick, withLocale, type Locale, type Localized } from "@/lib/locale";
@@ -497,19 +498,22 @@ export function AboutPage({ locale }: { locale: Locale }) {
           </div>
         </div>
 
-        <div className="-mx-5 mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] md:mx-0 md:mt-20 md:grid md:grid-cols-3 md:gap-5 md:overflow-visible md:px-0 md:pb-0">
+        <FocusRow
+          label={locale === "en" ? "Highlights" : "נקודות מרכזיות"}
+          className="-mx-5 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-[15vw] py-3 [scrollbar-width:none] md:mx-0 md:mt-20 md:grid md:grid-cols-3 md:gap-5 md:overflow-visible md:px-0 md:py-0"
+        >
           {aboutPillars.map((pillar, index) => (
             <article
               key={pillar.title.he}
               data-reveal-item={String(index + 4)}
-              className="group relative isolate w-[84%] shrink-0 snap-center overflow-hidden rounded-[24px] border border-[#e6e9f5] bg-white p-6 md:w-auto md:p-7 transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-club/30 hover:shadow-[0_24px_50px_-28px_rgba(15,45,150,0.45)]"
+              className="group relative isolate w-[70vw] shrink-0 snap-center overflow-hidden rounded-[24px] border border-[#e6e9f5] bg-white p-6 md:w-auto md:p-7 transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-club/30 hover:shadow-[0_24px_50px_-28px_rgba(15,45,150,0.45)]"
             >
               <PillarIcon name={pillar.icon} />
               <h3 className="relative flex min-h-24 items-center pe-24 text-2xl font-bold text-club">{pick(pillar.title, locale)}</h3>
               <p className="relative mt-2 text-justify text-[15px] leading-7 text-ink/85">{pick(pillar.text, locale)}</p>
             </article>
           ))}
-        </div>
+        </FocusRow>
       </section>
 
       <div id="about-numbers" data-reveal className="scroll-mt-[4.5rem]">
