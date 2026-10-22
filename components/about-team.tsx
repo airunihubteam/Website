@@ -94,7 +94,8 @@ export function TeamSection({
     if (openIndex === null && dialog.open) dialog.close();
   }, [openIndex]);
 
-  // The pill follows the active tab; it is placed directly so it can glide between tabs.
+  // The pill follows the active tab; it is placed directly so it can glide between tabs. Where
+  // the tabs scroll sideways (phones), the chosen tab also glides to the middle.
   useEffect(() => {
     const tabs = tabsRef.current;
     const pill = pillRef.current;
@@ -106,10 +107,14 @@ export function TeamSection({
       pill.style.transform = `translateX(${active.offsetLeft}px)`;
     };
     place();
+    const active = tabs.querySelector<HTMLElement>('[aria-pressed="true"]');
+    if (active && filtered) {
+      tabs.scrollTo({ left: active.offsetLeft + active.offsetWidth / 2 - tabs.clientWidth / 2, behavior: "smooth" });
+    }
     const observer = new ResizeObserver(place);
     observer.observe(tabs);
     return () => observer.disconnect();
-  }, [filter]);
+  }, [filter, filtered]);
 
   const step = (delta: number) => {
     if (openIndex === null) return;
