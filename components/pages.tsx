@@ -20,11 +20,11 @@ import {
 } from "@/content/copy";
 import { aboutGroups, advisoryTeam, peopleByIds, peopleIn, personMedia, pitchTeam, type Person } from "@/content/people";
 import { TeamSection, type TeamLabels, type TeamMember } from "@/components/about-team";
+import { CardSlider } from "@/components/card-slider";
 import { ClubSlider, type ClubSlide, type ClubSliderLabels } from "@/components/club-slider";
 import { GatePanels, type GatePanel, type GatePanelsLabels } from "@/components/gate-panels";
 import { Chevron } from "@/components/icons";
 import { ImpactStats, JoinSection, type ImpactLabels, type ImpactStat, type JoinCard } from "@/components/impact-section";
-import { FocusRow } from "@/components/focus-row";
 import { RevealController, SectionRail, type RailSection } from "@/components/home-motion";
 import { CatalogCard, PersonCard, Section, StarBullet } from "@/components/ui";
 import { pick, withLocale, type Locale, type Localized } from "@/lib/locale";
@@ -372,11 +372,11 @@ function PillarIcon({ name }: { name: PillarIconName }) {
     <svg
       viewBox="0 0 24 24"
       aria-hidden="true"
-      className="pointer-events-none absolute -end-7 top-2 h-28 w-28 transition-[translate] duration-700 ltr:group-hover:-translate-x-3 rtl:group-hover:translate-x-3"
+      className="pointer-events-none absolute -end-7 top-2 h-28 w-28 transition-[translate] duration-700 ltr:group-hover:-translate-x-3 rtl:group-hover:translate-x-3 ltr:group-data-active:-translate-x-3 rtl:group-data-active:translate-x-3"
       style={{ transitionTimingFunction: "var(--ease)" }}
     >
       {name === "eye" ? (
-        <g className="origin-center motion-safe:group-hover:animate-[eye-blink_2.6s_ease-in-out_infinite]" style={{ transformBox: "fill-box" }}>
+        <g className="origin-center motion-safe:group-hover:animate-[eye-blink_2.6s_ease-in-out_infinite] motion-safe:group-data-active:animate-[eye-blink_2.6s_ease-in-out_infinite]" style={{ transformBox: "fill-box" }}>
           <path d="M1.5 12C3.8 7.4 7.6 4.8 12 4.8s8.2 2.6 10.5 7.2c-2.3 4.6-6.1 7.2-10.5 7.2S3.8 16.6 1.5 12z" fill={PILLAR_FILL} />
           <circle cx="12" cy="12" r="3.9" fill="#ffffff" />
           <circle cx="12" cy="12" r="1.9" fill={PILLAR_FILL} />
@@ -386,7 +386,7 @@ function PillarIcon({ name }: { name: PillarIconName }) {
         <path
           d="M12 21s-8.6-5.2-8.6-11.3A4.9 4.9 0 0 1 12 6.6a4.9 4.9 0 0 1 8.6 3.1C20.6 15.8 12 21 12 21z"
           fill={PILLAR_FILL}
-          className="origin-center motion-safe:group-hover:animate-[heart-beat_1.4s_ease-in-out_infinite]"
+          className="origin-center motion-safe:group-hover:animate-[heart-beat_1.4s_ease-in-out_infinite] motion-safe:group-data-active:animate-[heart-beat_1.4s_ease-in-out_infinite]"
           style={{ transformBox: "fill-box" }}
         />
       ) : null}
@@ -404,7 +404,7 @@ function PillarIcon({ name }: { name: PillarIconName }) {
               cy={cy}
               r="3.2"
               fill={PILLAR_FILL}
-              className="origin-center motion-safe:group-hover:animate-[node-pulse_1.8s_ease-in-out_infinite]"
+              className="origin-center motion-safe:group-hover:animate-[node-pulse_1.8s_ease-in-out_infinite] motion-safe:group-data-active:animate-[node-pulse_1.8s_ease-in-out_infinite]"
               style={{ transformBox: "fill-box", animationDelay: `${index * 0.25}s` }}
             />
           ))}
@@ -498,22 +498,25 @@ export function AboutPage({ locale }: { locale: Locale }) {
           </div>
         </div>
 
-        <FocusRow
+        <CardSlider
+          titles={aboutPillars.map((pillar) => pick(pillar.title, locale) ?? pillar.title.he)}
           label={locale === "en" ? "Highlights" : "נקודות מרכזיות"}
-          className="-mx-5 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-[15vw] py-3 [scrollbar-width:none] md:mx-0 md:mt-20 md:grid md:grid-cols-3 md:gap-5 md:overflow-visible md:px-0 md:py-0"
+          goTo={clubSliderLabels[locale].goTo}
+          dir={dir}
+          className="mt-6 md:mt-20"
         >
           {aboutPillars.map((pillar, index) => (
             <article
               key={pillar.title.he}
               data-reveal-item={String(index + 4)}
-              className="group relative isolate w-[70vw] shrink-0 snap-center overflow-hidden rounded-[24px] border border-[#e6e9f5] bg-white p-6 md:w-auto md:p-7 transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-club/30 hover:shadow-[0_24px_50px_-28px_rgba(15,45,150,0.45)]"
+              className="group relative isolate h-full overflow-hidden rounded-[24px] border border-[#e6e9f5] bg-white p-6 md:p-7 transition-[translate,box-shadow,border-color] duration-500 group-data-active:border-club/30 group-data-active:shadow-[0_24px_50px_-28px_rgba(15,45,150,0.45)] hover:-translate-y-1 hover:border-club/30 hover:shadow-[0_24px_50px_-28px_rgba(15,45,150,0.45)]"
             >
               <PillarIcon name={pillar.icon} />
               <h3 className="relative flex min-h-24 items-center pe-24 text-2xl font-bold text-club">{pick(pillar.title, locale)}</h3>
               <p className="relative mt-2 text-justify text-[15px] leading-7 text-ink/85">{pick(pillar.text, locale)}</p>
             </article>
           ))}
-        </FocusRow>
+        </CardSlider>
       </section>
 
       <div id="about-numbers" data-reveal className="scroll-mt-[4.5rem]">
