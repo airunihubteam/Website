@@ -19,6 +19,8 @@ export function Header({ locale }: { locale: Locale }) {
   const [open, setOpen] = useState(false);
   const [solid, setSolid] = useState(false);
   const [hidden, setHidden] = useState(false);
+  // The phone menu's open submenu, by its item's href; closed whenever the menu is toggled.
+  const [subOpen, setSubOpen] = useState<string | null>(null);
   const progressRef = useRef<HTMLSpanElement>(null);
   const pathname = usePathname() || "/";
   const other = locale === "he" ? "en" : "he";
@@ -127,28 +129,59 @@ export function Header({ locale }: { locale: Locale }) {
               >
                 {item ? (
                   <>
-                    <Link href={withLocale(item.href, locale)} className={`text-base text-white ${linkLine}`} onClick={() => setOpen(false)}>
-                      {pick(item.label, locale)}
+                    {/* On phones the row also holds a toggle for the submenu; on desktop it opens on hover. */}
+                    <div className="flex items-center justify-between md:contents">
+                      <Link href={withLocale(item.href, locale)} className={`text-base text-white ${linkLine}`} onClick={() => setOpen(false)}>
+                        {pick(item.label, locale)}
+                        {item.children ? (
+                          <span aria-hidden="true" className="ms-1 inline-block text-xs transition-transform duration-300 group-hover:rotate-180 group-focus-within:rotate-180 max-md:hidden">
+                            ▾
+                          </span>
+                        ) : null}
+                      </Link>
                       {item.children ? (
-                        <span aria-hidden="true" className="ms-1 inline-block text-xs transition-transform duration-300 group-hover:rotate-180 group-focus-within:rotate-180">
-                          ▾
-                        </span>
+                        <button
+                          type="button"
+                          className="-my-1 flex h-9 w-9 items-center justify-center text-white md:hidden"
+                          aria-expanded={subOpen === item.href}
+                          aria-controls={`submenu-${index}`}
+                          aria-label={`${pick(item.label, locale)}: ${locale === "en" ? "submenu" : "תפריט משנה"}`}
+                          onClick={() => setSubOpen((current) => (current === item.href ? null : item.href))}
+                        >
+                          <svg
+                            viewBox="0 0 20 20"
+                            width="16"
+                            height="16"
+                            aria-hidden="true"
+                            className={`transition-transform duration-300 ${subOpen === item.href ? "rotate-180" : ""}`}
+                          >
+                            <path d="M5 7.5l5 5 5-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        </button>
                       ) : null}
-                    </Link>
+                    </div>
                     {item.children ? (
-                      <ul className="mt-2 flex flex-col gap-2 bg-white p-3 text-club md:invisible md:absolute md:top-[calc(100%+0.75rem)] md:mt-0 md:min-w-48 md:translate-y-2 md:rounded-md md:opacity-0 md:shadow-[0_24px_50px_-20px_rgba(6,19,71,0.5)] md:transition-[opacity,translate,visibility] md:duration-300 md:group-focus-within:visible md:group-focus-within:translate-y-0 md:group-focus-within:opacity-100 md:group-hover:visible md:group-hover:translate-y-0 md:group-hover:opacity-100 md:before:absolute md:before:inset-x-0 md:before:-top-3 md:before:h-3">
-                        {item.children.map((child) => (
-                          <li key={child.href}>
-                            <Link
-                              href={withLocale(child.href, locale)}
-                              className="inline-block text-sm text-club transition-[translate,color] duration-300 hover:text-club/70 ltr:hover:translate-x-1 rtl:hover:-translate-x-1"
-                              onClick={() => setOpen(false)}
-                            >
-                              {pick(child.label, locale)}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
+                      // Phones: rows animate from 0fr to 1fr to fold the submenu open; desktop ignores both wrappers.
+                      <div
+                        id={`submenu-${index}`}
+                        className={`grid transition-[grid-template-rows] duration-300 md:contents ${subOpen === item.href ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+                      >
+                        <div className={`min-h-0 overflow-hidden md:contents ${subOpen === item.href ? "" : "max-md:invisible"}`}>
+                          <ul className="mt-2 flex flex-col gap-2 bg-white p-3 text-club md:invisible md:absolute md:top-[calc(100%+0.75rem)] md:mt-0 md:min-w-48 md:translate-y-2 md:rounded-md md:opacity-0 md:shadow-[0_24px_50px_-20px_rgba(6,19,71,0.5)] md:transition-[opacity,translate,visibility] md:duration-300 md:group-focus-within:visible md:group-focus-within:translate-y-0 md:group-focus-within:opacity-100 md:group-hover:visible md:group-hover:translate-y-0 md:group-hover:opacity-100 md:before:absolute md:before:inset-x-0 md:before:-top-3 md:before:h-3">
+                            {item.children.map((child) => (
+                              <li key={child.href}>
+                                <Link
+                                  href={withLocale(child.href, locale)}
+                                  className="inline-block text-sm text-club transition-[translate,color] duration-300 hover:text-club/70 ltr:hover:translate-x-1 rtl:hover:-translate-x-1"
+                                  onClick={() => setOpen(false)}
+                                >
+                                  {pick(child.label, locale)}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
                     ) : null}
                   </>
                 ) : (
@@ -168,7 +201,10 @@ export function Header({ locale }: { locale: Locale }) {
             aria-expanded={open}
             aria-controls="site-nav"
             aria-label={open ? (locale === "en" ? "Close menu" : "סגירת התפריט") : locale === "en" ? "Open menu" : "פתיחת התפריט"}
-            onClick={() => setOpen((value) => !value)}
+            onClick={() => {
+              setOpen((value) => !value);
+              setSubOpen(null);
+            }}
           >
             <span aria-hidden="true" className="relative block h-4 w-6">
               <span className={`absolute inset-x-0 h-0.5 rounded bg-current transition-[top,rotate] duration-300 ${open ? "top-[7px] rotate-45" : "top-0"}`} />
