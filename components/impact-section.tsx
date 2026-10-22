@@ -238,7 +238,7 @@ function JoinIcon({ name, featured }: { name: JoinIconName; featured?: boolean }
       className={`pointer-events-none absolute bottom-3 -z-10 h-16 w-16 transition-opacity duration-500 sm:bottom-4 sm:h-36 sm:w-36 lg:bottom-[76px] lg:h-24 lg:w-24 xl:bottom-4 xl:h-36 xl:w-36 ${
         // The rocket sits beside the widest button, so it moves further into the corner;
         // the box may overhang the edge, but the drawing itself stays inside the card.
-        featured ? "-end-3 text-white opacity-30 group-hover:opacity-80" : "end-4 text-club opacity-20 group-hover:opacity-60"
+        featured ? "end-4 text-white opacity-30 group-hover:opacity-80 sm:-end-3" : "end-4 text-club opacity-20 group-hover:opacity-60"
       }`}
     >
       {name === "search" ? (
