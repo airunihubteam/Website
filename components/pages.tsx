@@ -148,8 +148,32 @@ function impactStats(locale: Locale): ImpactStat[] {
 }
 
 // The join pages exist only in Hebrew, so English shows the numbers alone.
+// The join pages exist only in Hebrew, so the English cards translate their lines and link there.
 function joinCards(locale: Locale): JoinCard[] {
-  if (locale === "en") return [];
+  const programNames = programs
+    .slice(0, 5)
+    .map((item) => pick(item.name, locale) ?? item.name.he)
+    .join(" · ");
+  if (locale === "en") {
+    return [
+      {
+        href: "/join/chair",
+        title: "Chair Search Committee",
+        summary: "This is your chance to experience what it is like to run an organization with a budget of hundreds of thousands of shekels, and to impact more than 1,500 students.",
+        cta: "Register",
+        icon: "search",
+      },
+      { href: "/join/programs", title: "Program Management", summary: aboutParagraphs[6].en ?? aboutParagraphs[6].he, cta: "Register", icon: "checklist" },
+      {
+        href: "/join/new-program",
+        title: "An Idea for a New Club",
+        summary: "Have an idea for a new program within the Entrepreneurship Club? We would love to hear it.",
+        cta: "Learn More",
+        icon: "bulb",
+      },
+      { href: "/en/programs", title: "Our Programs", summary: `${programNames} and more`, cta: "All Programs", icon: "rocket", featured: true },
+    ];
+  }
   return [
     {
       href: "/join/chair",
@@ -164,10 +188,7 @@ function joinCards(locale: Locale): JoinCard[] {
     {
       href: "/programs",
       title: "התוכניות שלנו",
-      summary: `${programs
-        .slice(0, 5)
-        .map((item) => item.name.he)
-        .join(" · ")} ועוד`,
+      summary: `${programNames} ועוד`,
       cta: "לכל התוכניות",
       icon: "rocket",
       featured: true,
@@ -188,6 +209,7 @@ const homeSections: Record<Locale, RailSection[]> = {
   en: [
     { id: "home", label: "Home" },
     { id: "numbers", label: "Numbers" },
+    { id: "join", label: "Get Involved" },
     { id: "about-us", label: "About" },
     { id: "activity", label: "Activity" },
     { id: "our-programs", label: "Programs" },
@@ -233,11 +255,9 @@ export function HomePage({ locale }: { locale: Locale }) {
       <div id="numbers" data-reveal className="scroll-mt-[4.5rem]">
         <ImpactStats stats={impactStats(locale)} label={impactLabels[locale].stats} />
       </div>
-      {locale === "he" ? (
-        <div id="join" data-reveal className="scroll-mt-[4.5rem]">
-          <JoinSection cards={joinCards(locale)} title={impactLabels[locale].join} dir="rtl" />
-        </div>
-      ) : null}
+      <div id="join" data-reveal className="scroll-mt-[4.5rem]">
+        <JoinSection cards={joinCards(locale)} title={impactLabels[locale].join} dir={dir} />
+      </div>
       <section id="about-us" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 py-14 md:px-8">
         <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
           <span className="club-underline">{locale === "en" ? "About Us" : "קצת עלינו"}</span>

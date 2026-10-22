@@ -170,7 +170,7 @@ export function JoinSection({ cards, title, dir }: { cards: JoinCard[]; title: s
               href={card.href}
               data-reveal-item={String(index + 1)}
               onPointerMove={spotlight}
-              className={`group relative isolate flex min-h-[300px] flex-col overflow-hidden rounded-[24px] border p-6 lg:min-h-[360px] xl:min-h-[300px] transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 ${
+              className={`group relative isolate flex min-h-[320px] flex-col overflow-hidden rounded-[24px] border p-6 lg:min-h-[390px] xl:min-h-[350px] transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 ${
                 card.featured
                   ? "border-club bg-club text-white shadow-[0_24px_50px_-28px_rgba(15,45,150,0.7)]"
                   : "border-[#e6e9f5] bg-white text-club hover:border-club/30 hover:shadow-[0_24px_50px_-28px_rgba(15,45,150,0.45)]"
