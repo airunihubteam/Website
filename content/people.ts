@@ -292,8 +292,8 @@ export function aboutTeam(): Person[] {
 // The About page's team, in the order and groups it shows them.
 export const aboutGroups: { key: string; label: Localized; ids: string[] }[] = [
   { key: "lead", label: { he: "הנהלה", en: "Leadership" }, ids: ["omer-biran", "shir-shani", "shani-aharon", "gal-atzmon"] },
-  { key: "brand", label: { he: "מותג ושיווק", en: "Brand & Marketing" }, ids: ["michal-shoris", "noa-paster", "shiri-izhaki", "daniel-pinkasovich"] },
   { key: "ai", label: { he: "חדשנות ו-AI", en: "Innovation & AI" }, ids: ["nir-frost", "shay-taub", "yarin-layani", "tal-frankenthal"] },
+  { key: "brand", label: { he: "מותג ושיווק", en: "Brand & Marketing" }, ids: ["michal-shoris", "noa-paster", "shiri-izhaki", "daniel-pinkasovich"] },
   { key: "operations", label: { he: "אופרציה", en: "Operations" }, ids: ["tomer-epstein", "gili", "noam-bar"] },
   { key: "community", label: { he: "קהילה", en: "Community" }, ids: ["shir-dayan", "shir-rubin", "maya-ron"] },
   { key: "finance", label: { he: "כספים וחסויות", en: "Finance & Sponsorships" }, ids: ["dana-dabash", "shahar"] },
