@@ -20,16 +20,62 @@ import {
 } from "@/content/copy";
 import { advisoryTeam, aboutTeam, peopleByIds, peopleIn, pitchTeam, type Person } from "@/content/people";
 import { ClubSlider, type ClubSlide, type ClubSliderLabels } from "@/components/club-slider";
+import { GatePanels, type GatePanel, type GatePanelsLabels } from "@/components/gate-panels";
 import { CatalogCard, PersonCard, Section, StarBullet } from "@/components/ui";
-import { pick, withLocale, type Locale } from "@/lib/locale";
+import { pick, withLocale, type Locale, type Localized } from "@/lib/locale";
 
-const gates = [
-  { href: "/programs", he: "תוכניות", en: "Programs", image: "/media/wp/gate-programs.jpg" },
-  { href: "/accelerator", he: "אקסלרטור", en: "Accelerator", image: "/media/wp/gate-accelerator.jpg" },
-  { href: "/conferences", he: "כנסים", en: "Conferences", image: "/media/wp/gate-conferences.jpg" },
-  { href: "/pitch-night", he: "Pitch Night", en: "Pitch Night", image: "/media/wp/gate-pitch.jpg" },
-  { href: "/internship", he: "מסלול לתעשייה", en: "Industry Internship", image: "/media/wp/gate-internship.jpg" },
+function firstSentence(text: string): string {
+  const end = text.indexOf(". ");
+  return end === -1 ? text : text.slice(0, end + 1);
+}
+
+// Each gate's line is taken from copy that already appears on the site.
+const gates: { href: string; title: Localized; summary: Localized; image: string }[] = [
+  {
+    href: "/programs",
+    title: { he: "תוכניות", en: "Programs" },
+    summary: { he: firstSentence(aboutParagraphs[5].he), en: firstSentence(aboutParagraphs[5].en ?? "") },
+    image: "/media/wp/gate-programs.jpg",
+  },
+  {
+    href: "/accelerator",
+    title: { he: "אקסלרטור", en: "Accelerator" },
+    summary: accelerator.summary,
+    image: "/media/wp/gate-accelerator.jpg",
+  },
+  {
+    href: "/conferences",
+    title: { he: "כנסים", en: "Conferences" },
+    summary: { he: conferences.map((item) => item.name.he).join(" · ") },
+    image: "/media/wp/gate-conferences.jpg",
+  },
+  {
+    href: "/pitch-night",
+    title: { he: "Pitch Night", en: "Pitch Night" },
+    summary: { he: firstSentence(pitchIntro.he), en: firstSentence(pitchIntro.en ?? "") },
+    image: "/media/wp/gate-pitch.jpg",
+  },
+  {
+    href: "/internship",
+    title: { he: "מסלול לתעשייה", en: "Industry Internship" },
+    summary: { he: internshipHe.body[0], en: internshipEn.body[0] },
+    image: "/media/wp/gate-internship.jpg",
+  },
 ];
+
+const gatePanelsLabels: Record<Locale, GatePanelsLabels> = {
+  he: { title: "מוקדי העיסוק שלנו", more: "לפרטים נוספים" },
+  en: { title: "Our Activity Centers", more: "Read More" },
+};
+
+function gatePanels(locale: Locale): GatePanel[] {
+  return gates.map((gate) => ({
+    href: withLocale(gate.href, locale),
+    title: pick(gate.title, locale) ?? gate.title.he,
+    summary: pick(gate.summary, locale),
+    image: gate.image,
+  }));
+}
 
 const clubLogos = [
   { slug: "artemis", logo: "/media/wp/logos/artemis.png" },
@@ -166,17 +212,7 @@ export function HomePage({ locale }: { locale: Locale }) {
           </div>
         </div>
       </section>
-      <section className="grid grid-cols-2 md:grid-cols-5">
-        {gates.map((gate) => (
-          <Link key={gate.href} href={withLocale(gate.href, locale)} className="relative flex min-h-64 items-center justify-center">
-            <Image src={gate.image} alt="" fill className="object-cover" sizes="20vw" />
-            <span className="absolute inset-0 bg-club/45" />
-            <span className="relative px-3 text-center text-2xl font-bold text-white">
-              <span className="border-b-2 border-white pb-1">{locale === "en" ? gate.en : gate.he}</span>
-            </span>
-          </Link>
-        ))}
-      </section>
+      <GatePanels items={gatePanels(locale)} labels={gatePanelsLabels[locale]} dir={locale === "en" ? "ltr" : "rtl"} />
       <ClubSlider slides={clubSlides(locale)} labels={clubSliderLabels[locale]} dir={locale === "en" ? "ltr" : "rtl"} />
       <section className="bg-gradient-to-b from-band to-club px-5 py-16 text-white md:px-8">
         <div className="mx-auto w-full max-w-4xl">
