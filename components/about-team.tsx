@@ -251,7 +251,7 @@ export function TeamSection({
                 <span aria-hidden="true" className="mt-4 block h-[3px] w-12 bg-club" />
                 {current.bio ? <p className="mt-5 text-justify text-[15px] leading-8 text-ink/85">{current.bio}</p> : null}
               </div>
-              <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-[#e9ecf6] pt-5">
+              <div className="mt-6 flex flex-col items-center gap-4 border-t border-[#e9ecf6] pt-5 md:flex-row md:flex-wrap md:justify-between">
                 {current.linkedin ? (
                   <a
                     href={current.linkedin}
@@ -269,7 +269,7 @@ export function TeamSection({
                     <Chevron dir={dir} className="transition-transform duration-500 group-hover/link:translate-x-1 rtl:group-hover/link:-translate-x-1" />
                   </a>
                 ) : (
-                  <span />
+                  <span className="hidden md:block" />
                 )}
                 {visible.length > 1 ? (
                   <div className="flex items-center gap-3">
