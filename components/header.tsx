@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { nav } from "@/content/nav";
 import { pick, withLocale, type Locale } from "@/lib/locale";
 
@@ -21,6 +21,9 @@ export function Header({ locale }: { locale: Locale }) {
   const [hidden, setHidden] = useState(false);
   // The phone menu's open submenu, by its item's href; closed whenever the menu is toggled.
   const [subOpen, setSubOpen] = useState<string | null>(null);
+  // The desktop submenu just used to pick a page. Hover and focus would otherwise keep it open
+  // after the page changes underneath, so it stays shut until the pointer leaves its item.
+  const [dismissed, setDismissed] = useState<string | null>(null);
   const progressRef = useRef<HTMLSpanElement>(null);
   const pathname = usePathname() || "/";
   const other = locale === "he" ? "en" : "he";
@@ -28,6 +31,13 @@ export function Header({ locale }: { locale: Locale }) {
   const switchHref = withLocale(tail, other);
   const home = withLocale("/", locale);
   const isHome = pathname === home;
+
+  const choose = (event: MouseEvent<HTMLAnchorElement>, menu?: string) => {
+    setOpen(false);
+    setSubOpen(null);
+    if (menu) setDismissed(menu);
+    event.currentTarget.blur();
+  };
   const reichman = locale === "en" ? "/brand/reichman-en-white.png" : "/brand/wp/logo.webp";
   // The university mark leads to the university's own site, in a new tab; the club logo leads home.
   const universityHref = locale === "en" ? "https://www.runi.ac.il/en/" : "https://www.runi.ac.il/";
@@ -154,15 +164,23 @@ export function Header({ locale }: { locale: Locale }) {
                 key={item?.href ?? "language"}
                 className={`group relative max-md:transition-[opacity,translate] max-md:duration-500 ${dropIn} ${open ? "max-md:translate-y-0 max-md:opacity-100" : "max-md:-translate-y-2 max-md:opacity-0"}`}
                 style={{ ...dropDelay(index + 1), transitionDelay: open ? `${(index + 1) * 45}ms` : "0ms" }}
+                onMouseLeave={item?.children ? () => setDismissed(null) : undefined}
               >
                 {item ? (
                   <>
                     {/* On phones the row also holds a toggle for the submenu; on desktop it opens on hover. */}
                     <div className="flex items-center justify-between md:contents">
-                      <Link href={withLocale(item.href, locale)} className={`text-base text-white ${linkLine}`} onClick={() => setOpen(false)}>
+                      <Link
+                        href={withLocale(item.href, locale)}
+                        className={`text-base text-white ${linkLine}`}
+                        onClick={(event) => choose(event, item.children ? item.href : undefined)}
+                      >
                         {pick(item.label, locale)}
                         {item.children ? (
-                          <span aria-hidden="true" className="ms-1 inline-block text-xs transition-transform duration-300 group-hover:rotate-180 group-focus-within:rotate-180 max-md:hidden">
+                          <span
+                            aria-hidden="true"
+                            className={`ms-1 inline-block text-xs transition-transform duration-300 max-md:hidden ${dismissed === item.href ? "" : "group-hover:rotate-180 group-focus-within:rotate-180"}`}
+                          >
                             ▾
                           </span>
                         ) : null}
@@ -195,13 +213,19 @@ export function Header({ locale }: { locale: Locale }) {
                         className={`grid transition-[grid-template-rows] duration-300 md:contents ${subOpen === item.href ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
                       >
                         <div className={`min-h-0 overflow-hidden md:contents ${subOpen === item.href ? "" : "max-md:invisible"}`}>
-                          <ul className="mt-2 flex flex-col gap-2 bg-white p-3 text-club md:invisible md:absolute md:top-[calc(100%+0.75rem)] md:mt-0 md:min-w-48 md:translate-y-2 md:rounded-md md:opacity-0 md:shadow-[0_24px_50px_-20px_rgba(6,19,71,0.5)] md:transition-[opacity,translate,visibility] md:duration-300 md:group-focus-within:visible md:group-focus-within:translate-y-0 md:group-focus-within:opacity-100 md:group-hover:visible md:group-hover:translate-y-0 md:group-hover:opacity-100 md:before:absolute md:before:inset-x-0 md:before:-top-3 md:before:h-3">
+                          <ul
+                            className={`mt-2 flex flex-col gap-2 bg-white p-3 text-club md:invisible md:absolute md:top-[calc(100%+0.75rem)] md:mt-0 md:min-w-48 md:translate-y-2 md:rounded-md md:opacity-0 md:shadow-[0_24px_50px_-20px_rgba(6,19,71,0.5)] md:transition-[opacity,translate,visibility] md:duration-300 md:before:absolute md:before:inset-x-0 md:before:-top-3 md:before:h-3 ${
+                              dismissed === item.href
+                                ? ""
+                                : "md:group-focus-within:visible md:group-focus-within:translate-y-0 md:group-focus-within:opacity-100 md:group-hover:visible md:group-hover:translate-y-0 md:group-hover:opacity-100"
+                            }`}
+                          >
                             {item.children.map((child) => (
                               <li key={child.href}>
                                 <Link
                                   href={withLocale(child.href, locale)}
                                   className="inline-block text-sm text-club transition-[translate,color] duration-300 hover:text-club/70 ltr:hover:translate-x-1 rtl:hover:-translate-x-1"
-                                  onClick={() => setOpen(false)}
+                                  onClick={(event) => choose(event, item.href)}
                                 >
                                   {pick(child.label, locale)}
                                 </Link>
