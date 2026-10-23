@@ -107,7 +107,7 @@ export const programs: CatalogItem[] = [
     image: "/media/product-hub.jpg",
     color: "#bf2cf2",
     summary: {
-      he: "חשיפה והיכרות עם תפקיד מנהל/ת המוצר, מתן השראה למנהלי מוצר עתידיים, וכלים מעשיים ופרקטיים לניהול מוצר.",
+      he: "חשיפה והיכרות עם תפקיד מנהל המוצר, מתן השראה למנהלי מוצר עתידיים, וכלים מעשיים ופרקטיים לניהול מוצר.",
       en: "A semester program that gives students knowledge in the world of product management in the high-tech industry.",
     },
   },
