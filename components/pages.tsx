@@ -20,6 +20,7 @@ import {
   stats,
 } from "@/content/copy";
 import { aboutGroups, advisoryTeam, peopleByIds, peopleIn, personMedia, pitchTeam, type Person } from "@/content/people";
+import { programDetails, type ProgramDetails } from "@/content/program-details";
 import { TeamSection, type TeamLabels, type TeamMember } from "@/components/about-team";
 import { CardSlider } from "@/components/card-slider";
 import { ClubSlider, type ClubSlide, type ClubSliderLabels } from "@/components/club-slider";
@@ -696,7 +697,8 @@ export function ProgramIndex({ locale }: { locale: Locale }) {
 export function ProgramPage({ locale, slug }: { locale: Locale; slug: string }) {
   const item = findProgram(slug);
   if (!item || (locale === "en" && !item.summary.en)) notFound();
-  return <ItemPage locale={locale} item={item} />;
+  const details = programDetails[slug];
+  return details ? <ProgramDetailPage locale={locale} item={item} details={details} /> : <ItemPage locale={locale} item={item} />;
 }
 
 export function AcceleratorIndex({ locale }: { locale: Locale }) {
@@ -890,6 +892,354 @@ export function JoinPage({ slug }: { slug: "chair" | "programs" | "new-program" 
   );
 }
 
+const dayNames: Record<Locale, string[]> = {
+  he: ["יום ראשון", "יום שני", "יום שלישי", "יום רביעי", "יום חמישי", "יום שישי", "שבת"],
+  en: ["Sundays", "Mondays", "Tuesdays", "Wednesdays", "Thursdays", "Fridays", "Saturdays"],
+};
+
+const programLabels: Record<
+  Locale,
+  {
+    eyebrow: string;
+    back: string;
+    language: string;
+    languages: Record<"he" | "en", string>;
+    frequency: string;
+    semester: string;
+    meets: string;
+    details: string;
+    about: string;
+    follow: string;
+    website: string;
+    managers: string;
+    gallery: string;
+    more: string;
+    all: string;
+  }
+> = {
+  he: {
+    eyebrow: "תוכנית · מועדון היזמות",
+    back: "לכל התוכניות",
+    language: "שפה",
+    languages: { he: "עברית", en: "אנגלית" },
+    frequency: "תדירות",
+    semester: "סמסטריאלי",
+    meets: "מפגש שבועי",
+    details: "פרטי התוכנית",
+    about: "על התוכנית",
+    follow: "עקבו אחרינו",
+    website: "אתר התוכנית",
+    managers: "מנהלי התוכנית",
+    gallery: "גלרייה",
+    more: "תוכניות נוספות",
+    all: "לכל התוכניות",
+  },
+  en: {
+    eyebrow: "Program · Entrepreneurship Club",
+    back: "All programs",
+    language: "Language",
+    languages: { he: "Hebrew", en: "English" },
+    frequency: "Frequency",
+    semester: "Semester-long",
+    meets: "Weekly Meeting",
+    details: "Program Details",
+    about: "About the Program",
+    follow: "Follow Us",
+    website: "Program website",
+    managers: "Program Managers",
+    gallery: "Gallery",
+    more: "More Programs",
+    all: "All programs",
+  },
+};
+
+type FactIconName = "language" | "calendar" | "clock";
+
+// A large icon in the program's light tone, cropped by the fact card's edge. On hover it slides
+// further in and acts out its meaning: the speech bubble types, the calendar ticks a day off and
+// the clock's hand sweeps round.
+function FactIcon({ name }: { name: FactIconName }) {
+  const dot = "origin-center fill-white motion-safe:group-hover:animate-[node-pulse_1.2s_ease-in-out_infinite]";
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className="pointer-events-none absolute -end-6 top-1/2 h-24 w-24 -translate-y-1/2 fill-(--tone-light) transition-[translate] duration-700 ltr:group-hover:-translate-x-3 rtl:group-hover:translate-x-3"
+      style={{ transitionTimingFunction: "var(--ease)" }}
+    >
+      {name === "language" ? (
+        <>
+          <path d="M5 3.5h14A2.5 2.5 0 0 1 21.5 6v8.5A2.5 2.5 0 0 1 19 17h-8.2L6 20.8V17H5a2.5 2.5 0 0 1-2.5-2.5V6A2.5 2.5 0 0 1 5 3.5z" />
+          {[8, 12, 16].map((cx, index) => (
+            <circle key={cx} cx={cx} cy="10.3" r="1.25" className={dot} style={{ transformBox: "fill-box", animationDelay: `${index * 0.18}s` }} />
+          ))}
+        </>
+      ) : null}
+      {name === "calendar" ? (
+        <>
+          <path d="M5 4.5h14A2.5 2.5 0 0 1 21.5 7v12a2.5 2.5 0 0 1-2.5 2.5H5A2.5 2.5 0 0 1 2.5 19V7A2.5 2.5 0 0 1 5 4.5z" />
+          <rect x="6.5" y="2" width="2.4" height="5" rx="1.2" />
+          <rect x="15.1" y="2" width="2.4" height="5" rx="1.2" />
+          <path d="M2.5 9.6h19" fill="none" stroke="#ffffff" strokeWidth="1.2" />
+          <path
+            d="M8.2 15.4l2.4 2.4 5.2-5.2"
+            fill="none"
+            stroke="#ffffff"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            pathLength={1}
+            className="[stroke-dasharray:1] [stroke-dashoffset:1] transition-[stroke-dashoffset] delay-150 duration-700 group-hover:[stroke-dashoffset:0]"
+          />
+        </>
+      ) : null}
+      {name === "clock" ? (
+        <>
+          <circle cx="12" cy="12" r="10" />
+          {[0, 90, 180, 270].map((angle) => (
+            <circle key={angle} cx="12" cy="4.6" r="0.9" fill="#ffffff" transform={`rotate(${angle} 12 12)`} />
+          ))}
+          <path d="M12 12V7.6" stroke="#ffffff" strokeWidth="1.8" strokeLinecap="round" />
+          <path
+            d="M12 12h4.6"
+            stroke="#ffffff"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            className="transition-[rotate] duration-[1600ms] group-hover:rotate-[360deg]"
+            style={{ transformOrigin: "12px 12px", transitionTimingFunction: "var(--ease)" }}
+          />
+        </>
+      ) : null}
+    </svg>
+  );
+}
+
+type SocialName = "instagram" | "linkedin" | "facebook" | "website";
+
+function SocialIcon({ name }: { name: SocialName }) {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" className="shrink-0">
+      {name === "instagram" ? (
+        <>
+          <rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" strokeWidth="1.8" />
+          <circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" strokeWidth="1.8" />
+          <circle cx="17.4" cy="6.6" r="1.2" fill="currentColor" />
+        </>
+      ) : null}
+      {name === "linkedin" ? (
+        <path
+          fill="currentColor"
+          d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"
+        />
+      ) : null}
+      {name === "facebook" ? (
+        <path fill="currentColor" d="M13.5 21v-7.6h2.6l.4-3h-3V8.5c0-.9.3-1.5 1.5-1.5h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.8v3h2.6V21h3.1z" />
+      ) : null}
+      {name === "website" ? (
+        <>
+          <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.8" />
+          <path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z" fill="none" stroke="currentColor" strokeWidth="1.6" />
+        </>
+      ) : null}
+    </svg>
+  );
+}
+
+// A program's page, one template for every program: its photo in its own color, the three
+// facts of when and how it meets, what it is about with its social accounts, its photos when
+// it has some, its managers, and a way on to other programs.
+function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: CatalogItem; details: ProgramDetails }) {
+  const dir = locale === "en" ? "ltr" : "rtl";
+  const labels = programLabels[locale];
+  const name = pick(item.name, locale) ?? item.name.he;
+  const tone = item.color ?? "#0f2d96";
+  const logo = clubLogos.find((entry) => entry.slug === item.slug)?.logo;
+  const about = (locale === "en" ? details.about.en : undefined) ?? details.about.he;
+  const managers: TeamMember[] = details.managers.flatMap((person, index) => {
+    const personName = pick(person.name, locale);
+    return personName ? [{ id: `${item.slug}-${index}`, name: personName, role: pick(person.role, locale), photo: person.photo, linkedin: person.linkedin }] : [];
+  });
+  const links = (["instagram", "linkedin", "facebook", "website"] as const).flatMap((key) => {
+    const href = details.links[key];
+    return href ? [{ key, href, label: key === "website" ? labels.website : { instagram: "Instagram", linkedin: "LinkedIn", facebook: "Facebook" }[key] }] : [];
+  });
+  const listed = locale === "en" ? programs.filter((entry) => entry.summary.en) : programs;
+  const at = listed.findIndex((entry) => entry.slug === item.slug);
+  const others = [1, 2, 3].map((step) => listed[(at + step) % listed.length]).filter((entry) => entry.slug !== item.slug);
+  const sections: RailSection[] = [
+    { id: "program-top", label: name },
+    { id: "program-about", label: labels.about },
+    ...(details.gallery.length ? [{ id: "program-gallery", label: labels.gallery }] : []),
+    ...(managers.length ? [{ id: "program-managers", label: labels.managers }] : []),
+    { id: "program-more", label: labels.more },
+  ];
+  const facts: { icon: FactIconName; label: string; value: string; detail?: string }[] = [
+    { icon: "language", label: labels.language, value: labels.languages[details.language] },
+    { icon: "calendar", label: labels.frequency, value: labels.semester },
+    { icon: "clock", label: labels.meets, value: dayNames[locale][details.meets.day], detail: details.meets.time.replace("-", "–") },
+  ];
+  const chevron = <Chevron dir={dir} className="transition-transform duration-500 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />;
+  const toneStyle = {
+    "--tone": tone,
+    "--tone-deep": readableShade(tone),
+    "--tone-light": `color-mix(in oklab, ${tone} 24%, white)`,
+  } as CSSProperties;
+
+  return (
+    <div style={toneStyle}>
+      <RevealController />
+      <SectionRail sections={sections} label={locale === "en" ? "Page sections" : "ניווט בין חלקי העמוד"} />
+
+      <PageBanner
+        id="program-top"
+        image={item.image}
+        locale={locale}
+        title={name}
+        subtitle={pick(item.summary, locale)}
+        eyebrow={labels.eyebrow}
+        tone={tone}
+        logo={logo}
+        back={{ href: withLocale("/programs", locale), label: labels.back }}
+        className="pb-10 md:pb-14"
+      />
+
+      {/* The facts float over the banner's lower edge. */}
+      <section aria-label={labels.details} data-reveal className="relative z-10 mx-auto -mt-14 w-full max-w-6xl px-5 md:-mt-20 md:px-8">
+        <dl className="grid gap-3 sm:grid-cols-3 sm:gap-5">
+          {facts.map((fact, index) => (
+            <div
+              key={fact.icon}
+              data-reveal-item={String(index + 1)}
+              className="group relative isolate overflow-hidden rounded-[24px] border border-[#e6e9f5] bg-white p-5 pe-24 shadow-[0_24px_50px_-30px_rgba(6,19,71,0.55)] transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-(--tone)/40 hover:shadow-[0_30px_60px_-30px_rgba(6,19,71,0.6)] md:p-6 md:pe-28"
+              style={{ transitionTimingFunction: "var(--ease)" }}
+            >
+              <FactIcon name={fact.icon} />
+              <dt className="relative text-sm font-semibold text-club/60">{fact.label}</dt>
+              <dd className="relative mt-1 text-xl font-bold text-club md:text-2xl">{fact.value}</dd>
+              {fact.detail ? (
+                <dd className="relative mt-0.5 text-base font-semibold text-(--tone-deep)" dir="ltr">
+                  <span className="inline-block">{fact.detail}</span>
+                </dd>
+              ) : null}
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <section id="program-about" data-reveal className="mx-auto w-full max-w-3xl scroll-mt-[4.5rem] px-5 pt-12 pb-6 md:px-8 md:pt-20 md:pb-10">
+        <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
+          <span className="club-underline">{labels.about}</span>
+        </h2>
+        <div className="mt-8 md:mt-10">
+          {about.map((paragraph, index) => (
+            <p
+              key={paragraph}
+              data-reveal-item={String(Math.min(index + 1, 6))}
+              className={
+                index === 0
+                  ? "text-justify text-xl leading-[1.55] font-bold text-club md:text-2xl md:leading-[1.5]"
+                  : "mt-4 text-justify text-base leading-7 text-ink md:text-lg md:leading-8"
+              }
+            >
+              {paragraph}
+            </p>
+          ))}
+        </div>
+        {links.length ? (
+          <div data-reveal-item="6" className="mt-10 border-t border-[#e9ecf6] pt-8 text-center">
+            <p className="text-sm font-semibold text-club/60">{labels.follow}</p>
+            <div className="mt-4 flex flex-wrap justify-center gap-2.5">
+              {links.map((link) => (
+                <a
+                  key={link.key}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-2 border border-club/25 px-4 py-2.5 text-sm font-semibold text-club transition-colors duration-300 hover:border-(--tone-deep) hover:bg-(--tone-deep) hover:text-white"
+                >
+                  <SocialIcon name={link.key} />
+                  {link.label}
+                  {chevron}
+                </a>
+              ))}
+            </div>
+          </div>
+        ) : null}
+      </section>
+
+
+      {details.gallery.length ? (
+        <section id="program-gallery" className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-16">
+          <div data-reveal>
+            <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
+              <span className="club-underline">{labels.gallery}</span>
+            </h2>
+          </div>
+          {/* A swipe row on phones; one row of equal tiles from sm up. */}
+          <div
+            className="-mx-5 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] sm:mx-0 sm:mt-10 sm:grid sm:grid-cols-(--cols) sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0"
+            style={{ "--cols": `repeat(${details.gallery.length}, minmax(0, 1fr))` } as CSSProperties}
+          >
+            {details.gallery.map((src, index) => (
+              <div key={src} data-reveal className="w-[64vw] shrink-0 snap-center sm:w-auto">
+                <div
+                  data-reveal-item={String(Math.min(index + 1, 6))}
+                  className="group relative aspect-[4/5] overflow-hidden rounded-[22px] bg-(--tone-light) shadow-[0_18px_40px_-30px_rgba(6,19,71,0.7)]"
+                >
+                  <Image
+                    src={src}
+                    alt=""
+                    fill
+                    sizes="(min-width: 1024px) 240px, (min-width: 640px) 25vw, 64vw"
+                    className="object-cover transition-[scale] duration-[1200ms] group-hover:scale-[1.06]"
+                    style={{ transitionTimingFunction: "var(--ease)" }}
+                  />
+                  <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1 origin-center scale-x-0 bg-(--tone) transition-[scale] duration-500 group-hover:scale-x-100" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {managers.length ? (
+        <section id="program-managers" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-16">
+          <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
+            <span className="club-underline">{labels.managers}</span>
+          </h2>
+          <TeamSection members={managers} labels={{ title: labels.managers, all: "", profile: teamLabels[locale].profile }} dir={dir} variant="center" />
+        </section>
+      ) : null}
+
+      <section id="program-more" className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 pt-10 pb-14 md:px-8 md:pt-16 md:pb-24">
+        <div data-reveal>
+          <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
+            <span className="club-underline">{labels.more}</span>
+          </h2>
+        </div>
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 sm:gap-5 md:mt-10 lg:grid-cols-3">
+          {others.map((entry, index) => (
+            <div key={entry.slug} data-reveal className={index === 2 ? "sm:max-lg:hidden" : undefined}>
+              <ProgramCard item={entry} logo={clubLogos.find((logoEntry) => logoEntry.slug === entry.slug)?.logo} locale={locale} dir={dir} reveal={index + 1} />
+            </div>
+          ))}
+        </div>
+        <div data-reveal className="mt-8 flex justify-center md:mt-10">
+          <Link
+            href={withLocale("/programs", locale)}
+            data-press
+            data-reveal-item="1"
+            className="group inline-flex items-center gap-2 border border-club px-6 py-3 text-sm font-semibold text-club transition-colors duration-300 hover:bg-club hover:text-white"
+          >
+            {labels.all}
+            {chevron}
+          </Link>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 function ItemPage({ locale, item }: { locale: Locale; item: CatalogItem }) {
   const name = pick(item.name, locale) ?? item.name.he;
   const summary = pick(item.summary, locale) ?? item.summary.he;
@@ -909,15 +1259,64 @@ function ItemPage({ locale, item }: { locale: Locale; item: CatalogItem }) {
 }
 
 // The photo banner that opens a page and runs under the header: the photo settles in slowly
-// behind a blue wash while the eyebrow, the underlined title and the line under it rise in.
-function PageBanner({ id, image, locale, title, subtitle }: { id: string; image: string; locale: Locale; title: string; subtitle?: string }) {
+// behind a wash (the club's blue, or a program's own color) while the eyebrow, the underlined
+// title and the line under it rise in. A program page adds a way back and its logo on top.
+function PageBanner({
+  id,
+  image,
+  locale,
+  title,
+  subtitle,
+  eyebrow,
+  tone,
+  logo,
+  back,
+  className = "",
+}: {
+  id: string;
+  image: string;
+  locale: Locale;
+  title: string;
+  subtitle?: string;
+  eyebrow?: string;
+  tone?: string;
+  logo?: string;
+  back?: { href: string; label: string };
+  className?: string;
+}) {
   return (
-    <section id={id} className="relative -mt-[4.5rem] flex min-h-[46vh] items-end overflow-hidden md:min-h-[64vh]">
+    <section id={id} className={`relative -mt-[4.5rem] flex min-h-[46vh] items-end overflow-hidden md:min-h-[64vh] ${className}`}>
       <Image src={image} alt="" fill preload sizes="100vw" className="object-cover motion-safe:animate-[hero-zoom_3.2s_var(--ease)_both]" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#061347]/90 via-club/60 to-club/35" />
+      {tone ? (
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `linear-gradient(to top, rgb(6 19 71 / 0.92), color-mix(in oklab, ${tone} 55%, transparent) 62%, color-mix(in oklab, ${tone} 30%, transparent))`,
+          }}
+        />
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-t from-[#061347]/90 via-club/60 to-club/35" />
+      )}
       <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pt-28 pb-10 text-center md:px-8 md:pt-40 md:pb-20">
+        {back ? (
+          <Link
+            href={back.href}
+            data-press
+            className="group mb-5 inline-flex items-center gap-1.5 text-sm font-semibold text-white/75 transition-colors duration-300 hover:text-white motion-safe:animate-[hero-rise_1s_var(--ease)_both]"
+          >
+            <Chevron dir={locale === "en" ? "rtl" : "ltr"} className="transition-transform duration-500 group-hover:-translate-x-1 rtl:group-hover:translate-x-1" />
+            {back.label}
+          </Link>
+        ) : null}
+        {logo ? (
+          <span className="mx-auto mb-5 flex h-14 w-36 items-center justify-center rounded-xl bg-white px-4 shadow-[0_18px_40px_-20px_rgba(6,19,71,0.8)] motion-safe:animate-[hero-rise_1s_var(--ease)_60ms_both]">
+            <span className="relative block h-full w-full">
+              <Image src={logo} alt="" fill sizes="144px" className="object-contain py-2.5" />
+            </span>
+          </span>
+        ) : null}
         <p className="text-sm font-semibold text-white/75 motion-safe:animate-[hero-rise_1s_var(--ease)_100ms_both]">
-          {locale === "en" ? "Entrepreneurship Club · Reichman University" : "מועדון היזמות · אוניברסיטת רייכמן"}
+          {eyebrow ?? (locale === "en" ? "Entrepreneurship Club · Reichman University" : "מועדון היזמות · אוניברסיטת רייכמן")}
         </p>
         <h1 className="mt-4 text-5xl font-bold text-white motion-safe:animate-[hero-rise_1.2s_var(--ease)_220ms_both] md:text-7xl">
           <span className="club-underline on-dark">{title}</span>

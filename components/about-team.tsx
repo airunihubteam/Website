@@ -134,6 +134,8 @@ function TeamCard({
         style={{ transitionTimingFunction: EASE }}
       >
         <p className={`text-sm leading-tight font-bold sm:text-base ${rise(0)}`}>{member.name}</p>
+        {/* Without a bio, the role fills the back instead. */}
+        {!member.bio && member.role ? <p className={`mt-1 text-xs text-white/80 sm:text-sm ${rise(0)}`}>{member.role}</p> : null}
         <span aria-hidden="true" className={`mt-2 block h-[2px] w-8 bg-white/70 ${rise(1)}`} />
         {member.bio ? (
           // Long bios scroll inside the card; the scroll area reaches into the padding so its
@@ -175,7 +177,8 @@ export function TeamSection({
   groups?: TeamGroup[];
   labels: TeamLabels;
   dir: "rtl" | "ltr";
-  variant?: "grid" | "pair";
+  // "center" sets a few cards in a centered row, whatever their number.
+  variant?: "grid" | "pair" | "center";
 }) {
   const [filter, setFilter] = useState("all");
   const [filtered, setFiltered] = useState(false);
@@ -254,12 +257,16 @@ export function TeamSection({
       <div data-reveal-item={groups.length > 0 ? "2" : "1"} className="mt-6 md:mt-10">
         <div
           key={filter}
-          className={`grid gap-3 sm:gap-5 ${variant === "pair" ? "mx-auto max-w-2xl grid-cols-2" : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"}`}
+          className={
+            variant === "center"
+              ? "flex flex-wrap justify-center gap-3 sm:gap-5"
+              : `grid gap-3 sm:gap-5 ${variant === "pair" ? "mx-auto max-w-2xl grid-cols-2" : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"}`
+          }
         >
           {visible.map((member, index) => (
             <div
               key={member.id}
-              className={filtered ? "motion-safe:animate-[team-in_700ms_var(--ease)_backwards]" : undefined}
+              className={`${variant === "center" ? "w-[calc(50%-0.375rem)] sm:w-56" : ""} ${filtered ? "motion-safe:animate-[team-in_700ms_var(--ease)_backwards]" : ""}`}
               style={{ animationDelay: `${index * 55}ms` }}
             >
               <TeamCard
