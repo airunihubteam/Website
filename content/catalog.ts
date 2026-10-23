@@ -152,6 +152,7 @@ export const accelerator: CatalogItem = {
   image: "/media/momentum.jpg",
   summary: {
     he: "תוכנית האצה הפועלת מזה כ-11 שנים המוקדשת להעצמה וסיוע לסטארט-אפים בשלבי Seed של סטודנטים ובוגרי האוניברסיטה.",
+    en: "An acceleration program that has been operating for about 11 years dedicated to empowering and assisting start-ups in the seed stages of university students and alumni.",
   },
 };
 

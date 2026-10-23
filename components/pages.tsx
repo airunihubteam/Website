@@ -27,7 +27,7 @@ import {
   type JoinSlug,
 } from "@/content/copy";
 import { aboutGroups, advisoryTeam, peopleByIds, peopleIn, personMedia, pitchTeam, type Person } from "@/content/people";
-import { programDetails, type ProgramDetails } from "@/content/program-details";
+import { programDetails, type ProgramDetails, type ProgramFact } from "@/content/program-details";
 import { TeamSection, type TeamLabels, type TeamMember } from "@/components/about-team";
 import { CardSlider } from "@/components/card-slider";
 import { Journey } from "@/components/journey";
@@ -717,22 +717,106 @@ export function ProgramPage({ locale, slug }: { locale: Locale; slug: string }) 
   return details ? <ProgramDetailPage locale={locale} item={item} details={details} /> : <ItemPage locale={locale} item={item} />;
 }
 
+const acceleratorLabels: Record<Locale, { title: string; intro: string; facts: string[]; open: string; register: string }> = {
+  he: {
+    title: "אקסלרטור",
+    intro: "תוכנית האצה הפועלת מזה כ-11 שנים המוקדשת להעצמה וסיוע לסטארט-אפים בשלבי Seed של סטודנטים ובוגרי האוניברסיטה.",
+    facts: ["פועל מאז 2013", "כשלושה חודשים", "0% אקוויטי"],
+    open: "לעמוד Momentum",
+    register: "הרשמה לאקסלרטור",
+  },
+  en: {
+    title: "Accelerator",
+    // From the old site's English accelerator page.
+    intro: "An acceleration program that has been operating for about 11 years dedicated to empowering and assisting start-ups in the seed stages of university students and alumni.",
+    facts: ["Since 2013", "About three months", "0% equity"],
+    open: "View Momentum",
+    register: "Apply",
+  },
+};
+
+// The accelerator gate: the club runs one accelerator, Momentum, so the page is its banner and a
+// single wide card with Momentum's photo, its open registration, its figures and the way in.
 export function AcceleratorIndex({ locale }: { locale: Locale }) {
+  const labels = acceleratorLabels[locale];
+  const dir = locale === "en" ? "ltr" : "rtl";
+  const details = programDetails[accelerator.slug];
+  const logo = clubLogos.find((entry) => entry.slug === accelerator.slug)?.logo;
+  const chevron = <Chevron dir={dir} className="transition-transform duration-500 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />;
+
   return (
     <>
-      <PageHero title={locale === "en" ? "Accelerator" : "אקסלרטור"} />
-      <Section>
-        <div className="grid gap-4 md:grid-cols-3">
-          <CatalogCard item={accelerator} locale={locale === "en" ? "he" : locale} />
-        </div>
-      </Section>
+      <RevealController />
+      <PageBanner id="accelerator-top" image="/media/wp/gate-accelerator.jpg" locale={locale} title={labels.title} subtitle={labels.intro} />
+
+      <section data-reveal className="mx-auto w-full max-w-6xl px-5 py-10 md:px-8 md:py-20">
+        <article
+          data-reveal-item="1"
+          className="group grid overflow-hidden rounded-[28px] border border-[#e6e9f5] bg-white shadow-[0_30px_60px_-36px_rgba(15,45,150,0.55)] md:grid-cols-[minmax(0,6fr)_minmax(0,5fr)]"
+        >
+          <div className="relative aspect-[16/10] overflow-hidden bg-club md:aspect-auto md:min-h-[440px]">
+            <Image
+              src={details?.banner ?? accelerator.image}
+              alt=""
+              fill
+              sizes="(min-width: 768px) 600px, 100vw"
+              className="object-cover transition-[scale] duration-[1400ms] group-hover:scale-[1.05]"
+              style={{ transitionTimingFunction: "var(--ease)" }}
+            />
+            {logo ? (
+              <span className="absolute start-4 top-4 flex h-12 w-28 items-center justify-center rounded-xl bg-white px-3 shadow-[0_10px_24px_-12px_rgba(6,19,71,0.6)]">
+                <span className="relative block h-full w-full">
+                  <Image src={logo} alt="" fill sizes="112px" className="object-contain py-2" />
+                </span>
+              </span>
+            ) : null}
+          </div>
+          <div className="flex flex-col justify-center p-6 md:p-10">
+            {details?.registration ? (
+              <p className="self-start bg-[#f4f6fd] px-3 py-1.5 text-sm font-semibold text-club">{pick(details.registration.title, locale) ?? details.registration.title.he}</p>
+            ) : null}
+            <h2 className="mt-4 text-3xl font-bold text-club md:text-4xl">Momentum</h2>
+            <span aria-hidden="true" className="mt-3 block h-[3px] w-12 bg-club transition-[width] duration-500 group-hover:w-20" style={{ transitionTimingFunction: "var(--ease)" }} />
+            <p className="mt-4 text-justify text-base leading-7 text-ink md:text-lg md:leading-8">{(locale === "en" ? details?.about.en?.[0] : details?.about.he[0]) ?? labels.intro}</p>
+            <ul className="mt-5 flex flex-wrap gap-2">
+              {labels.facts.map((fact) => (
+                <li key={fact} className="inline-flex items-center gap-2 border border-club/15 px-3 py-1.5 text-sm font-semibold text-club">
+                  <span aria-hidden="true" className="h-2 w-2 bg-club" />
+                  {fact}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href={withLocale(catalogPath(accelerator), locale)}
+                data-press
+                className="group inline-flex items-center justify-center gap-2 border border-club px-6 py-3 text-sm font-semibold whitespace-nowrap text-club transition-colors duration-300 hover:bg-club hover:text-white"
+              >
+                {labels.open}
+                {chevron}
+              </Link>
+              {details?.registration ? (
+                <a
+                  href={details.registration.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center justify-center gap-2 border border-club bg-club px-6 py-3 text-sm font-semibold whitespace-nowrap text-white transition-colors duration-300 hover:border-[#0a1f6e] hover:bg-[#0a1f6e]"
+                >
+                  {labels.register}
+                  {chevron}
+                </a>
+              ) : null}
+            </div>
+          </div>
+        </article>
+      </section>
     </>
   );
 }
 
 export function MomentumPage({ locale }: { locale: Locale }) {
-  if (locale === "en") notFound();
-  return <ItemPage locale="he" item={accelerator} />;
+  const details = programDetails[accelerator.slug];
+  return details ? <ProgramDetailPage locale={locale} item={accelerator} details={details} /> : <ItemPage locale={locale} item={accelerator} />;
 }
 
 export function ConferenceIndex({ locale }: { locale: Locale }) {
@@ -1298,11 +1382,11 @@ const programLabels: Record<
   },
 };
 
-type FactIconName = "language" | "calendar" | "clock";
+type FactIconName = ProgramFact["icon"];
 
 // An icon in the program's light tone: small above the text in a phone square, large and cropped
 // by the card's edge on wider screens. On hover it acts out its meaning: the speech bubble types,
-// the calendar ticks a day off and the clock's hand sweeps round.
+// the calendar ticks a day off, the clock's hand sweeps round and the percent sign's dots pulse.
 function FactIcon({ name }: { name: FactIconName }) {
   const dot = "origin-center fill-white motion-safe:group-hover:animate-[node-pulse_1.2s_ease-in-out_infinite]";
   return (
@@ -1336,6 +1420,14 @@ function FactIcon({ name }: { name: FactIconName }) {
             pathLength={1}
             className="[stroke-dasharray:1] [stroke-dashoffset:1] transition-[stroke-dashoffset] delay-150 duration-700 group-hover:[stroke-dashoffset:0]"
           />
+        </>
+      ) : null}
+      {name === "percent" ? (
+        <>
+          <circle cx="12" cy="12" r="10" />
+          <path d="M8.2 15.8l7.6-7.6" stroke="#ffffff" strokeWidth="1.8" strokeLinecap="round" />
+          <circle cx="8.7" cy="8.7" r="1.7" className={dot} style={{ transformBox: "fill-box" }} />
+          <circle cx="15.3" cy="15.3" r="1.7" className={dot} style={{ transformBox: "fill-box", animationDelay: "0.2s" }} />
         </>
       ) : null}
       {name === "clock" ? (
@@ -1396,6 +1488,8 @@ function SocialIcon({ name }: { name: SocialName }) {
 function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: CatalogItem; details: ProgramDetails }) {
   const dir = locale === "en" ? "ltr" : "rtl";
   const labels = programLabels[locale];
+  // The accelerator uses the same page, worded for itself and pointing back to /accelerator.
+  const isAccelerator = item.kind === "accelerator";
   const name = pick(item.name, locale) ?? item.name.he;
   const tone = item.color ?? "#0f2d96";
   const logo = clubLogos.find((entry) => entry.slug === item.slug)?.logo;
@@ -1411,18 +1505,25 @@ function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: Ca
   const listed = locale === "en" ? programs.filter((entry) => entry.summary.en) : programs;
   const at = listed.findIndex((entry) => entry.slug === item.slug);
   const others = [1, 2, 3].map((step) => listed[(at + step) % listed.length]).filter((entry) => entry.slug !== item.slug);
+  const managersTitle = (details.managersTitle && pick(details.managersTitle, locale)) ?? labels.managers;
+  const text = (value: Localized) => pick(value, locale) ?? value.he;
   const sections: RailSection[] = [
     { id: "program-top", label: name },
     { id: "program-about", label: labels.about },
     ...(details.gallery.length ? [{ id: "program-gallery", label: labels.gallery }] : []),
-    ...(managers.length ? [{ id: "program-managers", label: labels.managers }] : []),
-    { id: "program-more", label: labels.more },
+    ...(managers.length ? [{ id: "program-managers", label: managersTitle }] : []),
+    ...(isAccelerator ? [] : [{ id: "program-more", label: labels.more }]),
   ];
-  const facts: { icon: FactIconName; label: string; value: string; detail?: string }[] = [
-    { icon: "language", label: labels.language, value: labels.languages[details.language] },
-    { icon: "calendar", label: labels.frequency, value: labels.semester },
-    { icon: "clock", label: labels.meets, value: dayNames[locale][details.meets.day], detail: details.meets.time.replace("-", "–") },
-  ];
+  // A weekly program's three facts come from when it meets; other pages bring their own.
+  const facts: { icon: ProgramFact["icon"]; label: string; value: string; detail?: string; time?: boolean }[] =
+    details.facts?.map((fact) => ({ icon: fact.icon, label: text(fact.label), value: text(fact.value), detail: fact.detail && text(fact.detail) })) ??
+    (details.language && details.meets
+      ? [
+          { icon: "language", label: labels.language, value: labels.languages[details.language] },
+          { icon: "calendar", label: labels.frequency, value: labels.semester },
+          { icon: "clock", label: labels.meets, value: dayNames[locale][details.meets.day], detail: details.meets.time.replace("-", "–"), time: true },
+        ]
+      : []);
   const chevron = <Chevron dir={dir} className="transition-transform duration-500 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />;
   const toneStyle = {
     "--tone": tone,
@@ -1437,16 +1538,35 @@ function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: Ca
 
       <PageBanner
         id="program-top"
-        image={item.image}
+        image={details.banner ?? item.image}
         locale={locale}
         title={name}
         subtitle={pick(item.summary, locale)}
-        eyebrow={labels.eyebrow}
+        eyebrow={isAccelerator ? (locale === "en" ? "Accelerator · Entrepreneurship Club" : "אקסלרטור · מועדון היזמות") : labels.eyebrow}
         tone={tone}
         logo={logo}
-        back={{ href: withLocale("/programs", locale), label: labels.back }}
+        back={
+          isAccelerator
+            ? { href: withLocale("/accelerator", locale), label: locale === "en" ? "Accelerator" : "לאקסלרטור" }
+            : { href: withLocale("/programs", locale), label: labels.back }
+        }
         className="pb-10 md:pb-14"
-      />
+      >
+        {details.registration ? (
+          <>
+            <p className="text-base font-bold text-white md:text-lg">{text(details.registration.title)}</p>
+            <a
+              href={details.registration.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group mt-4 inline-flex items-center gap-2 border border-white bg-white px-7 py-3 text-sm font-bold whitespace-nowrap text-club transition-colors duration-300 hover:border-(--tone-deep) hover:bg-(--tone-deep) hover:text-white"
+            >
+              {text(details.registration.cta)}
+              {chevron}
+            </a>
+          </>
+        ) : null}
+      </PageBanner>
 
       {/* The facts float over the banner's lower edge. */}
       <section aria-label={labels.details} data-reveal className="relative z-10 mx-auto -mt-14 w-full max-w-6xl px-5 md:-mt-20 md:px-8">
@@ -1463,8 +1583,8 @@ function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: Ca
               <p className="relative text-xs font-semibold text-club/60 md:text-sm">{fact.label}</p>
               <p className="relative mt-0.5 text-sm leading-tight font-bold text-club md:mt-1 md:text-2xl">{fact.value}</p>
               {fact.detail ? (
-                <p className="relative mt-0.5 text-xs font-semibold text-(--tone-deep) md:text-base">
-                  <span dir="ltr" className="inline-block">
+                <p className={`relative mt-0.5 text-xs font-semibold text-(--tone-deep) md:text-base ${fact.time ? "" : "max-md:hidden"}`}>
+                  <span dir={fact.time ? "ltr" : undefined} className="inline-block">
                     {fact.detail}
                   </span>
                 </p>
@@ -1485,14 +1605,41 @@ function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: Ca
               data-reveal-item={String(Math.min(index + 1, 6))}
               className={
                 index === 0
-                  ? "text-justify text-xl leading-[1.55] font-bold text-club md:text-2xl md:leading-[1.5]"
-                  : "mt-4 text-justify text-base leading-7 text-ink md:text-lg md:leading-8"
+                  ? "text-justify text-xl leading-[1.55] font-bold text-club hyphens-auto md:text-2xl md:leading-[1.5]"
+                  : "mt-4 text-justify text-base leading-7 text-ink hyphens-auto md:text-lg md:leading-8"
               }
             >
               {paragraph}
             </p>
           ))}
         </div>
+        {details.priority ? (
+          <div data-reveal-item="6" className="mt-8 rounded-[24px] border border-[#e6e9f5] bg-white p-6 md:p-7">
+            <p className="font-bold text-club">{text(details.priority.title)}</p>
+            <ul className="mt-4 space-y-3">
+              {details.priority.items.map((entry) => (
+                <li key={entry.he} className="group flex gap-3 text-[15px] leading-7 text-ink">
+                  <CheckBox />
+                  {text(entry)}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+        {details.registration ? (
+          <div data-reveal-item="6" className="mt-8 text-center">
+            <p className="text-lg leading-8 font-bold text-club md:text-xl">{text(details.registration.title)}</p>
+            <a
+              href={details.registration.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group mt-4 inline-flex items-center gap-2 border border-club bg-club px-7 py-3 text-sm font-bold whitespace-nowrap text-white transition-colors duration-300 hover:border-(--tone-deep) hover:bg-(--tone-deep)"
+            >
+              {text(details.registration.cta)}
+              {chevron}
+            </a>
+          </div>
+        ) : null}
         {links.length ? (
           <div data-reveal-item="6" className="mt-10 border-t border-[#e9ecf6] pt-8 text-center">
             <p className="text-sm font-semibold text-club/60">{labels.follow}</p>
@@ -1551,14 +1698,19 @@ function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: Ca
       ) : null}
 
       {managers.length ? (
-        <section id="program-managers" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-16">
+        <section
+          id="program-managers"
+          data-reveal
+          className={`mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 md:px-8 ${isAccelerator ? "pt-10 pb-14 md:pt-16 md:pb-24" : "py-10 md:py-16"}`}
+        >
           <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-            <span className="club-underline">{labels.managers}</span>
+            <span className="club-underline">{managersTitle}</span>
           </h2>
-          <TeamSection members={managers} labels={{ title: labels.managers, all: "", profile: teamLabels[locale].profile }} dir={dir} variant="center" />
+          <TeamSection members={managers} labels={{ title: managersTitle, all: "", profile: teamLabels[locale].profile }} dir={dir} variant="center" />
         </section>
       ) : null}
 
+      {isAccelerator ? null : (
       <section id="program-more" className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 pt-10 pb-14 md:px-8 md:pt-16 md:pb-24">
         <div data-reveal>
           <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
@@ -1592,6 +1744,7 @@ function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: Ca
           </Link>
         </div>
       </section>
+      )}
     </div>
   );
 }

@@ -6,13 +6,25 @@ import type { Localized } from "@/lib/locale";
 // names only and show on the Hebrew pages.
 export type ProgramManager = { name: Localized; role: Localized; photo: string; linkedin?: string };
 
+export type ProgramFact = { icon: "language" | "calendar" | "clock" | "percent"; label: Localized; value: Localized; detail?: Localized };
+
 export type ProgramDetails = {
   about: { he: string[]; en?: string[] };
-  // The language the meetings are held in.
-  language: "he" | "en";
-  // Every program runs for a semester and meets weekly: day 0 is Sunday.
-  meets: { day: number; time: string };
+  // The language the meetings are held in. Programs run for a semester and meet weekly (day 0
+  // is Sunday); their three fact cards come from these two.
+  language?: "he" | "en";
+  meets?: { day: number; time: string };
+  // Fact cards of its own, for a page that is not a weekly program (the accelerator).
+  facts?: ProgramFact[];
+  // A photo for the banner other than the catalog card's.
+  banner?: string;
+  // An open registration, shown in the banner and under the description (see docs/08-forms.md).
+  registration?: { title: Localized; cta: Localized; href: string };
+  // Who gets priority, as a checklist under the description.
+  priority?: { title: Localized; items: Localized[] };
   managers: ProgramManager[];
+  // The managers' heading, when it is not "מנהלי התוכנית".
+  managersTitle?: Localized;
   links: { instagram?: string; linkedin?: string; facebook?: string; website?: string };
   gallery: string[];
 };
@@ -306,5 +318,51 @@ export const programDetails: Record<string, ProgramDetails> = {
     ],
     links: { instagram: "https://www.instagram.com/techtalkru" },
     gallery: [],
+  },
+  // Momentum, the club's accelerator, from the old site's page (ruec.co.il/accelerator/momentum).
+  // Its figures come from that page's text. The old site had no English Momentum page, so the
+  // English here is a translation of the Hebrew.
+  momentum: {
+    about: {
+      he: [
+        "מומנטום הוא האקסלרטור הסטודנטיאלי הוותיק והמוביל בישראל, הפועל מאז 2013. התכנית מעניקה ליזמים את הכלים, הידע והקשרים הדרושים כדי להפוך רעיונות למיזמים בעלי השפעה.",
+        "אקסלרטור מומנטום (מאיץ) הוא גוף שמטרתו לתמוך בצוותי יזמים של סטודנטים ובוגרים של אוניברסיטת רייכמן, המפתחים פתרונות חדשניים לאתגרים בעולם האמיתי.",
+        "התכנית נמשכת כשלושה חודשים וכוללת מפגשים, סדנאות והרצאות שבועיות עם יזמים ומובילי תעשייה, לצד מנטורינג אישי לכל צוות על ידי יזמים מנוסים מהשורה הראשונה. בנוסף, המשתתפים זוכים לגישה ישירה לאנשי מפתח בתעשייה, משקיעים, קרנות הון סיכון, משאבים חיוניים ותחרויות, במטרה לייצר יתרון אסטרטגי ולהאיץ צמיחה.",
+        "התכנית אינה גובה אחוזים או אקוויטי ואינה מקבלת אחזקות במיזמים המשתתפים.",
+        "התכנית מיועדת לצוותים של שני יזמים או יותר, כאשר לפחות אחד מחברי הצוות הוא סטודנט או בוגר של אוניברסיטת רייכמן. ההרשמה פתוחה לסטודנטים ולבוגרים מכלל המסלולים, בתארים ראשון ושני.",
+      ],
+      en: [
+        "Momentum is Israel's oldest and leading student accelerator, running since 2013. The program gives entrepreneurs the tools, knowledge and connections they need to turn ideas into ventures with impact.",
+        "The Momentum accelerator supports teams of Reichman University students and alumni who are developing innovative solutions to real-world challenges.",
+        "The program runs for about three months and includes weekly meetings, workshops and lectures with entrepreneurs and industry leaders, alongside personal mentoring for every team by top, experienced entrepreneurs. Participants also get direct access to key industry figures, investors, venture capital funds, essential resources and competitions, to build a strategic edge and accelerate growth.",
+        "The program takes no percentage or equity and holds no stake in the participating ventures.",
+        "The program is for teams of two or more founders, at least one of whom is a Reichman University student or graduate. Registration is open to students and alumni of all tracks, in bachelor's and master's degrees.",
+      ],
+    },
+    facts: [
+      { icon: "calendar", label: { he: "פועל מאז", en: "Running since" }, value: { he: "2013", en: "2013" } },
+      { icon: "clock", label: { he: "משך התוכנית", en: "Program length" }, value: { he: "כשלושה חודשים", en: "About three months" } },
+      { icon: "percent", label: { he: "אקוויטי", en: "Equity" }, value: { he: "0%", en: "0%" }, detail: { he: "בלי אחוזים ואחזקות", en: "No percentage, no stake" } },
+    ],
+    banner: "/media/programs/momentum/banner.webp",
+    registration: {
+      title: { he: "ההרשמה למחזור ה-23 של מומנטום פתוחה!", en: "Registration for Momentum's 23rd batch is open!" },
+      cta: { he: "הרשמה לאקסלרטור", en: "Apply" },
+      href: "https://docs.google.com/forms/d/e/1FAIpQLSeZ785CL-Hcv76a93gfYU5MpuxnPFL3qBlfrLGFd9uf43bE4g/viewform",
+    },
+    priority: {
+      title: { he: "עדיפות תינתן לצוותים אשר:", en: "Priority goes to teams that:" },
+      items: [
+        { he: "ביצעו מחקר שוק מעמיק וקיבלו ולידציה מלקוחות או משתמשים פוטנציאליים", en: "Have done in-depth market research and been validated by potential customers or users" },
+        { he: "החלו בפיתוח ראשוני כגון MVP או POC ופועלים להוכחת היתכנות", en: "Have started early development, such as an MVP or a POC, and are working to prove feasibility" },
+      ],
+    },
+    managers: [
+      { name: { he: "עמרי קינן", en: "Omri Keynan" }, role: { he: "מנהל האקסלרטור", en: "Accelerator Manager" }, photo: "/media/programs/momentum/manager-1.webp", linkedin: "https://www.linkedin.com/in/omri-keynan/" },
+      { name: { he: "שחר יזהר", en: "Shahar Izhar" }, role: { he: "מנהל האקסלרטור", en: "Accelerator Manager" }, photo: "/media/programs/momentum/manager-2.webp", linkedin: "https://www.linkedin.com/in/shahar-izhar-prato-backend-developer/" },
+    ],
+    managersTitle: { he: "מנהלי האקסלרטור", en: "Accelerator Managers" },
+    links: {},
+    gallery: [2, 3, 4, 5, 1].map((n) => `/media/programs/momentum/gallery-${n}.webp`),
   },
 };

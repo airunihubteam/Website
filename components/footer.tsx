@@ -17,8 +17,8 @@ export function Footer({ locale }: { locale: Locale }) {
       title: locale === "en" ? "Accelerator" : "אקסלרטור",
       links: [
         {
-          href: withLocale(catalogPath(accelerator), "he"),
-          label: accelerator.name.he,
+          href: withLocale(catalogPath(accelerator), locale),
+          label: pick(accelerator.name, locale) ?? accelerator.name.he,
         },
       ],
     },

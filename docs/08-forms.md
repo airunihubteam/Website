@@ -13,6 +13,12 @@
 - **שימו לב:** תאריך הסגירה שמוצג, 31 בינואר 2026, הוא מהאתר הישן וכבר עבר.
 - **שדות:** Venture Name · Full Name · Academic Background (B.A / M.A / Ph.D / Other) · Academic Details · האם בתוכנית האצה · Email · Phone · Team Formation · Startup Development Stage (Idea / Prototype / MVP / Testers / Users) · One-Pager (קובץ) · שבע שאלות פתוחות (q1–q7, הנוסח לא מופיע בעמוד) · Video Presentation · LinkedIn · Venture Website · אישור תנאי הוויתור · אישור שהמידע נכון ומדויק.
 
+## 1א. הרשמה לאקסלרטור Momentum
+
+- **באתר החדש:** `/accelerator/momentum` ו-`/accelerator`, כפתור "הרשמה לאקסלרטור" עם "ההרשמה למחזור ה-23 של מומנטום פתוחה!".
+- **היום מפנה ל:** טופס Google שהאתר הישן כבר השתמש בו, https://docs.google.com/forms/d/e/1FAIpQLSeZ785CL-Hcv76a93gfYU5MpuxnPFL3qBlfrLGFd9uf43bE4g/viewform (באתר הישן יש גם קישור מקוצר, https://forms.gle/Gzkt7hFCo92dzbML6). זה הטופס היחיד שכבר עובד מחוץ לאתר הישן; בסוף מחליטים אם להשאיר אותו או לבנות חדש.
+- **שדות:** בטופס Google, לא בעמוד.
+
 ## 2. ועדת האיתור לבחירת יו״ר
 
 - **באתר החדש:** `/join/chair`. היום רשימת "מה צריך להכין?" במקום טופס.
