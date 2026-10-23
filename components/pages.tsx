@@ -28,6 +28,7 @@ import { Chevron } from "@/components/icons";
 import { ImpactStats, JoinSection, type ImpactLabels, type ImpactStat, type JoinCard } from "@/components/impact-section";
 import { RevealController, SectionRail, type RailSection } from "@/components/home-motion";
 import { CatalogCard, PersonCard, Section, StarBullet } from "@/components/ui";
+import { readableShade } from "@/lib/color";
 import { pick, withLocale, type Locale, type Localized } from "@/lib/locale";
 
 function firstSentence(text: string): string {
@@ -583,18 +584,19 @@ const programSections: Record<Locale, RailSection[]> = {
 // A program in the catalog: its photo under a wash of the program's own color that deepens to
 // navy at the foot, with its logo, name, summary and a link to its page. Hover (or a tap on
 // phones) zooms the photo, lets the color rise over it, stretches the accent line and fills the
-// button.
+// button with a shade of the program's color deep enough for its white label.
 function ProgramCard({ item, logo, locale, dir, reveal }: { item: CatalogItem; logo?: string; locale: Locale; dir: "rtl" | "ltr"; reveal: number }) {
   const name = pick(item.name, locale) ?? item.name.he;
   const summary = pick(item.summary, locale);
   const target = locale === "en" && !item.summary.en ? "he" : locale;
+  const tone = item.color ?? "#0f2d96";
   return (
     <Link
       href={withLocale(catalogPath(item), target)}
       data-press
       data-reveal-item={String(reveal)}
       className="group relative isolate flex min-h-[21rem] flex-col justify-end overflow-hidden rounded-[24px] bg-[#061347] text-white shadow-[0_18px_40px_-28px_rgba(6,19,71,0.8)] transition-[translate,box-shadow] duration-500 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_rgba(6,19,71,0.9)] sm:aspect-[4/5] sm:min-h-0"
-      style={{ "--tone": item.color ?? "#0f2d96", transitionTimingFunction: "var(--ease)" } as CSSProperties}
+      style={{ "--tone": tone, "--tone-deep": readableShade(tone), transitionTimingFunction: "var(--ease)" } as CSSProperties}
     >
       <Image
         src={item.image}
@@ -631,7 +633,7 @@ function ProgramCard({ item, logo, locale, dir, reveal }: { item: CatalogItem; l
         <span aria-hidden="true" className="block h-[3px] w-10 bg-(--tone) transition-[width] duration-500 group-hover:w-16" style={{ transitionTimingFunction: "var(--ease)" }} />
         <h2 className="mt-3 text-2xl font-bold">{name}</h2>
         {summary ? <p className="mt-2 text-justify text-[15px] leading-6 text-white/90">{summary}</p> : null}
-        <span className="mt-5 inline-flex items-center gap-2 border border-white/80 px-4 py-2 text-sm font-semibold transition-colors duration-300 group-hover:border-club group-hover:bg-club">
+        <span className="mt-5 inline-flex items-center gap-2 border border-white/80 px-4 py-2 text-sm font-semibold transition-colors duration-300 group-hover:border-(--tone-deep) group-hover:bg-(--tone-deep)">
           {clubSliderLabels[locale].open}
           <Chevron dir={dir} className="transition-transform duration-500 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
         </span>
