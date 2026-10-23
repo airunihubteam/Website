@@ -38,11 +38,14 @@ export const programs: CatalogItem[] = [
   {
     slug: "runispace",
     kind: "program",
-    name: { he: "Runi Space" },
+    name: { he: "Runi Space", en: "Runi Space" },
     image: "/media/runispace.png",
     color: "#ff970e",
     summary: {
       he: "חשיפה לתעשיית ה-EdTech בישראל, הרצאות מפי מיטב המומחים בתחום, פיתוח מיזמים העונים על בעיות שונות במערכת החינוך.",
+      // The Hebrew line above is the old site's, from the club's EdTech days; the English one
+      // follows the space club its page describes.
+      en: "Israel's first space entrepreneurship club: the space industry, its future and main players, and the people leading it in Israel.",
     },
   },
   {
@@ -136,11 +139,12 @@ export const programs: CatalogItem[] = [
   {
     slug: "tech-talk",
     kind: "program",
-    name: { he: "Tech-Talk" },
+    name: { he: "Tech-Talk", en: "Tech-Talk" },
     image: "/media/tech-talk.jpg",
     color: "#ec5c35",
     summary: {
       he: "תוכנית באנגלית המארחת מדי שבוע יזם מתעשייה אחרת המשתף ומספר על הקשיים, ההצלחות והאתגרים שעמדו בדרכו.",
+      en: "An English-language program that hosts an entrepreneur from a different industry each week, who shares the difficulties, successes and challenges along the way.",
     },
   },
 ];

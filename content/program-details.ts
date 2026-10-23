@@ -94,6 +94,10 @@ export const programDetails: Record<string, ProgramDetails> = {
         "תעשיית החלל צפויה להגיע לשווי של 1.8 טריליון דולר, יחד עם פוטנציאל אינסופי של הזדמנויות לכל תחום ולכל מקצוע. מועדון יזמות החלל באוניברסיטת רייכמן הוא הראשון מסוגו בישראל, ונועד לפתוח את דלת הכניסה לתעשייה המרגשת ביותר בעשור הקרוב. במהלך המועדון, נכיר את הבסיס של תעשיית החלל, העתיד והשחקנים המרכזיים, נצלול לתחומים השונים שהחלל לוקח בהם חלק, ונפגש את האנשים שמובילים את זה בישראל- מייסדי החברות המובילות, המומחים המקצועיים ביותר ואנשי המחקר והאקדמיה. אם אתם מחפשים את המועדון שבו תגלו איך אתם יכולים לקחת את מסלול הקריירה שלכם לעולם אחר לגמרי, הגעתם למקום הנכון.",
         "המועדון קם כחלק מ-Space Campus IL: קהילת החלל של הסטודנטים בישראל, ביוזמת משימת \"רקיע\" ובשיתוף סוכנות החלל הישראלית.",
       ],
+      en: [
+        "The space industry is expected to reach a value of $1.8 trillion, with endless opportunities for every field and every profession. Reichman University's Space Entrepreneurship Club is the first of its kind in Israel, opening the door to the most exciting industry of the coming decade. In the club we'll learn the basics of the space industry, its future and its main players, dive into the many fields space takes part in, and meet the people leading it in Israel: founders of leading companies, top professional experts, and researchers and academics. If you're looking for the club where you'll discover how to take your career to a whole other world, you've come to the right place.",
+        "The club was founded as part of Space Campus IL, Israel's student space community, initiated by the Rakia mission in partnership with the Israel Space Agency.",
+      ],
     },
     language: "he",
     meets: { day: 3, time: "18:30-21:00" },
@@ -313,6 +317,12 @@ export const programDetails: Record<string, ProgramDetails> = {
         "תוכנית TechTalk היא מהתוכניות הבודדות בקמפוס המקבלת סטודנטים הן מבית הספר הישראלי והן מבית הספר הבינלאומי.",
         "התוכנית מתקיימת בשפה האנגלית ומארחת מדי שבוע יזם מתעשייה אחרת אשר במהלך המפגש ישפוך אור על השוק בו הוא נמצא. יספר על הקשיים, ההצלחות והאתגרים שעמדו בדרכו.",
         "המפגשים יתקיימו במתכונת מצומצמת שמטרתה לאפשר שיח אינטימי ומקום פתוח לשאול את כל השאלות הקשות על התחום אותו היזם מייצג.",
+      ],
+      en: [
+        "Israel is a startup nation!",
+        "TechTalk is one of the few programs on campus open to students from both the Israeli school and the International School.",
+        "The program runs in English, and each week it hosts an entrepreneur from a different industry who sheds light on their market and tells about the difficulties, successes and challenges they faced.",
+        "The meetings are held in a small format, to allow an intimate conversation and an open place to ask all the hard questions about the entrepreneur's field.",
       ],
     },
     language: "en",
