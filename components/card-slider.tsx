@@ -19,6 +19,8 @@ export function CardSlider({
   goTo,
   dir,
   className = "",
+  grid = "md:grid-cols-3 md:gap-5",
+  slideClasses = [],
 }: {
   children: ReactNode;
   titles: string[];
@@ -26,6 +28,11 @@ export function CardSlider({
   goTo: string;
   dir: "rtl" | "ltr";
   className?: string;
+  // The grid the cards sit in from md up.
+  grid?: string;
+  // Extra classes for each card's wrapper, by position, such as hiding one where a row would
+  // leave it alone. Plain strings, so a server page can pass them.
+  slideClasses?: string[];
 }) {
   const phone = useMediaQuery("(max-width: 767px)");
   const cards = Children.toArray(children);
@@ -48,7 +55,7 @@ export function CardSlider({
     >
       <div
         ref={stageRef}
-        className="grid max-md:-mx-5 max-md:touch-pan-y max-md:py-4 max-md:select-none max-md:[mask-image:linear-gradient(90deg,transparent,#000_3%,#000_97%,transparent)] md:grid-cols-3 md:gap-5"
+        className={`grid max-md:-mx-5 max-md:touch-pan-y max-md:py-4 max-md:select-none max-md:[mask-image:linear-gradient(90deg,transparent,#000_3%,#000_97%,transparent)] ${grid}`}
         {...stageProps}
       >
         {cards.map((card, index) => {
@@ -63,7 +70,7 @@ export function CardSlider({
               aria-hidden={phone && !isActive ? true : undefined}
               data-active={phone && isActive ? "" : undefined}
               onClick={phone && !isActive ? () => go(offset) : undefined}
-              className="group max-md:mx-auto max-md:w-[min(360px,78vw)] max-md:opacity-(--fade) max-md:[grid-area:1/1] max-md:[transform:var(--slide)]"
+              className={`group max-md:mx-auto max-md:w-[min(360px,78vw)] max-md:opacity-(--fade) max-md:[grid-area:1/1] max-md:[transform:var(--slide)] ${slideClasses[index] ?? ""}`}
               style={
                 {
                   "--slide": `translate3d(${x}%, 0, 0) scale(${scale})`,

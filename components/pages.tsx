@@ -596,7 +596,7 @@ function ProgramCard({ item, logo, locale, dir, reveal }: { item: CatalogItem; l
       href={withLocale(catalogPath(item), target)}
       data-press
       data-reveal-item={String(reveal)}
-      className="group relative isolate flex min-h-[21rem] flex-col justify-end overflow-hidden rounded-[24px] bg-[#061347] text-white shadow-[0_18px_40px_-28px_rgba(6,19,71,0.8)] transition-[translate,box-shadow] duration-500 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_rgba(6,19,71,0.9)] sm:aspect-[4/5] sm:min-h-0"
+      className="group relative isolate flex h-full min-h-[21rem] flex-col justify-end overflow-hidden rounded-[24px] bg-[#061347] text-white shadow-[0_18px_40px_-28px_rgba(6,19,71,0.8)] transition-[translate,box-shadow] duration-500 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_rgba(6,19,71,0.9)] sm:aspect-[4/5] sm:min-h-0"
       style={{ "--tone": tone, "--tone-deep": readableShade(tone), transitionTimingFunction: "var(--ease)" } as CSSProperties}
     >
       <Image
@@ -672,14 +672,22 @@ export function ProgramIndex({ locale }: { locale: Locale }) {
             {lead}
           </p>
         </div>
-        {/* Each card reveals as it scrolls into view, one column after another. */}
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 sm:gap-5 md:mt-12 lg:grid-cols-3">
+        {/* Each card reveals as it scrolls into view, one column after another. On phones the twelve
+            cards take turns in a slider instead of stacking into a long column. */}
+        <CardSlider
+          titles={items.map((item) => pick(item.name, locale) ?? item.name.he)}
+          label={locale === "en" ? "All programs" : "כל התוכניות"}
+          goTo={clubSliderLabels[locale].goTo}
+          dir={dir}
+          className="mt-8 md:mt-12"
+          grid="md:grid-cols-2 md:gap-5 lg:grid-cols-3"
+        >
           {items.map((item, index) => (
-            <div key={item.slug} data-reveal>
+            <div key={item.slug} data-reveal className="h-full">
               <ProgramCard item={item} logo={logos.get(item.slug)} locale={locale} dir={dir} reveal={(index % 3) + 1} />
             </div>
           ))}
-        </div>
+        </CardSlider>
       </section>
 
       {/* The two ways into a program, as on the home page's "get involved" cards. */}
@@ -955,16 +963,16 @@ const programLabels: Record<
 
 type FactIconName = "language" | "calendar" | "clock";
 
-// A large icon in the program's light tone, cropped by the fact card's edge. On hover it slides
-// further in and acts out its meaning: the speech bubble types, the calendar ticks a day off and
-// the clock's hand sweeps round.
+// An icon in the program's light tone: small above the text in a phone square, large and cropped
+// by the card's edge on wider screens. On hover it acts out its meaning: the speech bubble types,
+// the calendar ticks a day off and the clock's hand sweeps round.
 function FactIcon({ name }: { name: FactIconName }) {
   const dot = "origin-center fill-white motion-safe:group-hover:animate-[node-pulse_1.2s_ease-in-out_infinite]";
   return (
     <svg
       viewBox="0 0 24 24"
       aria-hidden="true"
-      className="pointer-events-none absolute -end-6 top-1/2 h-24 w-24 -translate-y-1/2 fill-(--tone-light) transition-[translate] duration-700 ltr:group-hover:-translate-x-3 rtl:group-hover:translate-x-3"
+      className="pointer-events-none mb-1 h-8 w-8 shrink-0 fill-(--tone-light) transition-[translate] duration-700 md:absolute md:-end-6 md:top-1/2 md:mb-0 md:h-24 md:w-24 md:-translate-y-1/2 md:ltr:group-hover:-translate-x-3 md:rtl:group-hover:translate-x-3"
       style={{ transitionTimingFunction: "var(--ease)" }}
     >
       {name === "language" ? (
@@ -1105,25 +1113,28 @@ function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: Ca
 
       {/* The facts float over the banner's lower edge. */}
       <section aria-label={labels.details} data-reveal className="relative z-10 mx-auto -mt-14 w-full max-w-6xl px-5 md:-mt-20 md:px-8">
-        <dl className="grid gap-3 sm:grid-cols-3 sm:gap-5">
+        {/* Three small squares side by side on phones; wide cards with a cropped icon from md up. */}
+        <div className="grid grid-cols-3 gap-2.5 md:gap-5">
           {facts.map((fact, index) => (
             <div
               key={fact.icon}
               data-reveal-item={String(index + 1)}
-              className="group relative isolate overflow-hidden rounded-[24px] border border-[#e6e9f5] bg-white p-5 pe-24 shadow-[0_24px_50px_-30px_rgba(6,19,71,0.55)] transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-(--tone)/40 hover:shadow-[0_30px_60px_-30px_rgba(6,19,71,0.6)] md:p-6 md:pe-28"
+              className="group relative isolate flex h-full min-h-28 flex-col items-center justify-center overflow-hidden rounded-[20px] border border-[#e6e9f5] bg-white p-2 text-center shadow-[0_24px_50px_-30px_rgba(6,19,71,0.55)] transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-(--tone)/40 hover:shadow-[0_30px_60px_-30px_rgba(6,19,71,0.6)] md:block md:min-h-0 md:rounded-[24px] md:p-6 md:pe-28 md:text-start"
               style={{ transitionTimingFunction: "var(--ease)" }}
             >
               <FactIcon name={fact.icon} />
-              <dt className="relative text-sm font-semibold text-club/60">{fact.label}</dt>
-              <dd className="relative mt-1 text-xl font-bold text-club md:text-2xl">{fact.value}</dd>
+              <p className="relative text-xs font-semibold text-club/60 md:text-sm">{fact.label}</p>
+              <p className="relative mt-0.5 text-sm leading-tight font-bold text-club md:mt-1 md:text-2xl">{fact.value}</p>
               {fact.detail ? (
-                <dd className="relative mt-0.5 text-base font-semibold text-(--tone-deep)" dir="ltr">
-                  <span className="inline-block">{fact.detail}</span>
-                </dd>
+                <p className="relative mt-0.5 text-xs font-semibold text-(--tone-deep) md:text-base">
+                  <span dir="ltr" className="inline-block">
+                    {fact.detail}
+                  </span>
+                </p>
               ) : null}
             </div>
           ))}
-        </dl>
+        </div>
       </section>
 
       <section id="program-about" data-reveal className="mx-auto w-full max-w-3xl scroll-mt-[4.5rem] px-5 pt-12 pb-6 md:px-8 md:pt-20 md:pb-10">
@@ -1217,13 +1228,21 @@ function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: Ca
             <span className="club-underline">{labels.more}</span>
           </h2>
         </div>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 sm:gap-5 md:mt-10 lg:grid-cols-3">
+        <CardSlider
+          titles={others.map((entry) => pick(entry.name, locale) ?? entry.name.he)}
+          label={labels.more}
+          goTo={clubSliderLabels[locale].goTo}
+          dir={dir}
+          className="mt-8 md:mt-10"
+          grid="md:grid-cols-2 md:gap-5 lg:grid-cols-3"
+          slideClasses={["", "", "md:max-lg:hidden"]}
+        >
           {others.map((entry, index) => (
-            <div key={entry.slug} data-reveal className={index === 2 ? "sm:max-lg:hidden" : undefined}>
+            <div key={entry.slug} data-reveal className="h-full">
               <ProgramCard item={entry} logo={clubLogos.find((logoEntry) => logoEntry.slug === entry.slug)?.logo} locale={locale} dir={dir} reveal={index + 1} />
             </div>
           ))}
-        </div>
+        </CardSlider>
         <div data-reveal className="mt-8 flex justify-center md:mt-10">
           <Link
             href={withLocale("/programs", locale)}
