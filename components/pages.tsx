@@ -40,6 +40,7 @@ import { RevealController, SectionRail, type RailSection } from "@/components/ho
 import { Section } from "@/components/ui";
 import { readableShade } from "@/lib/color";
 import { pick, withLocale, type Locale, type Localized } from "@/lib/locale";
+import { Underline } from "@/components/underline";
 
 function firstSentence(text: string): string {
   const end = text.indexOf(". ");
@@ -281,7 +282,7 @@ export function HomePage({ locale }: { locale: Locale }) {
       </div>
       <section id="about-us" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 py-14 md:px-8">
         <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-          <span className="club-underline">{locale === "en" ? "About Us" : "קצת עלינו"}</span>
+          <Underline>{locale === "en" ? "About Us" : "קצת עלינו"}</Underline>
         </h2>
         <div className="mt-8 grid items-center gap-8 md:grid-cols-2">
           <div className="space-y-4 text-justify text-base leading-8 text-ink">
@@ -327,7 +328,7 @@ export function HomePage({ locale }: { locale: Locale }) {
       </section>
       <section id="partners" data-reveal className="scroll-mt-[4.5rem] pt-14 pb-14 md:pt-20 md:pb-24">
         <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-          <span className="club-underline">{locale === "en" ? "Our Partners" : "השותפים שלנו לדרך"}</span>
+          <Underline>{locale === "en" ? "Our Partners" : "השותפים שלנו לדרך"}</Underline>
         </h2>
         <PartnerStrip partners={homePartners} />
       </section>
@@ -562,7 +563,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
       <section id="team" data-reveal className="scroll-mt-[4.5rem] bg-gradient-to-b from-white via-[#f5f7fd] to-white pt-10 pb-10 md:pt-16 md:pb-24">
         <div className="mx-auto w-full max-w-7xl px-5 md:px-8">
           <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-            <span className="club-underline">{teamLabels[locale].title}</span>
+            <Underline>{teamLabels[locale].title}</Underline>
           </h2>
           <TeamSection members={members} groups={groups} labels={teamLabels[locale]} dir={dir} />
         </div>
@@ -571,7 +572,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
       <section id="advisory" data-reveal className="scroll-mt-[4.5rem] py-10 md:py-20">
         <div className="mx-auto w-full max-w-7xl px-5 md:px-8">
           <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-            <span className="club-underline">{locale === "en" ? "Advisory Committee & Academic Support" : "ועדה מייעצת וליווי אקדמי"}</span>
+            <Underline>{locale === "en" ? "Advisory Committee & Academic Support" : "ועדה מייעצת וליווי אקדמי"}</Underline>
           </h2>
           <TeamSection members={advisors} labels={teamLabels[locale]} dir={dir} variant="pair" />
         </div>
@@ -579,7 +580,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
 
       <section id="partners" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 pt-2 pb-14 md:px-8 md:pt-4 md:pb-20">
         <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-          <span className="club-underline">{locale === "en" ? "Academic Partners" : "שותפים אקדמיים"}</span>
+          <Underline>{locale === "en" ? "Academic Partners" : "שותפים אקדמיים"}</Underline>
         </h2>
         <div className="mt-8 grid gap-2 sm:mt-10 sm:grid-cols-3 sm:gap-4">
           {academicPartners.map((partner, index) => (
@@ -1050,7 +1051,7 @@ export function PitchPage({ locale }: { locale: Locale }) {
 
       <section id="pitch-journey" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-12">
         <h2 data-reveal-item="0" className={heading}>
-          <span className="club-underline">Our Competition Journey</span>
+          <Underline>Our Competition Journey</Underline>
         </h2>
         <div data-reveal-item="1" className="mt-8">
           <Journey steps={pitchStages} label="Our Competition Journey" stage="Stage" dir="ltr" />
@@ -1083,7 +1084,7 @@ export function PitchPage({ locale }: { locale: Locale }) {
             {pitchReady.line}
           </p>
           <h2 data-reveal-item="1" className="mt-4 text-4xl font-bold md:text-6xl">
-            <span className="club-underline on-dark">{pitchReady.title}</span>
+            <Underline onDark>{pitchReady.title}</Underline>
           </h2>
           <p data-reveal-item="2" className="mt-6 text-base text-white/85 md:text-lg">
             {pitchReady.body}
@@ -1113,14 +1114,14 @@ export function PitchPage({ locale }: { locale: Locale }) {
 
       <section id="pitch-team" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-16">
         <h2 data-reveal-item="0" className={heading}>
-          <span className="club-underline">The Pitch Night Team</span>
+          <Underline>The Pitch Night Team</Underline>
         </h2>
         <TeamSection members={team} labels={{ title: "The Pitch Night Team", all: "", profile: "More details" }} dir="ltr" variant="dense" />
       </section>
 
       <section id="pitch-partners" data-reveal className="scroll-mt-[4.5rem] pt-6 pb-14 md:pt-10 md:pb-24">
         <h2 data-reveal-item="0" className={heading}>
-          <span className="club-underline">Our Partners</span>
+          <Underline>Our Partners</Underline>
         </h2>
         <PartnerStrip partners={pitchPartners} />
       </section>
@@ -1206,7 +1207,7 @@ export function InternshipPage({ locale }: { locale: Locale }) {
 
       <section id="internship-about" data-reveal className="mx-auto w-full max-w-3xl scroll-mt-[4.5rem] px-5 pt-12 pb-6 md:px-8 md:pt-20 md:pb-10">
         <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-          <span className="club-underline">{copy.aboutTitle}</span>
+          <Underline>{copy.aboutTitle}</Underline>
         </h2>
         <div className="mt-8 md:mt-10">
           {copy.body.map((paragraph, index) => (
@@ -1228,7 +1229,7 @@ export function InternshipPage({ locale }: { locale: Locale }) {
       {/* The requirements as a checklist, beside the scholarship and the program's manager. */}
       <section id="internship-requirements" data-reveal className="mx-auto w-full max-w-5xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-16">
         <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-          <span className="club-underline">{copy.requirementsTitle}</span>
+          <Underline>{copy.requirementsTitle}</Underline>
         </h2>
         <div className="mt-8 grid gap-4 md:mt-10 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:gap-5">
           <ul
@@ -1319,7 +1320,7 @@ export function InternshipPage({ locale }: { locale: Locale }) {
       <section id="internship-graduates" className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 pt-10 pb-14 md:px-8 md:pt-16 md:pb-24">
         <div data-reveal>
           <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-            <span className="club-underline">{copy.quotesTitle}</span>
+            <Underline>{copy.quotesTitle}</Underline>
           </h2>
         </div>
         <CardSlider
@@ -1446,7 +1447,7 @@ export function CommunityPage({ locale }: { locale: Locale }) {
 
       <section id="community-team" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-16">
         <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-          <span className="club-underline">{copy.teamTitle}</span>
+          <Underline>{copy.teamTitle}</Underline>
         </h2>
         <TeamSection members={team} labels={{ title: copy.teamTitle, all: "", profile: teamLabels[locale].profile }} dir={dir} variant="dense" />
       </section>
@@ -1504,7 +1505,7 @@ export function AiPage({ locale }: { locale: Locale }) {
           {copy.lead}
         </p>
         <h2 data-reveal-item="1" className="mt-12 text-center text-[32px] font-bold text-club md:mt-16">
-          <span className="club-underline">{copy.blocksTitle}</span>
+          <Underline>{copy.blocksTitle}</Underline>
         </h2>
         {/* One at a time on phones, the next one peeking in; three side by side from md up. */}
         <CardSlider
@@ -1548,7 +1549,7 @@ export function AiPage({ locale }: { locale: Locale }) {
 
       <section id="ai-team" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 pt-10 pb-14 md:px-8 md:pt-16 md:pb-24">
         <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-          <span className="club-underline">{copy.teamTitle}</span>
+          <Underline>{copy.teamTitle}</Underline>
         </h2>
         <TeamSection members={team} labels={{ title: copy.teamTitle, all: "", profile: teamLabels[locale].profile }} dir={dir} variant="center" />
       </section>
@@ -1619,7 +1620,7 @@ export function JoinPage({ slug }: { slug: JoinSlug }) {
       {details.steps ? (
         <section id="join-steps" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-16">
           <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-            <span className="club-underline">אז איך נרשמים?</span>
+            <Underline>אז איך נרשמים?</Underline>
           </h2>
           {details.stepsIntro ? (
             <p data-reveal-item="1" className="mx-auto mt-6 max-w-3xl text-justify text-base leading-7 text-ink/85 [text-align-last:center] md:text-lg md:leading-8">
@@ -1667,7 +1668,7 @@ export function JoinPage({ slug }: { slug: JoinSlug }) {
       {details.teams ? (
         <section id="join-roles" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-16">
           <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-            <span className="club-underline">מה אפשר לנהל?</span>
+            <Underline>מה אפשר לנהל?</Underline>
           </h2>
           <div className="mt-8 grid gap-8 md:mt-10 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:gap-12">
             <div data-reveal-item="1">
@@ -1710,7 +1711,7 @@ export function JoinPage({ slug }: { slug: JoinSlug }) {
 
       <section id="join-prepare" data-reveal className="mx-auto w-full max-w-4xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-16">
         <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-          <span className="club-underline">מה צריך להכין?</span>
+          <Underline>מה צריך להכין?</Underline>
         </h2>
         <ul className="mt-8 grid gap-2.5 sm:grid-cols-2 md:mt-10 md:gap-3">
           {details.prepare.map((item, index) => (
@@ -2073,7 +2074,7 @@ function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: Ca
 
       <section id="program-about" data-reveal className="mx-auto w-full max-w-3xl scroll-mt-[4.5rem] px-5 pt-12 pb-6 md:px-8 md:pt-20 md:pb-10">
         <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-          <span className="club-underline">{labels.about}</span>
+          <Underline>{labels.about}</Underline>
         </h2>
         <div className="mt-8 md:mt-10">
           {about.map((paragraph, index) => (
@@ -2144,7 +2145,7 @@ function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: Ca
         <section id="program-gallery" className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-16">
           <div data-reveal>
             <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-              <span className="club-underline">{labels.gallery}</span>
+              <Underline>{labels.gallery}</Underline>
             </h2>
           </div>
           {/* A swipe row on phones that stops at every photo, centered (the row's padding lets the
@@ -2182,7 +2183,7 @@ function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: Ca
           className={`mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 md:px-8 ${isAccelerator ? "pt-10 pb-14 md:pt-16 md:pb-24" : "py-10 md:py-16"}`}
         >
           <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-            <span className="club-underline">{managersTitle}</span>
+            <Underline>{managersTitle}</Underline>
           </h2>
           <TeamSection members={managers} labels={{ title: managersTitle, all: "", profile: teamLabels[locale].profile }} dir={dir} variant="center" />
         </section>
@@ -2192,7 +2193,7 @@ function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: Ca
       <section id="program-more" className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 pt-10 pb-14 md:px-8 md:pt-16 md:pb-24">
         <div data-reveal>
           <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-            <span className="club-underline">{labels.more}</span>
+            <Underline>{labels.more}</Underline>
           </h2>
         </div>
         <CardSlider
@@ -2332,7 +2333,7 @@ function PageBanner({
         <h1
           className={`mt-4 font-bold text-white motion-safe:animate-[hero-rise_1.2s_var(--ease)_220ms_both] ${small ? "text-4xl leading-tight md:text-6xl" : "text-5xl md:text-7xl"}`}
         >
-          <span className="club-underline on-dark">{title}</span>
+          <Underline onDark>{title}</Underline>
         </h1>
         {subtitle ? (
           <p className="mx-auto mt-5 max-w-2xl text-base text-white/90 md:mt-7 motion-safe:animate-[hero-rise_1.1s_var(--ease)_420ms_both] md:text-2xl md:leading-snug">
@@ -2393,7 +2394,7 @@ export function NotFoundView({ locale, bilingual = false }: { locale: Locale; bi
           404
         </p>
         <h1 className="-mt-6 text-4xl font-bold md:-mt-12 md:text-6xl motion-safe:animate-[hero-rise_1.2s_var(--ease)_both]" style={rise(1)}>
-          <span className="club-underline on-dark">{labels.title}</span>
+          <Underline onDark>{labels.title}</Underline>
         </h1>
         <p className="mx-auto mt-6 max-w-xl text-base text-white/85 md:mt-8 md:text-xl motion-safe:animate-[hero-rise_1.1s_var(--ease)_both]" style={rise(2)}>
           {labels.line}

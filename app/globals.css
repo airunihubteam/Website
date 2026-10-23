@@ -307,10 +307,13 @@ body {
   padding-bottom: 9px;
 }
 
+/* Under the heading's longest line of text, measured by the Underline component; its whole box
+   until then. */
 .club-underline::after {
   content: "";
   position: absolute;
-  inset-inline: 0;
+  left: var(--underline-x, 0);
+  width: var(--underline-w, 100%);
   bottom: 0;
   height: 3px;
   background: var(--club);

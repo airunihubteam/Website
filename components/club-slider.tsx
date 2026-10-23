@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CarouselBars, useCarousel } from "@/components/carousel";
+import { Underline } from "@/components/underline";
 
 export type ClubSlide = {
   slug: string;
@@ -49,7 +50,7 @@ export function ClubSlider({ slides, labels, dir }: { slides: ClubSlide[]; label
       <div data-reveal-item="0" className="relative mx-auto grid w-full max-w-7xl px-5 md:grid-cols-[1fr_auto_1fr] md:px-8">
         <span aria-hidden="true" className="hidden md:block" />
         <h2 className="text-center text-[32px] font-bold text-club">
-          <span className="club-underline">{labels.title}</span>
+          <Underline>{labels.title}</Underline>
         </h2>
         <Link
           href={labels.allHref}

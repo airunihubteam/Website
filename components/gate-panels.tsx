@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState, type FocusEvent, type MouseEvent } from "react";
 import { Chevron } from "@/components/icons";
+import { Underline } from "@/components/underline";
 
 export type GatePanel = {
   href: string;
@@ -43,7 +44,7 @@ export function GatePanels({ items, labels, dir }: { items: GatePanel[]; labels:
   return (
     <section className="relative bg-white py-12 md:py-14">
       <h2 data-reveal-item="0" className="px-5 text-center text-[32px] font-bold text-club">
-        <span className="club-underline">{labels.title}</span>
+        <Underline>{labels.title}</Underline>
       </h2>
 
       <div

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type PointerEvent } from "react";
 import { CardSlider } from "@/components/card-slider";
 import { Chevron } from "@/components/icons";
+import { Underline } from "@/components/underline";
 
 export type ImpactStat = {
   value: number;
@@ -163,7 +164,7 @@ export function JoinSection({ cards, title, dir }: { cards: JoinCard[]; title: s
 
       <div className="relative mx-auto w-full max-w-7xl px-5 md:px-8">
         <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-          <span className="club-underline">{title}</span>
+          <Underline>{title}</Underline>
         </h2>
         {/* Four cards share a row on wide screens; fewer sit centered two to a row. On phones they
             become the home page's club slider. */}

@@ -5,13 +5,14 @@ import type { Person } from "@/content/people";
 import type { CatalogItem } from "@/content/catalog";
 import { catalogPath } from "@/content/catalog";
 import { pick, withLocale, type Locale } from "@/lib/locale";
+import { Underline } from "@/components/underline";
 
 export function Section({ title, children, align = "start" }: { title?: string; children: ReactNode; align?: "start" | "center" }) {
   return (
     <section className="mx-auto w-full max-w-6xl px-5 py-12 md:px-8">
       {title ? (
         <h2 className={align === "center" ? "text-center text-[32px] font-bold text-club" : "text-[32px] font-bold text-club"}>
-          <span className={align === "center" ? "club-underline" : ""}>{title}</span>
+          {align === "center" ? <Underline>{title}</Underline> : title}
         </h2>
       ) : null}
       <div className={title ? "mt-8" : ""}>{children}</div>
