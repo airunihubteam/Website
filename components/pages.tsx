@@ -10,6 +10,7 @@ import {
   aiEn,
   aiHe,
   chairLine,
+  homePartners,
   communityEn,
   communityHe,
   homeAboutCount,
@@ -218,6 +219,7 @@ const homeSections: Record<Locale, RailSection[]> = {
     { id: "activity", label: "מוקדי עיסוק" },
     { id: "our-programs", label: "התוכניות" },
     { id: "chair", label: "יו״ר המועדון" },
+    { id: "partners", label: "שותפים" },
   ],
   en: [
     { id: "home", label: "Home" },
@@ -227,6 +229,7 @@ const homeSections: Record<Locale, RailSection[]> = {
     { id: "activity", label: "Activity" },
     { id: "our-programs", label: "Programs" },
     { id: "chair", label: "Chair" },
+    { id: "partners", label: "Partners" },
   ],
 };
 
@@ -321,6 +324,12 @@ export function HomePage({ locale }: { locale: Locale }) {
             {pick(chairLine, locale)}
           </p>
         </div>
+      </section>
+      <section id="partners" data-reveal className="scroll-mt-[4.5rem] pt-14 pb-14 md:pt-20 md:pb-24">
+        <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
+          <span className="club-underline">{locale === "en" ? "Our Partners" : "השותפים שלנו לדרך"}</span>
+        </h2>
+        <PartnerStrip partners={homePartners} />
       </section>
     </>
   );
@@ -962,6 +971,40 @@ const pitchSections: RailSection[] = [
   { id: "pitch-partners", label: "Our Partners" },
 ];
 
+// Partner logos in one row on any screen, filled with the club's blue: they drift past and stop
+// under the pointer, and without motion they sit still, wrapped and centered. The row always runs
+// left to right, so it moves the same way on Hebrew pages.
+function PartnerStrip({ partners }: { partners: { name: string; logo: string }[] }) {
+  return (
+    <div
+      dir="ltr"
+      data-reveal-item="1"
+      className="group relative mt-8 overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)] md:mt-10"
+    >
+      <div className="flex w-max motion-safe:animate-[marquee_40s_linear_infinite] group-hover:[animation-play-state:paused] motion-reduce:w-full motion-reduce:justify-center">
+        {[0, 1].map((copy) => (
+          <ul
+            key={copy}
+            aria-hidden={copy === 1 ? true : undefined}
+            className={`flex shrink-0 items-center gap-4 pe-4 ${copy === 1 ? "motion-reduce:hidden" : "motion-reduce:flex-wrap motion-reduce:justify-center"}`}
+          >
+            {partners.map((partner) => (
+              <li key={partner.name} className="flex h-24 w-52 items-center justify-center rounded-[20px] border border-[#e6e9f5] bg-white px-6 md:h-28">
+                <span
+                  role={copy === 1 ? undefined : "img"}
+                  aria-label={copy === 1 ? undefined : partner.name}
+                  className="block h-12 w-full bg-club [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain]"
+                  style={{ maskImage: `url(${partner.logo})` }}
+                />
+              </li>
+            ))}
+          </ul>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // Pitch Night, in English on both sites as on the old one, so it reads left to right: the banner
 // and story, the competition in figures, its five stages one at a time, the call to follow along,
 // the team and the partners.
@@ -1079,30 +1122,7 @@ export function PitchPage({ locale }: { locale: Locale }) {
         <h2 data-reveal-item="0" className={heading}>
           <span className="club-underline">Our Partners</span>
         </h2>
-        {/* One row on any screen: the logos drift past and stop under the pointer. Without motion
-            they sit still, wrapped and centered. */}
-        <div data-reveal-item="1" className="group relative mt-8 overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)] md:mt-10">
-          <div className="flex w-max motion-safe:animate-[marquee_40s_linear_infinite] group-hover:[animation-play-state:paused] motion-reduce:w-full motion-reduce:justify-center">
-            {[0, 1].map((copy) => (
-              <ul
-                key={copy}
-                aria-hidden={copy === 1 ? true : undefined}
-                className={`flex shrink-0 items-center gap-4 pe-4 ${copy === 1 ? "motion-reduce:hidden" : "motion-reduce:flex-wrap motion-reduce:justify-center"}`}
-              >
-                {pitchPartners.map((partner) => (
-                  <li key={partner.name} className="flex h-24 w-52 items-center justify-center rounded-[20px] border border-[#e6e9f5] bg-white px-6 md:h-28">
-                    <span
-                      role={copy === 1 ? undefined : "img"}
-                      aria-label={copy === 1 ? undefined : partner.name}
-                      className="block h-12 w-full bg-club [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain]"
-                      style={{ maskImage: `url(${partner.logo})` }}
-                    />
-                  </li>
-                ))}
-              </ul>
-            ))}
-          </div>
-        </div>
+        <PartnerStrip partners={pitchPartners} />
       </section>
     </div>
   );

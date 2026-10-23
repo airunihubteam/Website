@@ -151,6 +151,21 @@ export const pitchPartners: { name: string; logo: string; width: number; height:
   { name: "RUNI Ventures", logo: "/media/pitch/partners/runi-ventures.png", width: 631, height: 240 },
 ];
 
+// The club's partners, from the old home page's "השותפים שלנו לדרך" logos, cut out like the Pitch
+// Night ones (.pending/home-partners.mjs); Mizrahi Tefahot and Pearl Cohen share Pitch Night's.
+export const homePartners: { name: string; logo: string; width: number; height: number }[] = [
+  { name: "Mizrahi Tefahot Bank", logo: "/media/pitch/partners/mizrahi-tefahot.png", width: 964, height: 229 },
+  { name: "Propeller Drones", logo: "/media/partners/home/propeller-drones.png", width: 916, height: 240 },
+  { name: "Pearl Cohen", logo: "/media/pitch/partners/pearl-cohen.png", width: 827, height: 84 },
+  { name: "Microsoft", logo: "/media/partners/home/microsoft.png", width: 1024, height: 218 },
+  { name: "AWS", logo: "/media/partners/home/aws.png", width: 288, height: 172 },
+  { name: "Papaya Global", logo: "/media/partners/home/papaya-global.png", width: 993, height: 223 },
+  { name: "Brooks Keret", logo: "/media/partners/home/brooks-keret.png", width: 360, height: 113 },
+  { name: "The Founders", logo: "/media/partners/home/the-founders.png", width: 135, height: 137 },
+  { name: "Deloitte", logo: "/media/partners/home/deloitte.png", width: 1182, height: 221 },
+  { name: "qFund", logo: "/media/partners/home/qfund.png", width: 456, height: 148 },
+];
+
 // The industry internship with NICE, from the old site's page (ruec.co.il/internship). The old
 // English page described an earlier round (6–8 students, 6 hours a week, a ₪1,000 scholarship),
 // so the English here is a translation of the current Hebrew page instead. The old "register"
