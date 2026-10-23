@@ -279,6 +279,8 @@ export const internshipEn: InternshipCopy = {
   ],
 };
 
+// The community page, from the old site's /alumni page. Its alumni sign-up form is not part of this
+// site yet, so the join button opens the old page at its form for now (see docs/08-forms.md).
 export const communityHe = {
   title: "קהילת מועדון היזמות",
   intro: [
@@ -300,6 +302,14 @@ export const communityHe = {
     "מטרת הקהילה היא לחבר בין הבוגרים, ליצור קשרים מקצועיים חזקים ולפתוח הזדמנויות לשיתופי פעולה, העברת משרות ועזרה הדדית. הקהילה משמשת מקור השראה עבור הסטודנטים, דוחפת אותם לקחת על עצמם תפקידי ניהול ומספקת תמיכה והכוונה למי שמעוניין להמשיך להוביל ולצמוח בעולם היזמות.",
     "קהילת הבוגרים מספקת תמיכה למנהלי התוכניות העכשוויים, ובכך מבטיחה את המשך הצלחת מועדון היזמות ותורמת לצמיחה ולהתפתחות של דור היזמים הבא.",
   ],
+  communitiesLabel: "שתי הקהילות",
+  teamTitle: "צוות הקהילה",
+  join: {
+    title: "הצטרפו לקהילת הבוגרים",
+    line: "ניהלת תוכנית במועדון היזמות? הצטרפו לקהילת הבוגרים.",
+    cta: "להצטרפות",
+    href: "https://ruec.co.il/alumni/#:~:text=" + encodeURIComponent("הצטרפו לקהילת הבוגרים"),
+  },
 };
 
 export const communityEn = {
@@ -323,6 +333,14 @@ export const communityEn = {
     "The purpose of the community is to connect alumni, foster strong professional relationships, and create opportunities for collaboration, job sharing, and mutual support. The community serves as a source of inspiration for current students, encouraging them to take on leadership roles and providing guidance for those who wish to continue growing in the world of entrepreneurship.",
     "The Alumni Community also supports current program managers, ensuring the continued success of the Entrepreneurship Club and contributing to the growth and development of the next generation of entrepreneurs.",
   ],
+  communitiesLabel: "Our two communities",
+  teamTitle: "Community Team",
+  join: {
+    title: "Join the Alumni Community",
+    line: "Managed a program at the Entrepreneurship Club? Join our alumni community.",
+    cta: "Join",
+    href: "https://ruec.co.il/en/alumni/#:~:text=" + encodeURIComponent("Join The Alumni Community"),
+  },
 };
 
 export const aiHe = {

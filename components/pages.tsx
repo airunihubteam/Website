@@ -1079,9 +1079,9 @@ export function PitchPage({ locale }: { locale: Locale }) {
 }
 
 // A large light shape cropped by a card's edge: a medal with the club's star on the scholarship
-// card, a person on the manager's card, a quotation mark beside a graduate's name. Each drifts a
-// little on hover; the medal's star also twinkles.
-function CardMark({ name, className }: { name: "medal" | "person" | "quote"; className: string }) {
+// card, a person on the manager's card, a quotation mark beside a graduate's name, the club's
+// star on the alumni invitation. Each drifts a little on hover; the medal's star also twinkles.
+function CardMark({ name, className }: { name: "medal" | "person" | "quote" | "star"; className: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -1107,6 +1107,7 @@ function CardMark({ name, className }: { name: "medal" | "person" | "quote"; cla
           <path d="M3.5 22c0-5.2 3.8-8.8 8.5-8.8s8.5 3.6 8.5 8.8z" />
         </>
       ) : null}
+      {name === "star" ? <path d={STAR_PATH} /> : null}
       {name === "quote" ? (
         <path d="M10.2 6C6.8 7 4.5 9.8 4.5 13.6V19h6.2v-6.2H7.6c0-2.2 1.2-3.8 3.2-4.5zm9.3 0c-3.4 1-5.7 3.8-5.7 7.6V19H20v-6.2h-3.1c0-2.2 1.2-3.8 3.2-4.5z" />
       ) : null}
@@ -1268,39 +1269,113 @@ export function InternshipPage({ locale }: { locale: Locale }) {
   );
 }
 
+// The club's community: a banner of the club's managers at a seminar, the community's promise,
+// the student and alumni communities, the community team, and an invitation to former program
+// managers to join the alumni community.
 export function CommunityPage({ locale }: { locale: Locale }) {
   const copy = locale === "en" ? communityEn : communityHe;
+  const dir = locale === "en" ? "ltr" : "rtl";
+  const team = peopleIn("community").map((person) => teamMember(person, locale));
+  const communities = [
+    { title: copy.studentsTitle, paragraphs: copy.students, image: "/media/community/students.webp" },
+    { title: copy.alumniTitle, paragraphs: copy.alumni, image: "/media/community/alumni.webp" },
+  ];
+  const sections: RailSection[] = [
+    { id: "community-top", label: copy.title },
+    { id: "community-groups", label: copy.communitiesLabel },
+    { id: "community-team", label: copy.teamTitle },
+    { id: "community-join", label: copy.join.title },
+  ];
+
   return (
     <>
-      <PageHero title={copy.title} />
-      <Section>
-        <div className="max-w-3xl space-y-3 text-lg font-light leading-8 text-ink">
-          {copy.intro.map((line) => (
-            <p key={line}>{line}</p>
+      <RevealController />
+      <SectionRail sections={sections} label={locale === "en" ? "Page sections" : "ניווט בין חלקי העמוד"} />
+
+      <PageBanner id="community-top" image="/media/community/banner.webp" locale={locale} title={copy.title} subtitle={copy.intro[0]} />
+
+      <section id="community-groups" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 pt-10 pb-10 md:px-8 md:pt-20 md:pb-16">
+        <p
+          data-reveal-item="0"
+          className="mx-auto max-w-3xl text-justify text-lg leading-8 font-bold text-club [text-align-last:center] md:text-2xl md:leading-[1.6]"
+        >
+          {copy.intro.slice(1).join(" ")}
+        </p>
+        {/* Side by side from md up; on phones the club slider, the other community peeking in at
+            the side, each card as tall as its own text. They are long reads, so the slider waits for
+            a swipe or tap. */}
+        <CardSlider
+          titles={communities.map((community) => community.title)}
+          label={copy.communitiesLabel}
+          goTo={clubSliderLabels[locale].goTo}
+          dir={dir}
+          className="mt-8 md:mt-12"
+          grid="md:grid-cols-2 md:gap-5"
+          autoplay={false}
+        >
+          {communities.map((community, index) => (
+            <article
+              key={community.title}
+              data-reveal-item={String(index + 1)}
+              className="flex flex-col overflow-hidden rounded-[24px] border border-[#e6e9f5] bg-white shadow-[0_24px_50px_-30px_rgba(6,19,71,0.55)] transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-club/25 md:h-full hover:shadow-[0_30px_60px_-30px_rgba(6,19,71,0.6)]"
+              style={{ transitionTimingFunction: "var(--ease)" }}
+            >
+              <div className="relative aspect-[2/1] overflow-hidden bg-club md:aspect-[16/9]">
+                <Image
+                  src={community.image}
+                  alt=""
+                  fill
+                  sizes="(min-width: 768px) 540px, 78vw"
+                  className="object-cover transition-[scale] duration-[1400ms] group-hover:scale-[1.05] group-data-active:scale-[1.05]"
+                  style={{ transitionTimingFunction: "var(--ease)" }}
+                />
+              </div>
+              <div className="p-6 md:p-8">
+                <h3 className="text-2xl font-bold text-club md:text-[28px]">{community.title}</h3>
+                <span
+                  aria-hidden="true"
+                  className="mt-3 block h-[3px] w-10 bg-club transition-[width] duration-500 group-hover:w-16 group-data-active:w-16"
+                  style={{ transitionTimingFunction: "var(--ease)" }}
+                />
+                {community.paragraphs.map((paragraph) => (
+                  <p key={paragraph} className="mt-4 text-justify text-[15px] leading-7 text-ink hyphens-auto md:text-base">
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            </article>
           ))}
+        </CardSlider>
+      </section>
+
+      <section id="community-team" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-16">
+        <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
+          <span className="club-underline">{copy.teamTitle}</span>
+        </h2>
+        <TeamSection members={team} labels={{ title: copy.teamTitle, all: "", profile: teamLabels[locale].profile }} dir={dir} variant="dense" />
+      </section>
+
+      {/* The alumni sign-up, in the club's blue under a large star. */}
+      <section id="community-join" data-reveal className="mx-auto w-full max-w-4xl scroll-mt-[4.5rem] px-5 pt-6 pb-14 md:px-8 md:pt-10 md:pb-24">
+        <div
+          data-reveal-item="1"
+          className="group relative isolate overflow-hidden rounded-[28px] bg-club px-6 py-10 text-center text-white shadow-[0_30px_60px_-36px_rgba(6,19,71,0.9)] md:px-12 md:py-14"
+        >
+          <CardMark name="star" className="-start-10 -bottom-12 h-48 w-48 fill-white/10 group-hover:-translate-y-2 md:h-64 md:w-64" />
+          <CardMark name="star" className="-end-6 -top-8 h-24 w-24 fill-white/10 group-hover:translate-y-1.5 md:h-32 md:w-32" />
+          <h2 className="text-[28px] leading-tight font-bold md:text-4xl">{copy.join.title}</h2>
+          <p className="mx-auto mt-4 max-w-xl text-base text-white/85 md:text-lg">{copy.join.line}</p>
+          <a
+            href={copy.join.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group/cta mt-7 inline-flex items-center gap-2 border border-white bg-white px-7 py-3 text-sm font-bold whitespace-nowrap text-club transition-colors duration-300 hover:border-[#0a1f6e] hover:bg-[#0a1f6e] hover:text-white"
+          >
+            {copy.join.cta}
+            <Chevron dir={dir} className="transition-transform duration-500 group-hover/cta:translate-x-1 rtl:group-hover/cta:-translate-x-1" />
+          </a>
         </div>
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
-          <article className="border border-[#e6e6e6] bg-white p-5">
-            <h2 className="text-2xl font-bold text-club">{copy.studentsTitle}</h2>
-            {copy.students.map((paragraph) => (
-              <p key={paragraph} className="mt-3 font-light leading-7 text-ink">
-                {paragraph}
-              </p>
-            ))}
-          </article>
-          <article className="border border-[#e6e6e6] bg-white p-5">
-            <h2 className="text-2xl font-bold text-club">{copy.alumniTitle}</h2>
-            {copy.alumni.map((paragraph) => (
-              <p key={paragraph} className="mt-3 font-light leading-7 text-ink">
-                {paragraph}
-              </p>
-            ))}
-          </article>
-        </div>
-      </Section>
-      <Section title={locale === "en" ? "Community Team" : "צוות הקהילה"}>
-        <PeopleGrid people={peopleIn("community")} locale={locale} />
-      </Section>
+      </section>
     </>
   );
 }

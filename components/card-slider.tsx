@@ -9,7 +9,7 @@ const SIDE_SCALE = 0.64;
 
 // Cards that sit in a three-column grid from md up and, on phones, become the home page's club
 // slider: the active card in the middle, its neighbours small and faded at the sides, swiped,
-// tapped or autoplayed in a loop. The active card's wrapper carries data-active, so the card can
+// tapped or (unless turned off) autoplayed in a loop. The active card's wrapper carries data-active, so the card can
 // play there the animation hover plays on desktop. Its position lives in CSS variables that only
 // phones apply, so the server-rendered grid never flashes on wide screens.
 export function CardSlider({
@@ -21,6 +21,7 @@ export function CardSlider({
   className = "",
   grid = "md:grid-cols-3 md:gap-5",
   slideClasses = [],
+  autoplay = true,
 }: {
   children: ReactNode;
   titles: string[];
@@ -33,6 +34,8 @@ export function CardSlider({
   // Extra classes for each card's wrapper, by position, such as hiding one where a row would
   // leave it alone. Plain strings, so a server page can pass them.
   slideClasses?: string[];
+  // Whether the cards advance by themselves. Off for long cards that take a while to read.
+  autoplay?: boolean;
 }) {
   const phone = useMediaQuery("(max-width: 767px)");
   const cards = Children.toArray(children);
@@ -89,7 +92,7 @@ export function CardSlider({
         className="mt-2 md:hidden"
         count={count}
         active={active}
-        running={running}
+        running={autoplay && running}
         dir={dir}
         label={(index) => `${goTo} ${titles[index]}`}
         onSelect={setActive}
