@@ -1,3 +1,4 @@
+import { catalogPath, conferences } from "@/content/catalog";
 import type { Localized } from "@/lib/locale";
 
 export type NavItem = {
@@ -18,7 +19,14 @@ export const nav: NavItem[] = [
       { label: { he: "מסלול לתעשייה", en: "Internship" }, href: "/internship" },
     ],
   },
-  { label: { he: "כנסים", en: "Conferences" }, href: "/conferences" },
+  {
+    label: { he: "כנסים", en: "Conferences" },
+    href: "/conferences",
+    children: [
+      { label: { he: "כל הכנסים", en: "All conferences" }, href: "/conferences" },
+      ...conferences.map((item) => ({ label: item.name, href: catalogPath(item) })),
+    ],
+  },
   { label: { he: "קהילה", en: "Community" }, href: "/community" },
   { label: { he: "AI", en: "AI" }, href: "/ai" },
 ];
