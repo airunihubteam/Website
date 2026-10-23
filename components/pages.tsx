@@ -5,6 +5,8 @@ import type { CSSProperties } from "react";
 import { accelerator, catalogPath, conferences, findConference, findProgram, programs, type CatalogItem } from "@/content/catalog";
 import {
   aboutParagraphs,
+  joinDetails,
+  joinNote,
   aiEn,
   aiHe,
   chairLine,
@@ -18,6 +20,7 @@ import {
   pitchStages,
   reichmanQuote,
   stats,
+  type JoinSlug,
 } from "@/content/copy";
 import { aboutGroups, advisoryTeam, peopleByIds, peopleIn, personMedia, pitchTeam, type Person } from "@/content/people";
 import { programDetails, type ProgramDetails } from "@/content/program-details";
@@ -884,18 +887,183 @@ export function AiPage({ locale }: { locale: Locale }) {
   );
 }
 
-export function JoinPage({ slug }: { slug: "chair" | "programs" | "new-program" }) {
+const joinBanners: Record<JoinSlug, string> = {
+  chair: "/media/wp/gate-pitch.jpg",
+  programs: "/media/wp/about-team.jpg",
+  "new-program": "/media/wp/gate-conferences.jpg",
+};
+
+// A small square check, filled in on hover.
+function CheckBox() {
+  return (
+    <span
+      aria-hidden="true"
+      className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center border border-club/30 text-club transition-colors duration-300 group-hover:border-club group-hover:bg-club group-hover:text-white"
+    >
+      <svg viewBox="0 0 20 20" width="12" height="12">
+        <path d="M4.5 10.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </span>
+  );
+}
+
+// One template for the three ways into the club's team: the invitation, how selection works or
+// what one can apply for, what an application asks for, and the other ways to join. The sign-up
+// forms are not part of this site yet, so nothing here submits; "what to prepare" stands in for
+// them until the club builds real forms after the redesign.
+export function JoinPage({ slug }: { slug: JoinSlug }) {
+  const locale: Locale = "he";
+  const dir = "rtl";
   const page = joins[slug];
+  const details = joinDetails[slug];
+  const choices = [
+    ...programs,
+    accelerator,
+  ].map((item) => ({ name: pick(item.name, locale) ?? item.name.he, href: catalogPath(item), tone: item.color ?? "#0f2d96" }));
+  choices.push({ name: "Pitch Night", href: "/pitch-night", tone: "#0f2d96" });
+  const sections: RailSection[] = [
+    { id: "join-top", label: page.title.he },
+    ...(details.steps ? [{ id: "join-steps", label: "אז איך נרשמים?" }] : []),
+    ...(details.teams ? [{ id: "join-roles", label: "מה אפשר לנהל?" }] : []),
+    { id: "join-prepare", label: "מה צריך להכין?" },
+    { id: "join", label: impactLabels[locale].join },
+  ];
+
   return (
     <>
-      <PageHero title={page.title.he} />
-      <Section>
-        <div className="max-w-3xl space-y-4 text-lg font-light leading-8 text-ink">
-          {page.paragraphs.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
+      <RevealController />
+      <SectionRail sections={sections} label="ניווט בין חלקי העמוד" />
+
+      <PageBanner id="join-top" image={joinBanners[slug]} locale={locale} title={page.title.he} eyebrow={impactLabels[locale].join} small />
+
+      <section data-reveal className="mx-auto w-full max-w-3xl px-5 pt-10 pb-4 text-center md:px-8 md:pt-20 md:pb-8">
+        <p data-reveal-item="0" className="text-2xl leading-snug font-bold text-club md:text-[32px]">
+          {details.lead}
+        </p>
+        {details.more ? (
+          <p data-reveal-item="1" className="mt-5 text-justify text-base leading-7 text-ink [text-align-last:center] md:text-lg md:leading-8">
+            {details.more}
+          </p>
+        ) : null}
+      </section>
+
+      {details.steps ? (
+        <section id="join-steps" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-16">
+          <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
+            <span className="club-underline">אז איך נרשמים?</span>
+          </h2>
+          {details.stepsIntro ? (
+            <p data-reveal-item="1" className="mx-auto mt-6 max-w-3xl text-justify text-base leading-7 text-ink/85 [text-align-last:center] md:text-lg md:leading-8">
+              {details.stepsIntro}
+            </p>
+          ) : null}
+          {/* Each stage is a card with its number large and light, cropped by the card's edge. */}
+          <ol className="mt-8 grid gap-4 md:mt-10 md:grid-cols-2 md:gap-5">
+            {details.steps.map((step, index) => (
+              <li
+                key={step.title}
+                data-reveal-item={String(index + 2)}
+                className="group relative isolate overflow-hidden rounded-[24px] border border-[#e6e9f5] bg-white p-6 pe-16 shadow-[0_24px_50px_-34px_rgba(15,45,150,0.45)] transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-club/30 hover:shadow-[0_24px_50px_-28px_rgba(15,45,150,0.45)] md:p-8 md:pe-24"
+                style={{ transitionTimingFunction: "var(--ease)" }}
+              >
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -end-2 -top-10 -z-10 text-[9rem] leading-none font-bold text-[#dbe3ff] transition-[translate] duration-700 group-hover:translate-y-3 md:-top-12 md:text-[11rem]"
+                  style={{ transitionTimingFunction: "var(--ease)" }}
+                >
+                  {index + 1}
+                </span>
+                <p className="text-sm font-semibold text-club/60">שלב {index + 1}</p>
+                <h3 className="mt-1 text-2xl font-bold text-club">{step.title}</h3>
+                <p className="mt-3 text-justify text-[15px] leading-7 text-ink/85">{step.body}</p>
+                {step.items ? (
+                  <ul className="mt-5 space-y-4">
+                    {step.items.map((item) => (
+                      <li key={item.title} className="group flex gap-3">
+                        <CheckBox />
+                        <span>
+                          <span className="block font-bold text-club">{item.title}</span>
+                          <span className="mt-1 block text-justify text-sm leading-6 text-ink/80">{item.body}</span>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </li>
+            ))}
+          </ol>
+        </section>
+      ) : null}
+
+      {details.teams ? (
+        <section id="join-roles" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-16">
+          <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
+            <span className="club-underline">מה אפשר לנהל?</span>
+          </h2>
+          <div className="mt-8 grid gap-8 md:mt-10 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:gap-12">
+            <div data-reveal-item="1">
+              <p className="text-sm font-semibold text-club/60">מטה המועדון</p>
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {details.teams.map((team) => (
+                  <li key={team} className="border border-club/15 bg-white px-3.5 py-2 text-sm font-semibold text-club">
+                    {team}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div data-reveal-item="2">
+              <p className="text-sm font-semibold text-club/60">תוכניות</p>
+              {/* Each program in its own color, linking to its page. */}
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {choices.map((choice) => (
+                  <li key={choice.href}>
+                    <Link
+                      href={choice.href}
+                      data-press
+                      className="group inline-flex items-center gap-2 border border-club/15 bg-white px-3.5 py-2 text-sm font-semibold text-club transition-colors duration-300 hover:border-(--tone-deep) hover:bg-(--tone-deep) hover:text-white"
+                      style={{ "--tone": choice.tone, "--tone-deep": readableShade(choice.tone) } as CSSProperties}
+                    >
+                      <span aria-hidden="true" className="h-2.5 w-2.5 bg-(--tone) transition-colors duration-300 group-hover:bg-white" />
+                      {choice.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          {details.team ? (
+            <p data-reveal-item="3" className="mx-auto mt-8 max-w-3xl bg-[#f4f6fd] p-4 text-center text-[15px] leading-7 text-club/85 md:mt-10">
+              {details.team}
+            </p>
+          ) : null}
+        </section>
+      ) : null}
+
+      <section id="join-prepare" data-reveal className="mx-auto w-full max-w-4xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-16">
+        <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
+          <span className="club-underline">מה צריך להכין?</span>
+        </h2>
+        <ul className="mt-8 grid gap-2.5 sm:grid-cols-2 md:mt-10 md:gap-3">
+          {details.prepare.map((item, index) => (
+            <li
+              key={item}
+              data-reveal-item={String(Math.min(index + 1, 6))}
+              className="group flex items-start gap-3 rounded-xl border border-[#e6e9f5] bg-white px-4 py-3 text-[15px] font-medium text-ink transition-colors duration-300 hover:border-club/30"
+            >
+              <CheckBox />
+              {item}
+            </li>
           ))}
-        </div>
-      </Section>
+        </ul>
+        <p data-reveal-item="6" className="mt-6 bg-[#f4f6fd] p-4 text-center text-sm leading-6 text-club/85">
+          {joinNote}
+        </p>
+      </section>
+
+      {/* The other ways in, as on the home page's "get involved" cards. */}
+      <div id="join" data-reveal className="scroll-mt-[4.5rem]">
+        <JoinSection cards={joinCards(locale).filter((card) => card.href.startsWith("/join/") && card.href !== `/join/${slug}`)} title={impactLabels[locale].join} dir={dir} />
+      </div>
     </>
   );
 }
@@ -1290,6 +1458,7 @@ function PageBanner({
   tone,
   logo,
   back,
+  small = false,
   className = "",
 }: {
   id: string;
@@ -1301,6 +1470,8 @@ function PageBanner({
   tone?: string;
   logo?: string;
   back?: { href: string; label: string };
+  // A smaller title, for long page names.
+  small?: boolean;
   className?: string;
 }) {
   return (
@@ -1337,7 +1508,9 @@ function PageBanner({
         <p className="text-sm font-semibold text-white/75 motion-safe:animate-[hero-rise_1s_var(--ease)_100ms_both]">
           {eyebrow ?? (locale === "en" ? "Entrepreneurship Club · Reichman University" : "מועדון היזמות · אוניברסיטת רייכמן")}
         </p>
-        <h1 className="mt-4 text-5xl font-bold text-white motion-safe:animate-[hero-rise_1.2s_var(--ease)_220ms_both] md:text-7xl">
+        <h1
+          className={`mt-4 font-bold text-white motion-safe:animate-[hero-rise_1.2s_var(--ease)_220ms_both] ${small ? "text-4xl leading-tight md:text-6xl" : "text-5xl md:text-7xl"}`}
+        >
           <span className="club-underline on-dark">{title}</span>
         </h1>
         {subtitle ? (
