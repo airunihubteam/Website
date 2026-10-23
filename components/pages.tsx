@@ -250,17 +250,17 @@ export function HomePage({ locale }: { locale: Locale }) {
         />
         <div className="absolute inset-0 bg-club/60" />
         <div className="relative z-10 mx-auto w-full max-w-6xl px-5 py-28 max-md:text-center md:px-8">
-          {/* The greeting is bold and the club's name regular. "Entrepreneurship" is too long a word
+          {/* The greeting is regular and the club's name bold. "Entrepreneurship" is too long a word
               for a 48px line on a phone, so the English headline scales with the screen width there. */}
           <h1
             className={`max-w-4xl leading-tight text-white md:text-[72px] md:leading-[1.15] ${
               locale === "en" ? "text-[clamp(1.75rem,9vw,3rem)]" : "text-5xl"
             }`}
           >
-            <span className="block font-bold motion-safe:animate-[hero-rise_1.2s_var(--ease)_200ms_both]">
+            <span className="block font-normal motion-safe:animate-[hero-rise_1.2s_var(--ease)_200ms_both]">
               {locale === "en" ? "Welcome to the" : "ברוכים הבאים"}
             </span>
-            <span className="block font-normal motion-safe:animate-[hero-rise_1.2s_var(--ease)_380ms_both]">
+            <span className="block font-bold motion-safe:animate-[hero-rise_1.2s_var(--ease)_380ms_both]">
               {locale === "en" ? "Entrepreneurship Club" : "למועדון היזמות"}
             </span>
           </h1>
