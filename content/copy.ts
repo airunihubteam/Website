@@ -112,7 +112,7 @@ export const pitchReady: {
   title: "Are You Ready to Pitch?",
   line: "Become the next Unicorn of Israel!",
   body: "Stay tuned by following us on social media and joining our newsletter for updates!",
-  cta: "Visit Our LinkedIn",
+  cta: "Follow Us",
   href: "https://www.linkedin.com/company/102662815/",
   video: "/media/pitch/ready.mp4",
   videoSmall: "/media/pitch/ready-small.mp4",
