@@ -343,43 +343,58 @@ export const communityEn = {
   },
 };
 
+// The Innovation & AI division's page, from the old site's /ai and /en/ai pages. Its opening
+// paragraph is split: the first sentence under the banner's title, the rest as the page's lead.
 export const aiHe = {
-  intro:
-    "מדור החדשנות וה-AI נועד לשמש כמרכז הידע של תחום ה-AI והחדשנות במועדון היזמות. הוא משמש כגורם מייעץ, מטמיע בינה מלאכותית ומערכות חדשות לשיפור תהליכים במטה וחושף את הסטודנטים לעולמות הבינה המלאכותית בצורה המשכית, נגישה ופרקטית.",
+  title: "חדשנות ו-AI",
+  intro: "מדור החדשנות וה-AI נועד לשמש כמרכז הידע של תחום ה-AI והחדשנות במועדון היזמות.",
+  lead: "המדור משמש כגורם מייעץ, מטמיע בינה מלאכותית ומערכות חדשות לשיפור תהליכים במטה וחושף את הסטודנטים לעולמות הבינה המלאכותית בצורה המשכית, נגישה ופרקטית.",
+  blocksTitle: "הפעילות שלנו",
   blocks: [
     {
       title: "מיקוד בתחומי המועדונים",
       body: "חושפים את הסטודנטים ליישומי בינה מלאכותית בתחום ההתמקצעות שלהם, בדגש על שיטות וכלים הנהוגים בתעשייה, באמצעות אירוע בשיתוף פעולה עם מומחי בינה מלאכותית מהתעשייה. המטרה היא לתרגם ידע ליישום מיידי.",
+      image: "/media/ai/activity-1.webp",
     },
     {
       title: "התייעלות והתנהלות פנימית",
       body: "הטמעת מערכות, אוטומציות וכלי AI על מנת להאיץ את תהליכי העבודה ולהגביר את הפרודקטיביות של המטה ומנהלי התוכניות.",
+      image: "/media/ai/activity-2.webp",
     },
     {
       title: "הדרכות, סדנאות והנגשת כלים",
       body: "חשיפה מתמשכת לכלים, תחומים מרכזיים ומתודולוגיות ב-AI באמצעות הדרכות פרקטיות רחבות והנגשה שוטפת של תכנים, כלים ועדכונים מהתעשייה במהלך השנה.",
+      image: "/media/ai/activity-3.webp",
     },
   ],
+  teamTitle: "מי אנחנו?",
 };
 
-export const aiEn = {
-  intro:
-    "The Innovation & AI Division serves as the knowledge hub for AI and innovation within the Entrepreneurship Club. It also acts as a consulting body, implementing AI and new systems to improve internal processes, while continuously exposing students to the world of artificial intelligence in an accessible, practical, and ongoing way.",
+export const aiEn: typeof aiHe = {
+  title: "Innovation & AI",
+  intro: "The Innovation & AI Division serves as the knowledge hub for AI and innovation within the Entrepreneurship Club.",
+  lead: "The division also acts as a consulting body, implementing AI and new systems to improve internal processes, while continuously exposing students to the world of artificial intelligence in an accessible, practical, and ongoing way.",
+  blocksTitle: "What We Do",
   blocks: [
     {
       title: "Focusing on the club’s core domains",
       body: "We teach domain-specific AI for the clubs, with an emphasis on industry-standard methods and tools, through an event held in collaboration with an AI expert from the field. The goal is to translate knowledge into immediate application.",
+      image: "/media/ai/activity-1.webp",
     },
     {
       title: "Internal efficiency and operations",
       body: "Implementing systems, automations, and AI tools to accelerate workflows and enhance the productivity of the core team and program managers.",
+      image: "/media/ai/activity-2.webp",
     },
     {
       title: "Training, workshops, and accessible tools",
       body: "Ongoing exposure to key AI tools, core domains, and methodologies through extensive practical training sessions, along with continuous access to content, tools, and industry updates throughout the year.",
+      image: "/media/ai/activity-3.webp",
     },
   ],
+  teamTitle: "Who We Are",
 };
+
 
 export const joins = {
   chair: {

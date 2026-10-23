@@ -36,7 +36,7 @@ import { GatePanels, type GatePanel, type GatePanelsLabels } from "@/components/
 import { Chevron } from "@/components/icons";
 import { ImpactStats, JoinSection, type ImpactLabels, type ImpactStat, type JoinCard } from "@/components/impact-section";
 import { RevealController, SectionRail, type RailSection } from "@/components/home-motion";
-import { PersonCard, Section } from "@/components/ui";
+import { Section } from "@/components/ui";
 import { readableShade } from "@/lib/color";
 import { pick, withLocale, type Locale, type Localized } from "@/lib/locale";
 
@@ -1380,25 +1380,82 @@ export function CommunityPage({ locale }: { locale: Locale }) {
   );
 }
 
+// The Innovation & AI division: its banner with the division's robot, what it is for, its three
+// activities with the robot's illustrations, and its team.
 export function AiPage({ locale }: { locale: Locale }) {
   const copy = locale === "en" ? aiEn : aiHe;
+  const dir = locale === "en" ? "ltr" : "rtl";
+  const team = peopleIn("ai").map((person) => teamMember(person, locale));
+  const sections: RailSection[] = [
+    { id: "ai-top", label: copy.title },
+    { id: "ai-activities", label: copy.blocksTitle },
+    { id: "ai-team", label: copy.teamTitle },
+  ];
+
   return (
     <>
-      <PageHero title="AI" eyebrow={locale === "en" ? "Innovation & AI" : "מדור החדשנות וה-AI"} />
-      <Section>
-        <p className="max-w-3xl text-lg font-light leading-8 text-ink">{copy.intro}</p>
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          {copy.blocks.map((block) => (
-            <article key={block.title} className="border border-[#e6e6e6] bg-white p-5">
-              <h2 className="text-xl font-bold text-club">{block.title}</h2>
-              <p className="mt-3 font-light leading-7 text-ink">{block.body}</p>
-            </article>
+      <RevealController />
+      <SectionRail sections={sections} label={locale === "en" ? "Page sections" : "ניווט בין חלקי העמוד"} />
+
+      {/* The division's artwork, its robot at the right-hand edge, kept in view when cropped. */}
+      <PageBanner id="ai-top" image="/media/ai/banner.webp" imagePosition="92% 50%" locale={locale} title={copy.title} subtitle={copy.intro} />
+
+      <section id="ai-activities" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 pt-10 pb-10 md:px-8 md:pt-20 md:pb-16">
+        <p
+          data-reveal-item="0"
+          className="mx-auto max-w-3xl text-justify text-lg leading-8 font-bold text-club [text-align-last:center] md:text-2xl md:leading-[1.6]"
+        >
+          {copy.lead}
+        </p>
+        <h2 data-reveal-item="1" className="mt-12 text-center text-[32px] font-bold text-club md:mt-16">
+          <span className="club-underline">{copy.blocksTitle}</span>
+        </h2>
+        {/* One at a time on phones, the next one peeking in; three side by side from md up. */}
+        <CardSlider
+          titles={copy.blocks.map((block) => block.title)}
+          label={copy.blocksTitle}
+          goTo={clubSliderLabels[locale].goTo}
+          dir={dir}
+          className="mt-8 md:mt-10"
+        >
+          {copy.blocks.map((block, index) => (
+            <div key={block.title} data-reveal className="h-full">
+              <article
+                data-reveal-item={String(index + 1)}
+                className="flex h-full flex-col overflow-hidden rounded-[24px] border border-[#e6e9f5] bg-white shadow-[0_24px_50px_-30px_rgba(6,19,71,0.55)] transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-club/25 hover:shadow-[0_30px_60px_-30px_rgba(6,19,71,0.6)]"
+                style={{ transitionTimingFunction: "var(--ease)" }}
+              >
+                <div className="relative aspect-[4/3] overflow-hidden bg-[#0b1440]">
+                  <Image
+                    src={block.image}
+                    alt=""
+                    fill
+                    sizes="(min-width: 768px) 360px, 78vw"
+                    className="object-cover transition-[scale] duration-[1400ms] group-hover:scale-[1.06] group-data-active:scale-[1.06]"
+                    style={{ transitionTimingFunction: "var(--ease)" }}
+                  />
+                </div>
+                <div className="flex-1 p-6">
+                  <h3 className="text-xl font-bold text-club md:text-[22px]">{block.title}</h3>
+                  <span
+                    aria-hidden="true"
+                    className="mt-3 block h-[3px] w-10 bg-club transition-[width] duration-500 group-hover:w-16 group-data-active:w-16"
+                    style={{ transitionTimingFunction: "var(--ease)" }}
+                  />
+                  <p className="mt-4 text-justify text-[15px] leading-7 text-ink hyphens-auto">{block.body}</p>
+                </div>
+              </article>
+            </div>
           ))}
-        </div>
-      </Section>
-      <Section title={locale === "en" ? "Who we are" : "מי אנחנו"}>
-        <PeopleGrid people={peopleByIds(["nir-frost", "shay-taub", "yarin-layani", "tal-frankenthal"])} locale={locale} />
-      </Section>
+        </CardSlider>
+      </section>
+
+      <section id="ai-team" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 pt-10 pb-14 md:px-8 md:pt-16 md:pb-24">
+        <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
+          <span className="club-underline">{copy.teamTitle}</span>
+        </h2>
+        <TeamSection members={team} labels={{ title: copy.teamTitle, all: "", profile: teamLabels[locale].profile }} dir={dir} variant="center" />
+      </section>
     </>
   );
 }
@@ -2229,16 +2286,5 @@ function PageHero({ title, eyebrow }: { title: string; eyebrow?: string }) {
       {eyebrow ? <p className="text-sm font-medium text-muted">{eyebrow}</p> : null}
       <h1 className="mt-2 text-4xl font-bold text-club md:text-5xl">{title}</h1>
     </section>
-  );
-}
-
-function PeopleGrid({ people, locale }: { people: Person[]; locale: Locale }) {
-  const visible = people.filter((person) => pick(person.name, locale));
-  return (
-    <div className="grid gap-4 md:grid-cols-2">
-      {visible.map((person) => (
-        <PersonCard key={person.id} person={person} locale={locale} />
-      ))}
-    </div>
   );
 }
