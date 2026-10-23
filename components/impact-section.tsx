@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type PointerEvent } from "react";
+import { CardSlider } from "@/components/card-slider";
 import { Chevron } from "@/components/icons";
 
 export type ImpactStat = {
@@ -164,8 +165,16 @@ export function JoinSection({ cards, title, dir }: { cards: JoinCard[]; title: s
         <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
           <span className="club-underline">{title}</span>
         </h2>
-        {/* Four cards share a row on wide screens; fewer sit centered two to a row. */}
-        <div className={`mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2 sm:gap-5 ${wide ? "mx-auto max-w-4xl" : "lg:grid-cols-4"}`}>
+        {/* Four cards share a row on wide screens; fewer sit centered two to a row. On phones they
+            become the home page's club slider. */}
+        <CardSlider
+          titles={cards.map((card) => card.title)}
+          label={title}
+          goTo={dir === "rtl" ? "מעבר אל" : "Go to"}
+          dir={dir}
+          className={`mt-8 sm:mt-10 ${wide ? "mx-auto max-w-4xl" : ""}`}
+          grid={wide ? "md:grid-cols-2 md:gap-5" : "md:grid-cols-2 md:gap-5 lg:grid-cols-4"}
+        >
           {cards.map((card, index) => (
             <Link
               key={card.href}
@@ -173,7 +182,7 @@ export function JoinSection({ cards, title, dir }: { cards: JoinCard[]; title: s
               data-press
               data-reveal-item={String(index + 1)}
               onPointerMove={spotlight}
-              className={`group relative isolate flex min-h-[190px] flex-col overflow-hidden rounded-[24px] border p-5 sm:p-6 ${wide ? "sm:min-h-[260px]" : "sm:min-h-[320px] lg:min-h-[390px] xl:min-h-[350px]"} transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 ${
+              className={`group relative isolate flex h-full min-h-[190px] flex-col overflow-hidden rounded-[24px] border p-5 sm:p-6 ${wide ? "sm:min-h-[260px]" : "sm:min-h-[320px] lg:min-h-[390px] xl:min-h-[350px]"} transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 ${
                 card.featured
                   ? "border-club bg-club text-white shadow-[0_24px_50px_-28px_rgba(15,45,150,0.7)]"
                   : "border-[#e6e9f5] bg-white text-club hover:border-club/30 hover:shadow-[0_24px_50px_-28px_rgba(15,45,150,0.45)]"
@@ -202,20 +211,21 @@ export function JoinSection({ cards, title, dir }: { cards: JoinCard[]; title: s
               </span>
               <span
                 aria-hidden="true"
-                className={`absolute inset-x-0 bottom-0 h-[3px] scale-x-0 transition-transform duration-500 group-hover:scale-x-100 ltr:origin-left rtl:origin-right ${card.featured ? "bg-white" : "bg-club"}`}
+                className={`absolute inset-x-0 bottom-0 h-[3px] scale-x-0 transition-transform duration-500 group-hover:scale-x-100 group-data-active:scale-x-100 ltr:origin-left rtl:origin-right ${card.featured ? "bg-white" : "bg-club"}`}
                 style={{ transitionTimingFunction: EASE }}
               />
             </Link>
           ))}
-        </div>
+        </CardSlider>
       </div>
     </section>
   );
 }
 
 const line = { fill: "none", stroke: "currentColor", strokeWidth: 0.9, strokeLinecap: "round", strokeLinejoin: "round" } as const;
-// A check or similar mark that draws itself along its length on hover.
-const drawOnHover = "[stroke-dasharray:1] [stroke-dashoffset:1] transition-[stroke-dashoffset] duration-500 group-hover:[stroke-dashoffset:0]";
+// A check or similar mark that draws itself along its length on hover (or on the slide in the
+// middle of the phone slider).
+const drawOnHover = "[stroke-dasharray:1] [stroke-dashoffset:1] transition-[stroke-dashoffset] duration-500 group-hover:[stroke-dashoffset:0] group-data-active:[stroke-dashoffset:0]";
 const STAR = "M12 1.8l2.9 6.6 7.2.7-5.4 4.8 1.6 7.1L12 17.3 5.7 21l1.6-7.1L1.9 9.1l7.2-.7z";
 
 // Six stars on an arc around the lens, largest first and shrinking as they curve down,
@@ -229,7 +239,8 @@ const logoArc: [number, number, number, number][] = [
   [6.9, 18.6, 1, -64],
 ];
 
-// A line icon in the card's corner, behind the text, that acts out its meaning on hover.
+// A line icon in the card's corner, behind the text, that acts out its meaning on hover, and on
+// phones each time its card slides into the middle of the slider.
 // The color is solid and the whole icon fades as one layer, so where lines meet or
 // overlap they stay the same shade.
 function JoinIcon({ name, featured, wide }: { name: JoinIconName; featured?: boolean; wide?: boolean }) {
@@ -243,13 +254,13 @@ function JoinIcon({ name, featured, wide }: { name: JoinIconName; featured?: boo
       } ${
         // The rocket sits beside the widest button, so it moves further into the corner;
         // the box may overhang the edge, but the drawing itself stays inside the card.
-        featured ? "end-4 text-white opacity-30 group-hover:opacity-80 sm:-end-3" : "end-4 text-club opacity-20 group-hover:opacity-60"
+        featured ? "end-4 text-white opacity-30 group-hover:opacity-80 group-data-active:opacity-80 sm:-end-3" : "end-4 text-club opacity-20 group-hover:opacity-60 group-data-active:opacity-60"
       }`}
     >
       {name === "search" ? (
         <>
           {/* The search committee: the lens scans, and the stars of the Reichman mark rise around it. */}
-          <g className="motion-safe:group-hover:animate-[lens-scan_2.4s_ease-in-out_infinite]">
+          <g className="motion-safe:group-hover:animate-[lens-scan_2.4s_ease-in-out_infinite] motion-safe:group-data-active:animate-[lens-scan_2.4s_ease-in-out_infinite]">
             <circle cx="10" cy="10" r="6.5" {...line} />
             <path d="M14.6 14.6l5.6 5.6" {...line} strokeWidth={1.6} />
             <circle cx="10" cy="8.3" r="1.9" {...line} />
@@ -258,7 +269,7 @@ function JoinIcon({ name, featured, wide }: { name: JoinIconName; featured?: boo
           {logoArc.map(([x, y, size, tilt], index) => (
             <g
               key={`${x}-${y}`}
-              className="scale-0 transition-[scale] duration-500 group-hover:scale-100"
+              className="scale-0 transition-[scale] duration-500 group-hover:scale-100 group-data-active:scale-100"
               style={{ transformOrigin: `${x}px ${y}px`, transitionDelay: `${120 + index * 80}ms`, transitionTimingFunction: EASE }}
             >
               <path d={STAR} transform={`translate(${x} ${y}) rotate(${tilt}) scale(${size / 20}) translate(-12 -12)`} fill="currentColor" />
@@ -273,13 +284,13 @@ function JoinIcon({ name, featured, wide }: { name: JoinIconName; featured?: boo
           <path
             d="M12 2.5a6.5 6.5 0 0 0-3.9 11.7c.7.5 1.1 1.3 1.1 2.1v.7h5.6v-.7c0-.8.4-1.6 1.1-2.1A6.5 6.5 0 0 0 12 2.5z"
             fill="#9fb3ff"
-            className="opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-hover:drop-shadow-[0_0_3px_rgba(15,45,150,0.5)]"
+            className="opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-data-active:opacity-100 group-hover:drop-shadow-[0_0_3px_rgba(15,45,150,0.5)] group-data-active:drop-shadow-[0_0_3px_rgba(15,45,150,0.5)]"
           />
           <path d="M12 2.5a6.5 6.5 0 0 0-3.9 11.7c.7.5 1.1 1.3 1.1 2.1v.7h5.6v-.7c0-.8.4-1.6 1.1-2.1A6.5 6.5 0 0 0 12 2.5z" {...line} />
           <path d="M10 12.6l1-1.5 1 1.5 1-1.5 1 1.5M12 12.6v4.4" {...line} />
           <path d="M9.6 19.4h4.8M10.4 21.8h3.2" {...line} />
           <g
-            className="scale-75 opacity-0 transition-[opacity,scale] duration-500 group-hover:scale-100 group-hover:opacity-100"
+            className="scale-75 opacity-0 transition-[opacity,scale] duration-500 group-hover:scale-100 group-data-active:scale-100 group-hover:opacity-100 group-data-active:opacity-100"
             style={{ transformOrigin: "12px 9px" }}
           >
             <path d="M12 0.7v-2M17.9 3.1l1.4-1.4M6.1 3.1L4.7 1.7M20.3 9h2M3.7 9h-2" {...line} />
@@ -309,17 +320,17 @@ function JoinIcon({ name, featured, wide }: { name: JoinIconName; featured?: boo
       {name === "rocket" ? (
         <>
           {/* Lifts off: the rocket rises on a flickering flame. */}
-          <g className="transition-[translate] duration-700 group-hover:-translate-y-[2.5px]">
+          <g className="transition-[translate] duration-700 group-hover:-translate-y-[2.5px] group-data-active:-translate-y-[2.5px]">
             <path
               d="M10.6 18.3c0 1.8 1.4 3.6 1.4 3.6s1.4-1.8 1.4-3.6z"
               fill="#ffffff"
-              className="scale-y-50 opacity-0 transition-[opacity,scale] duration-500 group-hover:scale-y-100 group-hover:opacity-90 motion-safe:group-hover:animate-[flame-flicker_0.35s_ease-in-out_infinite_alternate]"
+              className="scale-y-50 opacity-0 transition-[opacity,scale] duration-500 group-hover:scale-y-100 group-data-active:scale-y-100 group-hover:opacity-90 group-data-active:opacity-90 motion-safe:group-hover:animate-[flame-flicker_0.35s_ease-in-out_infinite_alternate] motion-safe:group-data-active:animate-[flame-flicker_0.35s_ease-in-out_infinite_alternate]"
               style={{ transformOrigin: "12px 18.3px" }}
             />
             <path d="M12 2C14.9 4.4 16.3 7.8 16.3 11.6V13.2L18.8 15.8V19L16.3 17.6H7.7L5.2 19V15.8L7.7 13.2V11.6C7.7 7.8 9.1 4.4 12 2Z" {...line} />
             <circle cx="12" cy="9.4" r="1.7" {...line} />
           </g>
-          <path d="M7.2 20.8v1.4M16.8 20.8v1.4M12 23.4v1.2" {...line} className="opacity-0 transition-opacity delay-150 duration-500 group-hover:opacity-100" />
+          <path d="M7.2 20.8v1.4M16.8 20.8v1.4M12 23.4v1.2" {...line} className="opacity-0 transition-opacity delay-150 duration-500 group-hover:opacity-100 group-data-active:opacity-100" />
         </>
       ) : null}
     </svg>
