@@ -1,15 +1,15 @@
-import Link from "next/link";
+import type { Metadata } from "next";
+import { NotFoundView } from "@/components/pages";
 import { SiteFrame } from "@/components/site-frame";
 
+export const metadata: Metadata = { title: "העמוד לא נמצא · Page not found" };
+
+// Any address the site doesn't have. It can't tell which language was asked for, so the Hebrew
+// page also offers the English site.
 export default function NotFound() {
   return (
     <SiteFrame locale="he">
-      <section className="mx-auto w-full max-w-6xl px-5 py-24 md:px-8">
-        <h1 className="text-5xl font-bold text-club">העמוד לא נמצא</h1>
-        <Link href="/" className="mt-8 inline-block border border-club px-5 py-3 text-sm font-semibold text-club">
-          לבית
-        </Link>
-      </section>
+      <NotFoundView locale="he" bilingual />
     </SiteFrame>
   );
 }

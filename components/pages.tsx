@@ -2288,3 +2288,89 @@ function PageHero({ title, eyebrow }: { title: string; eyebrow?: string }) {
     </section>
   );
 }
+
+const notFoundLabels: Record<Locale, { title: string; line: string; home: string; sections: string; other: string }> = {
+  he: {
+    title: "העמוד לא נמצא",
+    line: "ייתכן שהקישור ישן או שהעמוד עבר למקום אחר. אפשר להמשיך מכאן:",
+    home: "לדף הבית",
+    sections: "עמודים מרכזיים",
+    other: "Page not found? Continue in English",
+  },
+  en: {
+    title: "Page not found",
+    line: "The link may be old, or the page may have moved. You can continue from here:",
+    home: "Home",
+    sections: "Main pages",
+    other: "העמוד לא נמצא? המשיכו בעברית",
+  },
+};
+
+// The page for an address the site doesn't have: the club's night sky with twinkling and rising
+// stars, a large 404, the message, a way home and the main sections. The site-wide fallback can't
+// tell which language was asked for, so it also offers the other language (`bilingual`).
+export function NotFoundView({ locale, bilingual = false }: { locale: Locale; bilingual?: boolean }) {
+  const labels = notFoundLabels[locale];
+  const other: Locale = locale === "en" ? "he" : "en";
+  const dir = locale === "en" ? "ltr" : "rtl";
+  const links = [{ href: "/about", label: { he: "אודות", en: "About" } }, ...activityLinks];
+  const rise = (step: number) => ({ animationDelay: `${120 + step * 110}ms` });
+
+  return (
+    <section className="relative isolate -mt-[4.5rem] flex min-h-[calc(100svh-4.5rem)] items-center overflow-hidden bg-[linear-gradient(180deg,#0e1452_0%,#1a1e65_55%,#272d79_100%)] px-5 pt-28 pb-16 text-center text-white md:min-h-[82vh] md:px-8 md:pt-36 md:pb-24">
+      <ReadyStars />
+      <div className="mx-auto w-full max-w-3xl">
+        <p
+          aria-hidden="true"
+          dir="ltr"
+          className="text-[112px] leading-none font-bold tracking-[0.06em] text-white/15 motion-safe:animate-[hero-rise_1.2s_var(--ease)_both] md:text-[200px]"
+        >
+          404
+        </p>
+        <h1 className="-mt-6 text-4xl font-bold md:-mt-12 md:text-6xl motion-safe:animate-[hero-rise_1.2s_var(--ease)_both]" style={rise(1)}>
+          <span className="club-underline on-dark">{labels.title}</span>
+        </h1>
+        <p className="mx-auto mt-6 max-w-xl text-base text-white/85 md:mt-8 md:text-xl motion-safe:animate-[hero-rise_1.1s_var(--ease)_both]" style={rise(2)}>
+          {labels.line}
+        </p>
+        <div className="mt-8 motion-safe:animate-[hero-rise_1.1s_var(--ease)_both]" style={rise(3)}>
+          <Link
+            href={withLocale("/", locale)}
+            data-press
+            className="group inline-flex items-center gap-2 border border-white bg-white px-7 py-3 text-sm font-bold whitespace-nowrap text-club transition-colors duration-300 hover:border-[#0a1f6e] hover:bg-[#0a1f6e] hover:text-white"
+          >
+            {labels.home}
+            <Chevron dir={dir} className="transition-transform duration-500 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+          </Link>
+        </div>
+        <nav aria-label={labels.sections} className="mx-auto mt-6 grid max-w-md grid-cols-2 gap-2.5 sm:flex sm:max-w-none sm:flex-wrap sm:justify-center">
+          {links.map((link, index) => (
+            <Link
+              key={link.href}
+              href={withLocale(link.href, locale)}
+              data-press
+              className={`group inline-flex items-center justify-center gap-2 border border-white/35 px-4 py-2.5 text-sm font-semibold whitespace-nowrap text-white transition-colors duration-300 hover:border-white hover:bg-white hover:text-club motion-safe:animate-[hero-rise_1s_var(--ease)_both] ${index === links.length - 1 && links.length % 2 ? "max-sm:col-span-2" : ""}`}
+              style={rise(4 + index * 0.5)}
+            >
+              {pick(link.label, locale) ?? link.label.he}
+              <Chevron dir={dir} className="transition-transform duration-500 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+            </Link>
+          ))}
+        </nav>
+        {bilingual ? (
+          <p className="mt-10 border-t border-white/15 pt-6 text-sm motion-safe:animate-[hero-rise_1s_var(--ease)_both]" style={rise(7)}>
+            <Link
+              href={withLocale("/", other)}
+              hrefLang={other}
+              dir={other === "en" ? "ltr" : "rtl"}
+              lang={other}
+              className="text-white/75 underline decoration-white/30 underline-offset-4 transition-colors duration-300 hover:text-white hover:decoration-white"
+            >
+              {notFoundLabels[locale].other}
+            </Link>
+          </p>
+        ) : null}
+      </div>
+    </section>
+  );
+}
