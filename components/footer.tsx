@@ -5,8 +5,11 @@ import { privacyHref, social } from "@/content/nav";
 import { SocialIcon } from "@/components/icons";
 import { pick, withLocale, type Locale } from "@/lib/locale";
 
+// The university's mark. The Hebrew lockup file is blurry, so the Hebrew footer pairs the sharp
+// stars-and-name mark with the Adelson School line set as text; the English lockup is the only
+// English file there is.
 const reichman = {
-  he: { src: "/brand/reichman-he-color.png", width: 484, height: 163 },
+  he: { src: "/brand/reichman-mark-he-color.png", width: 900, height: 548 },
   en: { src: "/brand/reichman-en-color.png", width: 798, height: 225 },
 };
 
@@ -95,14 +98,21 @@ export function Footer({ locale }: { locale: Locale }) {
 
         {/* The Reichman mark above the motto, both at the footer's far end. */}
         <div data-reveal-item="3" className="col-span-2 flex flex-col gap-8 md:items-end md:justify-between">
-          <a href="https://www.runi.ac.il/" target="_blank" rel="noopener noreferrer" className="block self-start transition-opacity duration-300 hover:opacity-80 md:self-end">
-            <Image
-              src={mark.src}
-              alt={en ? "Reichman University, Adelson School of Entrepreneurship" : "אוניברסיטת רייכמן, בית ספר אדלסון ליזמות"}
-              width={mark.width}
-              height={mark.height}
-              className="h-14 w-auto md:h-16"
-            />
+          <a
+            href="https://www.runi.ac.il/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={en ? "Reichman University, Adelson School of Entrepreneurship" : "אוניברסיטת רייכמן, בית ספר אדלסון ליזמות"}
+            className="flex items-center gap-4 self-start transition-opacity duration-300 hover:opacity-80 md:self-end"
+          >
+            <Image src={mark.src} alt="" width={mark.width} height={mark.height} unoptimized className="h-14 w-auto md:h-16" />
+            {en ? null : (
+              <span className="text-base leading-snug font-light text-club md:text-lg">
+                בית ספר אדלסון
+                <br />
+                ליזמות
+              </span>
+            )}
           </a>
           {/* The old footer's motto, "Bring your dreams to life" (in Hebrew on the Hebrew site), in light
               lines that rise in one after another. */}

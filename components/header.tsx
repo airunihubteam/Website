@@ -38,7 +38,12 @@ export function Header({ locale }: { locale: Locale }) {
     if (menu) setDismissed(menu);
     event.currentTarget.blur();
   };
-  const reichman = locale === "en" ? "/brand/reichman-en-white.png" : "/brand/wp/logo.webp";
+  // The university's mark. The Hebrew one is its sharp stars-and-name mark; the English lockup is
+  // the only English file there is.
+  const reichman =
+    locale === "en"
+      ? { src: "/brand/reichman-en-white.png", width: 798, height: 225 }
+      : { src: "/brand/reichman-mark-he-white.png", width: 900, height: 548 };
   // The university mark leads to the university's own site, in a new tab; the club logo leads home.
   const universityHref = locale === "en" ? "https://www.runi.ac.il/en/" : "https://www.runi.ac.il/";
   const universityLabel =
@@ -100,7 +105,7 @@ export function Header({ locale }: { locale: Locale }) {
             className={`flex items-center gap-2 ${dropIn}`}
             style={dropDelay(0)}
           >
-            <Image src="/brand/wp/logo.png" alt="" width={40} height={50} className="h-11 w-auto" style={{ width: "auto" }} />
+            <Image src="/brand/symbol-white.png" alt="" width={439} height={582} unoptimized className="h-11 w-auto" style={{ width: "auto" }} />
             <span className="hidden text-sm leading-tight font-medium sm:block">
               {locale === "en" ? (
                 <>
@@ -118,8 +123,8 @@ export function Header({ locale }: { locale: Locale }) {
             </span>
           </Link>
           <span aria-hidden="true" className="h-8 w-px bg-white/30 md:hidden" />
-          {/* The university mark without the Adelson School lines: the image is cropped to its
-              stars and name, which sit on the right of the Hebrew file and the left of the English one. */}
+          {/* The university mark without the Adelson School lines: the Hebrew file is just that, and
+              the English lockup is cropped to its stars and name, on the left of the file. */}
           <a
             href={universityHref}
             target="_blank"
@@ -128,13 +133,11 @@ export function Header({ locale }: { locale: Locale }) {
             className="relative block aspect-[8/5] h-10 overflow-hidden md:hidden"
           >
             <Image
-              src={locale === "en" ? "/brand/reichman-en-white.png" : "/brand/reichman-he-white.png"}
+              src={reichman.src}
               alt=""
               fill
-              // The whole image renders about 120-140px wide before the crop, so request that
-              // width; asking for the visible 64px made the browser load a blurry small copy.
-              sizes="160px"
-              className={`object-cover ${locale === "en" ? "object-left" : "object-right"}`}
+              unoptimized
+              className={locale === "en" ? "object-cover object-left" : "object-contain"}
             />
           </a>
         </div>
@@ -265,7 +268,7 @@ export function Header({ locale }: { locale: Locale }) {
             </span>
           </button>
           <a href={universityHref} target="_blank" rel="noopener noreferrer" aria-label={universityLabel} className="hidden md:block">
-            <Image src={reichman} alt="" width={150} height={48} className="h-12 w-auto" style={{ width: "auto" }} />
+            <Image src={reichman.src} alt="" width={reichman.width} height={reichman.height} unoptimized className="h-12 w-auto" style={{ width: "auto" }} />
           </a>
         </div>
       </div>

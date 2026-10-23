@@ -432,10 +432,34 @@ const activityLinks = [
   { href: "/pitch-night", label: { he: "Pitch Night", en: "Pitch Night" } },
 ];
 
-const academicPartners = [
-  { he: "/brand/reichman-he-color.png", en: "/brand/reichman-en-color.png", width: 484, height: 163, name: { he: "בית הספר אדלסון ליזמות", en: "Adelson School of Entrepreneurship" } },
-  { he: "/media/partners/sustainability.png", en: "/media/partners/sustainability.png", width: 526, height: 130, name: { he: "בית הספר לקיימות", en: "School of Sustainability" } },
-  { he: "/media/partners/recanati.png", en: "/media/partners/recanati.png", width: 567, height: 150, name: { he: "בית הספר הבינלאומי רפאל רקנאטי", en: "Raphael Recanati International School" } },
+type PartnerLogo = { src: string; width: number; height: number };
+
+// The Hebrew Adelson lockup file is blurry, so the Hebrew card pairs the university's sharp
+// stars-and-name mark with the school's name set as text (the English lockup is the only English
+// file there is).
+const academicPartners: { logo: Record<Locale, PartnerLogo>; caption?: Localized; name: Localized }[] = [
+  {
+    logo: {
+      he: { src: "/brand/reichman-mark-he-color.png", width: 900, height: 548 },
+      en: { src: "/brand/reichman-en-color.png", width: 798, height: 225 },
+    },
+    caption: { he: "בית ספר אדלסון ליזמות" },
+    name: { he: "בית הספר אדלסון ליזמות", en: "Adelson School of Entrepreneurship" },
+  },
+  {
+    logo: {
+      he: { src: "/media/partners/sustainability.png", width: 526, height: 130 },
+      en: { src: "/media/partners/sustainability.png", width: 526, height: 130 },
+    },
+    name: { he: "בית הספר לקיימות", en: "School of Sustainability" },
+  },
+  {
+    logo: {
+      he: { src: "/media/partners/recanati.png", width: 567, height: 150 },
+      en: { src: "/media/partners/recanati.png", width: 567, height: 150 },
+    },
+    name: { he: "בית הספר הבינלאומי רפאל רקנאטי", en: "Raphael Recanati International School" },
+  },
 ];
 
 export function AboutPage({ locale }: { locale: Locale }) {
@@ -551,12 +575,12 @@ export function AboutPage({ locale }: { locale: Locale }) {
         <div className="mt-8 grid gap-2 sm:mt-10 sm:grid-cols-3 sm:gap-4">
           {academicPartners.map((partner, index) => (
             <a
-              key={partner.he}
+              key={partner.name.he}
               href={locale === "en" ? "https://www.runi.ac.il/en/" : "https://www.runi.ac.il/"}
               target="_blank"
               rel="noopener noreferrer"
               data-reveal-item={String(index + 1)}
-              className="group flex h-20 items-center justify-center rounded-[22px] border border-[#e6e9f5] bg-white px-5 sm:h-32 sm:px-6 transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-club/30 hover:shadow-[0_24px_50px_-28px_rgba(15,45,150,0.45)]"
+              className="group flex h-20 items-center justify-center gap-3 rounded-[22px] border border-[#e6e9f5] bg-white px-5 sm:h-32 sm:px-6 transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-club/30 hover:shadow-[0_24px_50px_-28px_rgba(15,45,150,0.45)]"
             >
               {/* The logo is a mask filled with the club's blue, so all three share the site's color. */}
               <span
@@ -564,11 +588,17 @@ export function AboutPage({ locale }: { locale: Locale }) {
                 aria-label={pick(partner.name, locale) ?? partner.name.he}
                 className="block h-12 max-w-full bg-club transition-[scale,background-color] duration-500 [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain] group-hover:scale-[1.04] group-hover:bg-[#0a1f6e] sm:h-16"
                 style={{
-                  aspectRatio: `${partner.width} / ${partner.height}`,
-                  maskImage: `url(${locale === "en" ? partner.en : partner.he})`,
+                  aspectRatio: `${partner.logo[locale].width} / ${partner.logo[locale].height}`,
+                  maskImage: `url(${partner.logo[locale].src})`,
                   transitionTimingFunction: "var(--ease)",
                 }}
               />
+              {/* Hidden where three cards share a narrow row. */}
+              {partner.caption && pick(partner.caption, locale) ? (
+                <span className="max-w-[7.5rem] text-sm leading-snug font-light text-club transition-colors duration-500 group-hover:text-[#0a1f6e] sm:max-md:hidden md:text-base">
+                  {pick(partner.caption, locale)}
+                </span>
+              ) : null}
             </a>
           ))}
         </div>
