@@ -117,7 +117,7 @@ export function Footer({ locale }: { locale: Locale }) {
           {/* The old footer's motto, "Bring your dreams to life" (in Hebrew on the Hebrew site), in light
               lines that rise in one after another. */}
           <p
-            className={`text-right text-[44px] leading-[1.02] font-extralight text-club md:text-[56px] ${en ? "tracking-[0.04em] uppercase" : "tracking-[0.01em]"}`}
+            className={`text-[44px] leading-[1.02] font-extralight text-club md:text-[56px] ${en ? "text-right tracking-[0.04em] uppercase" : "text-left tracking-[0.01em]"}`}
           >
             {(en ? ["Bring your", "dreams", "to life"] : ["הגשימו", "את חלומותיכם"]).map((line, index) => (
               <span key={line} data-reveal-item={String(index + 4)} className="block">
