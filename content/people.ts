@@ -242,9 +242,9 @@ export const pitchTeam: Person[] = [
   { id: "afik", name: { he: "Afik Peleg", en: "Afik Peleg" }, role: { he: "Head of Operations & Collaboration Team", en: "Head of Operations & Collaboration Team" }, group: "pitch" },
   { id: "yam", name: { he: "Yam Meir", en: "Yam Meir" }, role: { he: "Operations & Collaboration Team", en: "Operations & Collaboration Team" }, group: "pitch" },
   { id: "ofri", name: { he: "Ofri Bloomenfeld", en: "Ofri Bloomenfeld" }, role: { he: "Operations & Collaboration Team", en: "Operations & Collaboration Team" }, group: "pitch" },
-  { id: "noy", name: { he: "noy lodzki", en: "noy lodzki" }, role: { he: "Head of Finance & Legal & Registration Manager", en: "Head of Finance & Legal & Registration Manager" }, group: "pitch" },
+  { id: "noy", name: { he: "Noy Lodzki", en: "Noy Lodzki" }, role: { he: "Head of Finance & Legal & Registration Manager", en: "Head of Finance & Legal & Registration Manager" }, group: "pitch" },
   { id: "gal-k", name: { he: "Gal Kalderon", en: "Gal Kalderon" }, role: { he: "Head of Community and Alumni Relations", en: "Head of Community and Alumni Relations" }, group: "pitch" },
-  { id: "ron", name: { he: "Ron Brener", en: "Ron Brener" }, role: { he: "Head of marketing & Social media Team", en: "Head of marketing & Social media Team" }, group: "pitch" },
+  { id: "ron", name: { he: "Ron Brener", en: "Ron Brener" }, role: { he: "Head of Marketing & Social Media Team", en: "Head of Marketing & Social Media Team" }, group: "pitch" },
   { id: "dina", name: { he: "Dina Niborski", en: "Dina Niborski" }, role: { he: "Marketing & Social Media Team", en: "Marketing & Social Media Team" }, group: "pitch" },
   { id: "noa-d", name: { he: "Noa Davidovich", en: "Noa Davidovich" }, role: { he: "Marketing & Social Media Team", en: "Marketing & Social Media Team" }, group: "pitch" },
 ];
@@ -327,6 +327,20 @@ export const personMedia: Record<string, { photo: string; position?: string; lin
   "ofir-mor": { photo: "/media/team/ofir-mor.webp", linkedin: "https://www.linkedin.com/in/ofir-mor/" },
   yossi: { photo: "/media/team/yossi.webp", linkedin: "https://www.linkedin.com/in/yossimaaravi/" },
   "ofir-richman": { photo: "/media/team/ofir-richman.webp", linkedin: "https://www.linkedin.com/in/ofirrichman/" },
+  // The Pitch Night team, from the old site's Pitch Night page.
+  shelly: { photo: "/media/pitch/team/shelly.webp" },
+  yonatan: { photo: "/media/pitch/team/yonatan.webp" },
+  orine: { photo: "/media/pitch/team/orine.webp" },
+  yair: { photo: "/media/pitch/team/yair.webp" },
+  shaindy: { photo: "/media/pitch/team/shaindy.webp" },
+  afik: { photo: "/media/pitch/team/afik.webp" },
+  yam: { photo: "/media/pitch/team/yam.webp" },
+  ofri: { photo: "/media/pitch/team/ofri.webp" },
+  noy: { photo: "/media/pitch/team/noy.webp" },
+  "gal-k": { photo: "/media/pitch/team/gal-k.webp" },
+  ron: { photo: "/media/pitch/team/ron.webp" },
+  dina: { photo: "/media/pitch/team/dina.webp" },
+  "noa-d": { photo: "/media/pitch/team/noa-d.webp" },
 };
 
 export function advisoryTeam(): Person[] {

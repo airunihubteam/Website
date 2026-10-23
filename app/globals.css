@@ -158,6 +158,51 @@ body {
   }
 }
 
+/* A slow push-in and drift across a photo, so a still reads like footage. Calm, as the brand's
+   motion rules ask: no bounce, no flash. */
+@keyframes ken-burns {
+  from {
+    scale: 1.04;
+    translate: -1.5% 1%;
+  }
+  to {
+    scale: 1.16;
+    translate: 1.5% -1.5%;
+  }
+}
+
+/* Stars over a night photo: a soft twinkle, and a few rising slowly as they fade. */
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes star-rise {
+  from {
+    opacity: 0;
+    translate: 0 0;
+  }
+  25% {
+    opacity: 0.85;
+  }
+  to {
+    opacity: 0;
+    translate: 0 -140px;
+  }
+}
+
+/* A strip that holds two copies of its row and slides by one copy, so it loops without a seam. */
+@keyframes marquee {
+  to {
+    translate: -50% 0;
+  }
+}
+
 @keyframes hero-zoom {
   from {
     scale: 1.12;

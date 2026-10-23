@@ -71,6 +71,7 @@ function TeamCard({
   open,
   onToggle,
   infoId,
+  dense = false,
 }: {
   member: TeamMember;
   groupText?: string;
@@ -79,6 +80,8 @@ function TeamCard({
   open: boolean;
   onToggle: () => void;
   infoId: string;
+  // Small cards three to a row on phones: the front keeps just the name there.
+  dense?: boolean;
 }) {
   // The back's lines rise in one after another as it fades in.
   const rise = (step: number, transitions = "") =>
@@ -101,18 +104,20 @@ function TeamCard({
       <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-[#061347]/95 via-[#061347]/45 to-transparent" />
       <span
         aria-hidden="true"
-        className="absolute end-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm"
+        className={`absolute flex items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm ${dense ? "end-2 top-2 h-6 w-6 sm:end-3 sm:top-3 sm:h-8 sm:w-8" : "end-3 top-3 h-8 w-8"}`}
       >
         <svg viewBox="0 0 20 20" width="14" height="14">
           <path d="M10 4v12M4 10h12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         </svg>
       </span>
-      <span className="absolute inset-x-0 bottom-0 block p-3 text-white sm:p-4">
+      <span className={`absolute inset-x-0 bottom-0 block text-white ${dense ? "p-2.5 sm:p-3" : "p-3 sm:p-4"}`}>
         {groupText ? (
           <span className="mb-1.5 inline-block bg-white/15 px-2 py-0.5 text-[11px] font-semibold text-white/90 backdrop-blur-sm">{groupText}</span>
         ) : null}
-        <span className="block text-base leading-tight font-bold sm:text-lg">{member.name}</span>
-        {member.role ? <span className="mt-0.5 block text-xs leading-snug text-white/80 sm:text-sm">{member.role}</span> : null}
+        <span className={`block leading-tight font-bold ${dense ? "text-sm sm:text-base" : "text-base sm:text-lg"}`}>{member.name}</span>
+        {member.role ? (
+          <span className={`mt-0.5 block text-xs leading-snug text-white/80 sm:text-sm ${dense ? "max-sm:hidden" : ""}`}>{member.role}</span>
+        ) : null}
       </span>
 
       {/* The whole front is one button: it opens the back for touch and keyboard users. */}
@@ -177,8 +182,9 @@ export function TeamSection({
   groups?: TeamGroup[];
   labels: TeamLabels;
   dir: "rtl" | "ltr";
-  // "center" sets a few cards in a centered row, whatever their number.
-  variant?: "grid" | "pair" | "center";
+  // "center" sets a few cards in a centered row, whatever their number; "dense" sets many small
+  // cards in centered rows, three to a row on phones.
+  variant?: "grid" | "pair" | "center" | "dense";
 }) {
   const [filter, setFilter] = useState("all");
   const [filtered, setFiltered] = useState(false);
@@ -260,13 +266,15 @@ export function TeamSection({
           className={
             variant === "center"
               ? "flex flex-wrap justify-center gap-3 sm:gap-5"
-              : `grid gap-3 sm:gap-5 ${variant === "pair" ? "mx-auto max-w-2xl grid-cols-2" : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"}`
+              : variant === "dense"
+                ? "flex flex-wrap justify-center gap-2.5 sm:gap-4"
+                : `grid gap-3 sm:gap-5 ${variant === "pair" ? "mx-auto max-w-2xl grid-cols-2" : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"}`
           }
         >
           {visible.map((member, index) => (
             <div
               key={member.id}
-              className={`${variant === "center" ? "w-[calc(50%-0.375rem)] sm:w-56" : ""} ${filtered ? "motion-safe:animate-[team-in_700ms_var(--ease)_backwards]" : ""}`}
+              className={`${variant === "center" ? "w-[calc(50%-0.375rem)] sm:w-56" : variant === "dense" ? "w-[calc((100%-1.25rem)/3)] sm:w-40 lg:w-44" : ""} ${filtered ? "motion-safe:animate-[team-in_700ms_var(--ease)_backwards]" : ""}`}
               style={{ animationDelay: `${index * 55}ms` }}
             >
               <TeamCard
@@ -277,6 +285,7 @@ export function TeamSection({
                 open={openId === member.id}
                 onToggle={() => setOpenId((current) => (current === member.id ? null : member.id))}
                 infoId={`${uid}-${member.id}`}
+                dense={variant === "dense"}
               />
             </div>
           ))}

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { accelerator, catalogPath, conferences, findConference, findProgram, programs, type CatalogItem } from "@/content/catalog";
 import {
   aboutParagraphs,
@@ -17,7 +17,11 @@ import {
   internshipHe,
   joins,
   pitchIntro,
+  pitchPartners,
+  pitchReady,
+  pitchRegistration,
   pitchStages,
+  pitchStats,
   reichmanQuote,
   stats,
   type JoinSlug,
@@ -26,6 +30,7 @@ import { aboutGroups, advisoryTeam, peopleByIds, peopleIn, personMedia, pitchTea
 import { programDetails, type ProgramDetails } from "@/content/program-details";
 import { TeamSection, type TeamLabels, type TeamMember } from "@/components/about-team";
 import { CardSlider } from "@/components/card-slider";
+import { Journey } from "@/components/journey";
 import { ClubSlider, type ClubSlide, type ClubSliderLabels } from "@/components/club-slider";
 import { GatePanels, type GatePanel, type GatePanelsLabels } from "@/components/gate-panels";
 import { Chevron } from "@/components/icons";
@@ -751,31 +756,195 @@ export function ConferencePage({ locale, slug }: { locale: Locale; slug: string 
   return <ItemPage locale="he" item={item} />;
 }
 
-export function PitchPage({ locale }: { locale: Locale }) {
+const STAR_PATH = "M12 1.8l2.9 6.6 7.2.7-5.4 4.8 1.6 7.1L12 17.3 5.7 21l1.6-7.1L1.9 9.1l7.2-.7z";
+
+// Stars over the "are you ready" sky: most twinkle in place, a few rise slowly and fade. Fixed
+// positions (in percent of the section) keep them clear of the text in the middle.
+const readyStars: { x: number; y: number; size: number; delay: number; rise?: boolean }[] = [
+  { x: 7, y: 16, size: 10, delay: 0 },
+  { x: 15, y: 58, size: 6, delay: 1.2 },
+  { x: 22, y: 30, size: 8, delay: 2.4 },
+  { x: 29, y: 82, size: 12, delay: 0.6, rise: true },
+  { x: 38, y: 10, size: 6, delay: 3.1 },
+  { x: 46, y: 90, size: 8, delay: 4.2, rise: true },
+  { x: 57, y: 13, size: 7, delay: 1.8 },
+  { x: 66, y: 86, size: 10, delay: 2.9 },
+  { x: 74, y: 18, size: 9, delay: 0.9 },
+  { x: 82, y: 50, size: 6, delay: 3.6 },
+  { x: 88, y: 80, size: 11, delay: 1.5, rise: true },
+  { x: 93, y: 26, size: 8, delay: 2.2 },
+  { x: 10, y: 88, size: 9, delay: 5, rise: true },
+  { x: 60, y: 94, size: 6, delay: 6.5, rise: true },
+];
+
+function ReadyStars() {
   return (
-    <>
-      <PageHero eyebrow="Entrepreneurship Club" title="Pitch Night" />
-      <Section>
-        <p className="max-w-3xl text-lg font-light leading-8 text-ink">{pick(pitchIntro, locale)}</p>
-        <p className="mt-6 max-w-3xl text-lg font-light leading-8">Are You Ready to Pitch?</p>
-        <a href="https://www.linkedin.com/company/ruec/" className="mt-6 inline-block border border-club px-5 py-3 text-sm font-extrabold tracking-[0.1em]" rel="noreferrer">
-          Visit Our LinkedIn
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+      {readyStars.map((star) => (
+        <svg
+          key={`${star.x}-${star.y}`}
+          viewBox="0 0 24 24"
+          className={`absolute fill-white opacity-40 ${star.rise ? "motion-safe:animate-[star-rise_12s_ease-in-out_infinite]" : "motion-safe:animate-[twinkle_5s_ease-in-out_infinite]"}`}
+          style={{ left: `${star.x}%`, top: `${star.y}%`, width: star.size, height: star.size, animationDelay: `${star.delay}s` }}
+        >
+          <path d={STAR_PATH} />
+        </svg>
+      ))}
+    </div>
+  );
+}
+
+const pitchSections: RailSection[] = [
+  { id: "pitch-top", label: "Pitch Night" },
+  { id: "pitch-journey", label: "Our Competition Journey" },
+  { id: "pitch-ready", label: "Are You Ready?" },
+  { id: "pitch-team", label: "The Team" },
+  { id: "pitch-partners", label: "Our Partners" },
+];
+
+// Pitch Night, in English on both sites as on the old one, so it reads left to right: the banner
+// and story, the competition in figures, its five stages one at a time, the call to follow along,
+// the team and the partners.
+export function PitchPage({ locale }: { locale: Locale }) {
+  const intro = pick(pitchIntro, locale) ?? pitchIntro.he;
+  const lead = firstSentence(intro);
+  const team: TeamMember[] = pitchTeam.map((person) => ({
+    id: person.id,
+    name: pick(person.name, "en") ?? person.name.he,
+    role: pick(person.role, "en"),
+    photo: personMedia[person.id]?.photo,
+  }));
+  const heading = "text-center text-[32px] font-bold text-club";
+
+  return (
+    <div dir="ltr" lang="en">
+      <RevealController />
+      <SectionRail sections={pitchSections} label="Page sections" />
+
+      <PageBanner id="pitch-top" image="/media/pitch/banner.webp" locale="en" title="Pitch Night" subtitle={lead}>
+        <p className="text-base font-bold text-white md:text-lg">{pitchRegistration.title}</p>
+        <p className="mt-1 text-sm text-white/75">{pitchRegistration.line}</p>
+        <a
+          href={pitchRegistration.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group mt-5 inline-flex items-center gap-2 border border-white bg-white px-7 py-3 text-sm font-bold text-club transition-colors duration-300 hover:border-club hover:bg-club hover:text-white"
+        >
+          {pitchRegistration.cta}
+          <Chevron dir="ltr" className="transition-transform duration-500 group-hover:translate-x-1" />
         </a>
-      </Section>
-      <Section title="Our Competition Journey">
-        <div className="grid gap-4">
-          {pitchStages.map((stage) => (
-            <article key={stage.title} className="border border-[#e6e6e6] bg-white p-5">
-              <h3 className="text-2xl font-bold text-club">{stage.title}</h3>
-              <p className="mt-3 text-base font-light leading-7 text-ink">{stage.body}</p>
-            </article>
-          ))}
+        <p className="mt-3 text-xs font-semibold tracking-wide text-white/70">{pitchRegistration.closes}</p>
+      </PageBanner>
+
+      <section data-reveal className="mx-auto w-full max-w-3xl px-5 pt-10 pb-2 md:px-8 md:pt-20 md:pb-4">
+        <p data-reveal-item="0" className="text-justify text-xl leading-[1.55] font-bold text-club [text-align-last:center] md:text-2xl md:leading-[1.5]">
+          {intro.slice(lead.length).trim()}
+        </p>
+      </section>
+      <div data-reveal>
+        <ImpactStats stats={pitchStats} label="Pitch Night in Numbers" />
+      </div>
+
+      <section id="pitch-journey" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-12">
+        <h2 data-reveal-item="0" className={heading}>
+          <span className="club-underline">Our Competition Journey</span>
+        </h2>
+        <div data-reveal-item="1" className="mt-8">
+          <Journey steps={pitchStages} label="Our Competition Journey" stage="Stage" dir="ltr" />
         </div>
-      </Section>
-      <Section title="The Pitch Night Team">
-        <PeopleGrid people={pitchTeam} locale="en" />
-      </Section>
-    </>
+      </section>
+
+      {/* A full section that moves like footage: a video when one is set, otherwise the climber
+          photo pushing in slowly, with stars twinkling and rising over the night sky. */}
+      <section id="pitch-ready" data-reveal className="relative isolate flex min-h-[540px] scroll-mt-[4.5rem] items-center overflow-hidden md:min-h-[78vh]">
+        <div aria-hidden="true" className="absolute inset-0 -z-20 overflow-hidden bg-[#061347]">
+          {pitchReady.video ? (
+            <video className="relative z-10 h-full w-full object-cover motion-reduce:hidden" autoPlay muted loop playsInline preload="metadata" poster={pitchReady.poster}>
+              {pitchReady.videoSmall ? <source src={pitchReady.videoSmall} type="video/mp4" media="(max-width: 767px)" /> : null}
+              <source src={pitchReady.video} type="video/mp4" />
+            </video>
+          ) : null}
+          <Image
+            src={pitchReady.video && pitchReady.poster ? pitchReady.poster : "/media/pitch/ready.webp"}
+            alt=""
+            fill
+            sizes="100vw"
+            className={`object-cover ${pitchReady.video ? "" : "motion-safe:animate-[ken-burns_28s_ease-in-out_infinite_alternate]"}`}
+          />
+        </div>
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(6,19,71,0.92)_0%,rgba(6,19,71,0.5)_45%,rgba(6,19,71,0.88)_100%)]" />
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(55%_45%_at_50%_55%,rgba(15,45,150,0.4),transparent)]" />
+        <ReadyStars />
+        <div className="mx-auto w-full max-w-3xl px-5 py-20 text-center text-white md:px-8">
+          <p data-reveal-item="0" className="text-sm font-semibold tracking-[0.24em] text-white/70 uppercase">
+            {pitchReady.line}
+          </p>
+          <h2 data-reveal-item="1" className="mt-4 text-4xl font-bold md:text-6xl">
+            <span className="club-underline on-dark">{pitchReady.title}</span>
+          </h2>
+          <p data-reveal-item="2" className="mt-6 text-base text-white/85 md:text-lg">
+            {pitchReady.body}
+          </p>
+          <div data-reveal-item="3" className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <a
+              href={pitchRegistration.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 border border-white bg-white px-6 py-3 text-sm font-bold text-club transition-colors duration-300 hover:border-club hover:bg-club hover:text-white"
+            >
+              {pitchRegistration.cta}
+              <Chevron dir="ltr" className="transition-transform duration-500 group-hover:translate-x-1" />
+            </a>
+            <a
+              href={pitchReady.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 border border-white px-6 py-3 text-sm font-semibold transition-colors duration-300 hover:border-club hover:bg-club"
+            >
+              {pitchReady.cta}
+              <Chevron dir="ltr" className="transition-transform duration-500 group-hover:translate-x-1" />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="pitch-team" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-16">
+        <h2 data-reveal-item="0" className={heading}>
+          <span className="club-underline">The Pitch Night Team</span>
+        </h2>
+        <TeamSection members={team} labels={{ title: "The Pitch Night Team", all: "", profile: "More details" }} dir="ltr" variant="dense" />
+      </section>
+
+      <section id="pitch-partners" data-reveal className="scroll-mt-[4.5rem] pt-6 pb-14 md:pt-10 md:pb-24">
+        <h2 data-reveal-item="0" className={heading}>
+          <span className="club-underline">Our Partners</span>
+        </h2>
+        {/* One row on any screen: the logos drift past and stop under the pointer. Without motion
+            they sit still, wrapped and centered. */}
+        <div data-reveal-item="1" className="group relative mt-8 overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)] md:mt-10">
+          <div className="flex w-max motion-safe:animate-[marquee_40s_linear_infinite] group-hover:[animation-play-state:paused] motion-reduce:w-full motion-reduce:justify-center">
+            {[0, 1].map((copy) => (
+              <ul
+                key={copy}
+                aria-hidden={copy === 1 ? true : undefined}
+                className={`flex shrink-0 items-center gap-4 pe-4 ${copy === 1 ? "motion-reduce:hidden" : "motion-reduce:flex-wrap motion-reduce:justify-center"}`}
+              >
+                {pitchPartners.map((partner) => (
+                  <li key={partner.name} className="flex h-24 w-52 items-center justify-center rounded-[20px] border border-[#e6e9f5] bg-white px-6 md:h-28">
+                    <span
+                      role={copy === 1 ? undefined : "img"}
+                      aria-label={copy === 1 ? undefined : partner.name}
+                      className="block h-12 w-full bg-club [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain]"
+                      style={{ maskImage: `url(${partner.logo})` }}
+                    />
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
 
@@ -1460,6 +1629,7 @@ function PageBanner({
   back,
   small = false,
   className = "",
+  children,
 }: {
   id: string;
   image: string;
@@ -1473,6 +1643,8 @@ function PageBanner({
   // A smaller title, for long page names.
   small?: boolean;
   className?: string;
+  // Actions under the subtitle, such as a registration button.
+  children?: ReactNode;
 }) {
   return (
     <section id={id} className={`relative -mt-[4.5rem] flex min-h-[46vh] items-end overflow-hidden md:min-h-[64vh] ${className}`}>
@@ -1518,6 +1690,7 @@ function PageBanner({
             {subtitle}
           </p>
         ) : null}
+        {children ? <div className="mt-7 motion-safe:animate-[hero-rise_1.1s_var(--ease)_560ms_both] md:mt-9">{children}</div> : null}
       </div>
     </section>
   );

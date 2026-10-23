@@ -65,27 +65,90 @@ export const pitchIntro: Localized = {
   en: "Pitch Night is the largest student startup competition in Israel and the flagship program of the Entrepreneurship Club. It attracts early-stage startups founded by students from academic institutions across Israel. Throughout the competition, these startups participate in various events that offer professional content, networking opportunities, and selection rounds, culminating in a Pitch Night where 10-15 selected startups compete for the top prize.",
 };
 
-export const pitchStages: { title: string; body: string }[] = [
+// The five stages, each with its photo from the old Pitch Night page.
+export const pitchStages: { title: string; body: string; image: string }[] = [
   {
     title: "Kick-off Meeting",
+    image: "/media/pitch/stage-1.webp",
     body: "Your journey starts here. A Zoom meeting where the accepted startups will receive all the information they require about the stages of the competition and the relevant requirements.",
   },
   {
     title: "Bootcamp",
+    image: "/media/pitch/stage-2.webp",
     body: "How to do it right. A face-to-face meeting where you will acquire tools and skills for entrepreneurs that will serve you in the competition and help you on your entrepreneurial journey.",
   },
   {
     title: "Screening Session",
+    image: "/media/pitch/stage-3.webp",
     body: "An investors committee led by the sponsors of the competition. A screening session where only the 15 best startups will receive an entry ticket to the peak event.",
   },
   {
     title: "Mentoring Evening",
+    image: "/media/pitch/stage-4.webp",
     body: "An exclusive mentoring and networking event for the 15 selected finalist startups. The event connects founders with experienced industry leaders for meaningful conversations, practical guidance, and valuable insights designed to help startups refine their journey ahead of Pitch Night.",
   },
   {
     title: "The Pitch Night",
+    image: "/media/pitch/stage-5.webp",
     body: "Consists of two main parts. During the first part, each startup will have to showcase their venture to the guests of honor, who will include hundreds of industry leaders such as venture capitalists, CEOs of high-tech companies, and private investors. The audience will rank the startups, and the top four will move on to the finals to present their pitch on the main stage. During the second part of the event, a panel of top judges will evaluate the finalists and award prizes to the top three startups.",
   },
+];
+
+// Pitch Night in figures, as its own copy states them: five stages, the 15 best startups reach
+// the peak event, the top four pitch on the main stage, before hundreds of industry leaders.
+export const pitchStats: { value: number; prefix?: string; label: string }[] = [
+  { value: 5, label: "Competition stages" },
+  { value: 15, label: "Finalist startups" },
+  { value: 4, label: "Pitch on the main stage" },
+  { value: 100, prefix: "+", label: "Industry leaders watching" },
+];
+
+// The call to follow along, from the old page's "Are You Ready to Pitch?" and "ARE YOU READY?"
+// blocks. Its LinkedIn link there pointed at the page's admin dashboard; this is the public page.
+// `video` plays behind the section (`videoSmall` on phones), with `poster` until it starts and
+// for visitors who turn motion off; without a video the photo moves slowly instead. The clip is
+// "A Man Rock Climbing on a Mountain Cliff" by Grisha Grishkoff on Pexels
+// (pexels.com/video/4163540), free to use under the Pexels License.
+export const pitchReady: {
+  title: string;
+  line: string;
+  body: string;
+  cta: string;
+  href: string;
+  video?: string;
+  videoSmall?: string;
+  poster?: string;
+} = {
+  title: "Are You Ready to Pitch?",
+  line: "Become the next Unicorn of Israel!",
+  body: "Stay tuned by following us on social media and joining our newsletter for updates!",
+  cta: "Visit Our LinkedIn",
+  href: "https://www.linkedin.com/company/102662815/",
+  video: "/media/pitch/ready.mp4",
+  videoSmall: "/media/pitch/ready-small.mp4",
+  poster: "/media/pitch/ready-video.webp",
+};
+
+// Registration for the competition, as the old Pitch Night page announced it. Temporary: "Apply
+// Now" opens the old site's startup application form until the club builds its own forms at the
+// end of the redesign (see docs/08-forms.md). The closing date is the old page's.
+export const pitchRegistration = {
+  title: "Registration for Pitch Night 2026 is open!",
+  line: "This is your chance to take the stage",
+  cta: "Apply Now",
+  href: "https://ruec.co.il/pitch-night/startups/",
+  closes: "Applications close on January 31, 2026",
+};
+
+// The partners shown on the old Pitch Night page, cut out so the page can tint them.
+export const pitchPartners: { name: string; logo: string; width: number; height: number }[] = [
+  { name: "EY", logo: "/media/pitch/partners/ey.png", width: 235, height: 240 },
+  { name: "Mizrahi Tefahot Bank", logo: "/media/pitch/partners/mizrahi-tefahot.png", width: 964, height: 229 },
+  { name: "Barry Katz", logo: "/media/pitch/partners/barry-katz.png", width: 424, height: 240 },
+  { name: "IBI Capital", logo: "/media/pitch/partners/ibi-capital.png", width: 357, height: 240 },
+  { name: "Pearl Cohen", logo: "/media/pitch/partners/pearl-cohen.png", width: 827, height: 84 },
+  { name: "Reichman University, Adelson School of Entrepreneurship", logo: "/media/pitch/partners/reichman.png", width: 408, height: 108 },
+  { name: "RUNI Ventures", logo: "/media/pitch/partners/runi-ventures.png", width: 631, height: 240 },
 ];
 
 export const internshipHe = {
