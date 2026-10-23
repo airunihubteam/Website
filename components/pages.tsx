@@ -1670,17 +1670,18 @@ function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: Ca
               <span className="club-underline">{labels.gallery}</span>
             </h2>
           </div>
-          {/* A swipe row on phones; one row of equal tiles from sm up. */}
+          {/* A swipe row on phones that stops at every photo, centered (the row's padding lets the
+              first and last one center too), and one row of equal tiles from sm up.
+              The row reveals as one, so photos swiped in from the side are already in place
+              instead of fading in mid-swipe. */}
           <div
-            className="-mx-5 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] sm:mx-0 sm:mt-10 sm:grid sm:grid-cols-(--cols) sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0"
+            data-reveal
+            className="-mx-5 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-[18vw] pb-2 [scrollbar-width:none] sm:mx-0 sm:mt-10 sm:grid sm:grid-cols-(--cols) sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0"
             style={{ "--cols": `repeat(${details.gallery.length}, minmax(0, 1fr))` } as CSSProperties}
           >
             {details.gallery.map((src, index) => (
-              <div key={src} data-reveal className="w-[64vw] shrink-0 snap-center sm:w-auto">
-                <div
-                  data-reveal-item={String(Math.min(index + 1, 6))}
-                  className="group relative aspect-[4/5] overflow-hidden rounded-[22px] bg-(--tone-light) shadow-[0_18px_40px_-30px_rgba(6,19,71,0.7)]"
-                >
+              <div key={src} data-reveal-item={String(Math.min(index + 1, 6))} className="w-[64vw] shrink-0 snap-center snap-always sm:w-auto">
+                <div className="group relative aspect-[4/5] overflow-hidden rounded-[22px] bg-(--tone-light) shadow-[0_18px_40px_-30px_rgba(6,19,71,0.7)]">
                   <Image
                     src={src}
                     alt=""
