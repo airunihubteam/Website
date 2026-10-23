@@ -419,7 +419,7 @@ export const aiEn: typeof aiHe = {
 
 export const joins = {
   chair: {
-    title: { he: "הרשמה לוועדת האיתור לבחירת יו״ר" },
+    title: { he: "הרשמה לוועדת האיתור לבחירת יו״ר", en: "Chair Search Committee" },
     paragraphs: [
       "נפתחה ההרשמה ליו״ר הבא של מועדון היזמות. זו ההזדמנות שלכם לחוות מה זה לנהל ארגון עם תקציב של מאות אלפי שקלים, להשפיע על יותר מ־1,500 סטודנטים, לעבוד עם עשרות אנשי צוות מוכשרים, לפגוש מקרוב את מובילי ההייטק הישראלי, לקחת חלק בכנסים בתעשייה ולהיות חלק מאחד הגופים הכי עוצמתיים בקמפוס.",
       "הליך הבחירה מובנה במתכונת של ועדת איתור. מועמדים המבקשים שמועמדותם תידון בפני הוועדה נדרשים לעמוד בדרישות סף כחלק מהליך מיון מקדמי.",
@@ -428,13 +428,13 @@ export const joins = {
     ],
   },
   programs: {
-    title: { he: "הצטרפות לניהול תוכניות" },
+    title: { he: "הצטרפות לניהול תוכניות", en: "Program Management" },
     paragraphs: [
       "טופס ההצטרפות לניהול תוכניות של מועדון היזמות פתוח כהסבר על המסלול. ההרשמה אינה מהווה אישור קבלה.",
     ],
   },
   "new-program": {
-    title: { he: "פתיחת מועדון חדש" },
+    title: { he: "פתיחת מועדון חדש", en: "A New Club" },
     paragraphs: [
       "קול קורא להגשת רעיון לתוכנית חדשה במועדון היזמות של אוניברסיטת רייכמן.",
       "יש לכם רעיון לתוכנית חדשה שתפעל במסגרת מועדון היזמות? נשמח לשמוע.",
@@ -512,3 +512,57 @@ export const joinDetails: Record<JoinSlug, JoinDetails> = {
 };
 
 export const joinNote = "ההרשמה אינה מהווה אישור קבלה. במידה ותעברו שלב תקבלו מייל עם הרשמה לראיונות.";
+
+// The join pages in English. The old site had no English join pages, so this translates the Hebrew.
+export const joinDetailsEn: Record<JoinSlug, JoinDetails> = {
+  chair: {
+    lead: "Registration for the Entrepreneurship Club's next Chair is open!",
+    more: "This is your chance to experience what it's like to run an organization with a budget of hundreds of thousands of shekels, to impact more than 1,500 students, to work with dozens of talented team members, to meet the leaders of Israeli high-tech up close, to take part in industry conferences and to be a central part of one of the most powerful bodies on campus. Being Chair of the Entrepreneurship Club isn't just another line on your résumé – it's an experience that will change you.",
+    stepsIntro: "The selection process is run as a search committee. Candidates who want their candidacy brought before the committee must meet threshold requirements as part of an initial screening.",
+    steps: [
+      {
+        title: "Initial Screening",
+        body: "Students who want to bring their candidacy before the search committee must meet all of the following conditions:",
+        items: [
+          {
+            title: "Management experience in an Entrepreneurship Club program or staff role",
+            body: "Managing a program within the Entrepreneurship Club in the current or previous academic year, or serving as a staff member (including the annual Pitch Night staff) in the current academic year.",
+          },
+          {
+            title: "Two written recommendations",
+            body: "Candidates who move on to the second stage will be asked to present 2 written recommendations. Priority goes to recommendations from faculty members or senior managers on campus, but recommendations from other professionals are accepted too. Recommendations from members of the search committee cannot be submitted.",
+          },
+        ],
+      },
+      {
+        title: "Search Committee",
+        body: "Candidates who meet the conditions of the initial screening will be invited to present their background, their experience and their plans for the club's future activity to the search committee.",
+      },
+    ],
+    prepare: ["Full name", "Phone", "Email", "Degree track and year", "Previous management role in the Entrepreneurship Club, if any", "Résumé as a PDF"],
+  },
+  programs: {
+    lead: "The Entrepreneurship Club was founded by students, for students.",
+    more: "You can apply to manage one of the club's programs or to join one of its staff teams.",
+    teams: ["Brand (Marketing) Team", "AI & Innovation Team", "Operations Team", "Finance Team", "Community Team"],
+    team: "You can apply on your own or as part of a team. When applying as a team, list the team members' names and each one's role.",
+    prepare: [
+      "Full name",
+      "Phone",
+      "Email",
+      "Degree track and year",
+      "Which program you'd like to manage",
+      "Whether you've taken part in the Entrepreneurship Club in recent years, and in what role",
+      "Why you're right for the role",
+      "Résumé",
+      "Applying on your own or as a team",
+    ],
+  },
+  "new-program": {
+    lead: "Have an idea for a new program within the Entrepreneurship Club? We'd love to hear it!",
+    more: "An open call for new program ideas at Reichman University's Entrepreneurship Club. Send your details and attach a short presentation of the idea.",
+    prepare: ["Full name", "Phone", "Email", "Degree track and year (next year)", "The club's field", "A short presentation of the idea"],
+  },
+};
+
+export const joinNoteEn = "Registration does not mean acceptance. If you move on to the next stage, you'll receive an email to schedule an interview.";

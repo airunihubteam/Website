@@ -6,7 +6,9 @@ import { accelerator, catalogPath, conferences, findConference, findProgram, pro
 import {
   aboutParagraphs,
   joinDetails,
+  joinDetailsEn,
   joinNote,
+  joinNoteEn,
   aiEn,
   aiHe,
   homePartners,
@@ -170,15 +172,15 @@ function joinCards(locale: Locale): JoinCard[] {
   if (locale === "en") {
     return [
       {
-        href: "/join/chair",
+        href: "/en/join/chair",
         title: "Chair Search Committee",
         summary: "This is your chance to experience what it is like to run an organization with a budget of hundreds of thousands of shekels, and to impact more than 1,500 students.",
         cta: "Register",
         icon: "search",
       },
-      { href: "/join/programs", title: "Program Management", summary: aboutParagraphs[6].en ?? aboutParagraphs[6].he, cta: "Register", icon: "checklist" },
+      { href: "/en/join/programs", title: "Program Management", summary: aboutParagraphs[6].en ?? aboutParagraphs[6].he, cta: "Register", icon: "checklist" },
       {
-        href: "/join/new-program",
+        href: "/en/join/new-program",
         title: "An Idea for a New Club",
         summary: "Have an idea for a new program within the Entrepreneurship Club? We would love to hear it.",
         cta: "Learn More",
@@ -738,7 +740,7 @@ export function ProgramIndex({ locale }: { locale: Locale }) {
       {/* The two ways into a program, as on the home page's "get involved" cards. */}
       <div id="join" data-reveal className="scroll-mt-[4.5rem]">
         <JoinSection
-          cards={joinCards(locale).filter((card) => card.href === "/join/programs" || card.href === "/join/new-program")}
+          cards={joinCards(locale).filter((card) => card.href.endsWith("/join/programs") || card.href.endsWith("/join/new-program"))}
           title={impactLabels[locale].join}
           dir={dir}
         />
@@ -1564,30 +1566,52 @@ function CheckBox() {
 // what one can apply for, what an application asks for, and the other ways to join. The sign-up
 // forms are not part of this site yet, so nothing here submits; "what to prepare" stands in for
 // them until the club builds real forms after the redesign.
-export function JoinPage({ slug }: { slug: JoinSlug }) {
-  const locale: Locale = "he";
-  const dir = "rtl";
+const joinLabels: Record<Locale, { steps: string; roles: string; prepare: string; stage: string; staff: string; programs: string; sections: string }> = {
+  he: {
+    steps: "אז איך נרשמים?",
+    roles: "מה אפשר לנהל?",
+    prepare: "מה צריך להכין?",
+    stage: "שלב",
+    staff: "מטה המועדון",
+    programs: "תוכניות",
+    sections: "ניווט בין חלקי העמוד",
+  },
+  en: {
+    steps: "How to Apply",
+    roles: "What Can You Manage?",
+    prepare: "What to Prepare",
+    stage: "Stage",
+    staff: "Club Staff",
+    programs: "Programs",
+    sections: "Page sections",
+  },
+};
+
+export function JoinPage({ slug, locale = "he" }: { slug: JoinSlug; locale?: Locale }) {
+  const dir = locale === "en" ? "ltr" : "rtl";
+  const labels = joinLabels[locale];
   const page = joins[slug];
-  const details = joinDetails[slug];
+  const title = pick(page.title, locale) ?? page.title.he;
+  const details = locale === "en" ? joinDetailsEn[slug] : joinDetails[slug];
   const choices = [
     ...programs,
     accelerator,
-  ].map((item) => ({ name: pick(item.name, locale) ?? item.name.he, href: catalogPath(item), tone: item.color ?? "#0f2d96" }));
-  choices.push({ name: "Pitch Night", href: "/pitch-night", tone: "#0f2d96" });
+  ].map((item) => ({ name: pick(item.name, locale) ?? item.name.he, href: withLocale(catalogPath(item), locale), tone: item.color ?? "#0f2d96" }));
+  choices.push({ name: "Pitch Night", href: withLocale("/pitch-night", locale), tone: "#0f2d96" });
   const sections: RailSection[] = [
-    { id: "join-top", label: page.title.he },
-    ...(details.steps ? [{ id: "join-steps", label: "אז איך נרשמים?" }] : []),
-    ...(details.teams ? [{ id: "join-roles", label: "מה אפשר לנהל?" }] : []),
-    { id: "join-prepare", label: "מה צריך להכין?" },
+    { id: "join-top", label: title },
+    ...(details.steps ? [{ id: "join-steps", label: labels.steps }] : []),
+    ...(details.teams ? [{ id: "join-roles", label: labels.roles }] : []),
+    { id: "join-prepare", label: labels.prepare },
     { id: "join", label: impactLabels[locale].join },
   ];
 
   return (
     <>
       <RevealController />
-      <SectionRail sections={sections} label="ניווט בין חלקי העמוד" />
+      <SectionRail sections={sections} label={labels.sections} />
 
-      <PageBanner id="join-top" image={joinBanners[slug]} locale={locale} title={page.title.he} eyebrow={impactLabels[locale].join} small />
+      <PageBanner id="join-top" image={joinBanners[slug]} locale={locale} title={title} eyebrow={impactLabels[locale].join} small />
 
       <section data-reveal className="mx-auto w-full max-w-3xl px-5 pt-10 pb-4 text-center md:px-8 md:pt-20 md:pb-8">
         <p data-reveal-item="0" className="text-2xl leading-snug font-bold text-club md:text-[32px]">
@@ -1603,7 +1627,7 @@ export function JoinPage({ slug }: { slug: JoinSlug }) {
       {details.steps ? (
         <section id="join-steps" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-16">
           <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-            <Underline>אז איך נרשמים?</Underline>
+            <Underline>{labels.steps}</Underline>
           </h2>
           {details.stepsIntro ? (
             <p data-reveal-item="1" className="mx-auto mt-6 max-w-3xl text-justify text-base leading-7 text-ink/85 [text-align-last:center] md:text-lg md:leading-8">
@@ -1626,7 +1650,9 @@ export function JoinPage({ slug }: { slug: JoinSlug }) {
                 >
                   {index + 1}
                 </span>
-                <p className="text-sm font-semibold text-club/60">שלב {index + 1}</p>
+                <p className="text-sm font-semibold text-club/60">
+                  {labels.stage} {index + 1}
+                </p>
                 <h3 className="mt-1 text-2xl font-bold text-club">{step.title}</h3>
                 <p className="mt-3 text-justify text-[15px] leading-7 text-ink/85">{step.body}</p>
                 {step.items ? (
@@ -1651,11 +1677,11 @@ export function JoinPage({ slug }: { slug: JoinSlug }) {
       {details.teams ? (
         <section id="join-roles" data-reveal className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-16">
           <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-            <Underline>מה אפשר לנהל?</Underline>
+            <Underline>{labels.roles}</Underline>
           </h2>
           <div className="mt-8 grid gap-8 md:mt-10 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:gap-12">
             <div data-reveal-item="1">
-              <p className="text-sm font-semibold text-club/60">מטה המועדון</p>
+              <p className="text-sm font-semibold text-club/60">{labels.staff}</p>
               <ul className="mt-3 flex flex-wrap gap-2">
                 {details.teams.map((team) => (
                   <li key={team} className="border border-club/15 bg-white px-3.5 py-2 text-sm font-semibold text-club">
@@ -1665,7 +1691,7 @@ export function JoinPage({ slug }: { slug: JoinSlug }) {
               </ul>
             </div>
             <div data-reveal-item="2">
-              <p className="text-sm font-semibold text-club/60">תוכניות</p>
+              <p className="text-sm font-semibold text-club/60">{labels.programs}</p>
               {/* Each program in its own color, linking to its page. */}
               <ul className="mt-3 flex flex-wrap gap-2">
                 {choices.map((choice) => (
@@ -1694,7 +1720,7 @@ export function JoinPage({ slug }: { slug: JoinSlug }) {
 
       <section id="join-prepare" data-reveal className="mx-auto w-full max-w-4xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-16">
         <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
-          <Underline>מה צריך להכין?</Underline>
+          <Underline>{labels.prepare}</Underline>
         </h2>
         <ul className="mt-8 grid gap-2.5 sm:grid-cols-2 md:mt-10 md:gap-3">
           {details.prepare.map((item, index) => (
@@ -1709,13 +1735,13 @@ export function JoinPage({ slug }: { slug: JoinSlug }) {
           ))}
         </ul>
         <p data-reveal-item="6" className="mt-6 bg-[#f4f6fd] p-4 text-center text-sm leading-6 text-club/85">
-          {joinNote}
+          {locale === "en" ? joinNoteEn : joinNote}
         </p>
       </section>
 
       {/* The other ways in, as on the home page's "get involved" cards. */}
       <div id="join" data-reveal className="scroll-mt-[4.5rem]">
-        <JoinSection cards={joinCards(locale).filter((card) => card.href.startsWith("/join/") && card.href !== `/join/${slug}`)} title={impactLabels[locale].join} dir={dir} />
+        <JoinSection cards={joinCards(locale).filter((card) => card.href.includes("/join/") && !card.href.endsWith(`/join/${slug}`))} title={impactLabels[locale].join} dir={dir} />
       </div>
     </>
   );
