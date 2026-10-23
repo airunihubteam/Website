@@ -32,9 +32,9 @@ export const nav: NavItem[] = [
 ];
 
 export const social = [
-  { label: "Facebook", href: "https://www.facebook.com/IECIDC" },
-  { label: "Instagram", href: "https://www.instagram.com/ruec_il/" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/company/ruec/" },
-];
+  { label: "Facebook", icon: "facebook", href: "https://www.facebook.com/IECIDC" },
+  { label: "Instagram", icon: "instagram", href: "https://www.instagram.com/ruec_il/" },
+  { label: "LinkedIn", icon: "linkedin", href: "https://www.linkedin.com/company/ruec/" },
+] as const;
 
 export const privacyHref = "https://www.runi.ac.il/privacy-policy";
