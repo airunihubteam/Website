@@ -151,12 +151,39 @@ export const pitchPartners: { name: string; logo: string; width: number; height:
   { name: "RUNI Ventures", logo: "/media/pitch/partners/runi-ventures.png", width: 631, height: 240 },
 ];
 
-export const internshipHe = {
+// The industry internship with NICE, from the old site's page (ruec.co.il/internship). The old
+// English page described an earlier round (6–8 students, 6 hours a week, a ₪1,000 scholarship),
+// so the English here is a translation of the current Hebrew page instead. The old "register"
+// button led to a form that no longer exists (see docs/08-forms.md).
+export type InternshipCopy = {
+  kicker: string;
+  title: string;
+  intro: string;
+  facts: { icon: "people" | "calendar" | "clock"; label: string; value: string; detail?: string }[];
+  aboutTitle: string;
+  body: string[];
+  requirementsTitle: string;
+  requirements: string[];
+  scholarship: { label: string; value: string; text: string };
+  outline: string;
+  manager: { label: string; name: string; role: string };
+  quotesTitle: string;
+  quotes: { quote: string; name: string; role: string; photo: string }[];
+};
+
+export const internshipHe: InternshipCopy = {
   kicker: "מועדון היזמות NICE X",
-  data: "14 סטודנטים · תכנית שנתית · 8 שעות שבועיות",
+  title: "מסלול לתעשייה",
+  intro: "תוכנית התמחות שנתית בחברת NICE לסטודנטים למדעי המחשב במועדון היזמות.",
+  facts: [
+    { icon: "people", label: "משתתפים", value: "14 סטודנטים" },
+    { icon: "calendar", label: "משך", value: "תכנית שנתית" },
+    { icon: "clock", label: "היקף", value: "8 שעות בשבוע", detail: "פעמיים בשבוע" },
+  ],
+  aboutTitle: "על התוכנית",
   body: [
     "מטרת התוכנית היא שילוב מעשי ופרקטי של סטודנטים.ות של מועדון היזמות בתעשייה. מתן הזדמנות לקבלת כלים שימושיים בשוק העבודה.",
-    "התוכנית הינה שנתית ומתקיימת פעמיים בשבוע בהיקף של 8 שעות שבועיות במשרדי החברה כמפורט למטה.",
+    "התוכנית הינה שנתית ומתקיימת פעמיים בשבוע בהיקף של 8 שעות שבועיות במשרדי החברה.",
     "הסטודנטים יצטרפו למגוון הצוותים הקיימים בחברה ויעבדו על הפרויקטים שיינתנו להם במסגרת השעות שעליהן התחייבו תחת ליווי והנחייה של עובדי ומנהלי החברה.",
     "הסטודנטים שיתקבלו לתוכנית יזכו להזדמנות חד-פעמית להיות חלק מקהילת מועדון היזמות, ולקבל הרצאות מעשירות על מגוון תחומים בעולם הטכנולוגיה במסגרת תוכניות המועדון.",
   ],
@@ -169,53 +196,86 @@ export const internshipHe = {
     "יתרון לבעלי ציון עובר בקורס תכנות מתקדם.",
     "יתרון לבעלי ניסיון קודם בפיתוח.",
   ],
-  moreTitle: "פרטים נוספים",
-  more: [
-    "סטודנט שיעמוד בכל הדרישות יקבל מלגה של 2,000 ₪ מטעם מועדון היזמות.",
-    "מתווה קבלת הסטודנטים וההתנהלות מולם יקבע בהמשך בשיתוף חברת NICE ומועדון היזמות.",
-  ],
-  manager: "מנהל התוכנית: אופיר מור, מנהל תכנית המתמחים בשיתוף חברת NICE.",
+  scholarship: { label: "מלגה", value: "2,000 ₪", text: "סטודנט שיעמוד בכל הדרישות יקבל מלגה של 2,000 ₪ מטעם מועדון היזמות." },
+  outline: "מתווה קבלת הסטודנטים וההתנהלות מולם יקבע בהמשך בשיתוף חברת NICE ומועדון היזמות.",
+  manager: { label: "מנהל התוכנית", name: "אופיר מור", role: "מנהל תכנית המתמחים בשיתוף חברת NICE" },
   quotesTitle: "בוגרי התוכנית מספרים",
   quotes: [
     {
       quote:
-        "ההתמחות שלי בNICE הייתה חוויה מעשירה שאפשרה לי ליישם את הידע שרכשתי בלימודי מדעי המחשב בפרויקטים אמיתיים בתעשייה. כחלק מצוות פיתוח התמודדתי עם אתגרי תכנות וסביבות עבודה מורכבות, תוך חיזוק יכולות כתיבת קוד ופתרון בעיות. העבודה לצד מפתחים מנוסים העניקה לי הזדמנות ללמוד טכנולוגיות חדשות, להכיר מתודולוגיות עבודה מתקדמות, ולפתח מיומנויות עבודה בצוות. במהלך התקופה זכיתי להכיר אנשים נפלאים, שתמכו ולימדו אותי כיצד פועל צוות יעיל. לאחר סיום ההתמחות, הייתה לי הזכות להמשיך בנייס בתור סטודנטית, ואני ממשיכה לצמוח ולהתפתח מול אתגרים חדשים בתהליכי הפיתוח היומיומיים.",
-      by: "הילה אשכנזי, מדעי המחשב חד חוגי שנה ג', נשארה לעבוד ב-NICE",
+        "ההתמחות שלי ב-NICE הייתה חוויה מעשירה שאפשרה לי ליישם את הידע שרכשתי בלימודי מדעי המחשב בפרויקטים אמיתיים בתעשייה. כחלק מצוות פיתוח התמודדתי עם אתגרי תכנות וסביבות עבודה מורכבות, תוך חיזוק יכולות כתיבת קוד ופתרון בעיות. העבודה לצד מפתחים מנוסים העניקה לי הזדמנות ללמוד טכנולוגיות חדשות, להכיר מתודולוגיות עבודה מתקדמות, ולפתח מיומנויות עבודה בצוות. במהלך התקופה זכיתי להכיר אנשים נפלאים, שתמכו ולימדו אותי כיצד פועל צוות יעיל. לאחר סיום ההתמחות, הייתה לי הזכות להמשיך בנייס בתור סטודנטית, ואני ממשיכה לצמוח ולהתפתח מול אתגרים חדשים בתהליכי הפיתוח היומיומיים.",
+      name: "הילה אשכנזי",
+      role: "מדעי המחשב חד חוגי שנה ג', נשארה לעבוד ב-NICE",
+      photo: "/media/internship/graduate-1.webp",
     },
     {
       quote:
         "במסגרת ניהול תוכנית ההתמחות של חברת NICE בשיתוף פעולה עם מועדון היזמות של אוניברסיטת רייכמן, ניהלתי את כל תהליך המיון והייתי הציר המקשר בין צרכי המתמחים לבין המנהלים שלהם לאורך כל התוכנית. בנוסף לניהול, הייתי גם מתמחה בעצמי. במהלך ההתמחות למדתי רבות על התנהלות בתוך ארגון, השתלבות בצוות קיים, והעבודה המעשית של מפתחי תוכנה בעולם ההייטק. התוכנית הזו סיפקה לסטודנטים, שלרוב אין להם ניסיון מעשי בתחום, הזדמנות נדירה להיחשף לעולם ההייטק.",
-      by: "עמרי אמידי, מדעי המחשב יזמות, נשאר לעבוד ב-NICE",
+      name: "עמרי אמידי",
+      role: "מדעי המחשב יזמות, נשאר לעבוד ב-NICE",
+      photo: "/media/internship/graduate-2.webp",
     },
     {
       quote:
-        "התוכנית עזרה לי לקבל ניסיון של ממש בחברה גדולה, להבין איך היום יום עובד, לעשות משימות אמיתיות של הצוות, לראות איך הצוות מתנהל ואיך פותרים משימות. בסופו של דבר המנהל מNICE היה אחד הממליצים והתחלתי לעבוד בתור מפתח בצ׳ק פוינט, וזה הרבה בזכות הניסיון וההמלצה מNICE.",
-      by: "בר יעקובוביץ', בוגר מדעי המחשב בינלאומי, כיום עובד כמפתח בצ'ק פוינט",
+        "התוכנית עזרה לי לקבל ניסיון של ממש בחברה גדולה, להבין איך היום יום עובד, לעשות משימות אמיתיות של הצוות, לראות איך הצוות מתנהל ואיך פותרים משימות. בסופו של דבר המנהל מ-NICE היה אחד הממליצים והתחלתי לעבוד בתור מפתח בצ׳ק פוינט, וזה הרבה בזכות הניסיון וההמלצה מ-NICE.",
+      name: "בר יעקובוביץ'",
+      role: "בוגר מדעי המחשב בינלאומי, כיום עובד כמפתח בצ'ק פוינט",
+      photo: "/media/internship/graduate-3.webp",
     },
   ],
 };
 
-export const internshipEn = {
-  kicker: "Industry Track – NICE X Entrepreneurship Club",
-  data: "6-8 Students · 6hrs/week",
+export const internshipEn: InternshipCopy = {
+  kicker: "NICE X Entrepreneurship Club",
+  title: "Industry Internship",
+  intro: "A year-long internship at NICE for the club's computer science students.",
+  facts: [
+    { icon: "people", label: "Participants", value: "14 students" },
+    { icon: "calendar", label: "Duration", value: "Year-long" },
+    { icon: "clock", label: "Hours", value: "8 hours a week", detail: "Twice a week" },
+  ],
+  aboutTitle: "About the Program",
   body: [
-    "The purpose of the program is to combine theoretical and practical skills of students of the entrepreneurship club in the industry. Providing an opportunity to obtain useful tools in the market.",
-    "The program is semester-long and lasts 10 weeks with 6 hours per week as detailed below. The students will receive an applied project related to the company’s tasks. They will carry out the project within the hours they committed to under the lead and guidance of the company’s employees and managers.",
+    "The program's goal is to bring the Entrepreneurship Club's students into the industry in a hands-on, practical way, and to give them tools that are useful in the job market.",
+    "The program runs for a full year and meets twice a week, for 8 hours a week, at the company's offices.",
+    "Students join the company's existing teams and work on the projects they are given, within the hours they committed to, guided by the company's employees and managers.",
+    "Students accepted to the program get a one-time opportunity to be part of the Entrepreneurship Club community and to attend enriching lectures on a range of technology fields through the club's programs.",
   ],
-  requirementsTitle: "Program requirements",
+  requirementsTitle: "Program Requirements",
   requirements: [
-    "The program is intended for students of the entrepreneurship club only.",
-    "The program is intended for students from the entrepreneurship track – computer science only.",
-    "GPA of 80 or higher.",
-    "The students will commit to the 6 weekly hours.",
-    "4 hours – in offices/hybrid. The decision will be by NICE.",
-    "2 hours – ongoing independent practical tasks.",
-    "Regular participation of at least 80% in the activities of the entrepreneurship club.",
+    "The program is for Entrepreneurship Club students only.",
+    "The program is for computer science students only (from all tracks).",
+    "Students commit to 8 weekly hours at NICE's offices.",
+    "An advantage for a GPA of 85 or higher.",
+    "An advantage for a passing grade in Advanced Programming.",
+    "An advantage for previous development experience.",
   ],
-  moreTitle: "More details",
-  more: [
-    "A student who meets all the requirements will receive a scholarship of 1,000 shekels on behalf of the Entrepreneurship Club.",
-    "The outline of accepting the students and dealing with them will be determined later on during the cooperation with NICE and the Entrepreneurship Club.",
+  scholarship: { label: "Scholarship", value: "₪2,000", text: "A student who meets all the requirements will receive a ₪2,000 scholarship from the Entrepreneurship Club." },
+  outline: "How students are accepted and managed will be set later, together with NICE and the Entrepreneurship Club.",
+  manager: { label: "Program Manager", name: "Ofir Mor", role: "Interns program manager, in partnership with NICE" },
+  quotesTitle: "From Our Graduates",
+  quotes: [
+    {
+      quote:
+        "My internship at NICE was an enriching experience that let me apply what I learned in my computer science studies to real industry projects. As part of a development team, I took on programming challenges and complex work environments while strengthening my coding and problem-solving skills. Working alongside experienced developers gave me the chance to learn new technologies, get to know advanced work methodologies and build teamwork skills. Along the way I met wonderful people who supported me and taught me how an effective team works. After the internship, I had the privilege of staying on at NICE as a student, and I keep growing and developing through new challenges in day-to-day development.",
+      name: "Hila Ashkenazi",
+      role: "Computer Science, third year; stayed on at NICE",
+      photo: "/media/internship/graduate-1.webp",
+    },
+    {
+      quote:
+        "As manager of NICE's internship program, run together with Reichman University's Entrepreneurship Club, I ran the whole screening process and was the link between the interns' needs and their managers throughout the program. Besides managing it, I was an intern myself. During the internship I learned a lot about how things work inside an organization, joining an existing team, and the practical work of software developers in high-tech. This program gave students, who usually have no hands-on experience in the field, a rare chance to see the high-tech world from the inside.",
+      name: "Omri Amidi",
+      role: "Computer Science & Entrepreneurship; stayed on at NICE",
+      photo: "/media/internship/graduate-2.webp",
+    },
+    {
+      quote:
+        "The program gave me real experience at a large company: understanding how the day-to-day works, doing the team's real tasks, and seeing how the team runs and solves problems. In the end, my manager at NICE was one of my references, and I started working as a developer at Check Point, much thanks to the experience and the recommendation from NICE.",
+      name: "Bar Yakubovich",
+      role: "Computer Science graduate, international track; now a developer at Check Point",
+      photo: "/media/internship/graduate-3.webp",
+    },
   ],
 };
 

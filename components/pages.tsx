@@ -36,7 +36,7 @@ import { GatePanels, type GatePanel, type GatePanelsLabels } from "@/components/
 import { Chevron } from "@/components/icons";
 import { ImpactStats, JoinSection, type ImpactLabels, type ImpactStat, type JoinCard } from "@/components/impact-section";
 import { RevealController, SectionRail, type RailSection } from "@/components/home-motion";
-import { PersonCard, Section, StarBullet } from "@/components/ui";
+import { PersonCard, Section } from "@/components/ui";
 import { readableShade } from "@/lib/color";
 import { pick, withLocale, type Locale, type Localized } from "@/lib/locale";
 
@@ -1078,51 +1078,193 @@ export function PitchPage({ locale }: { locale: Locale }) {
   );
 }
 
+// A large light shape cropped by a card's edge: a medal with the club's star on the scholarship
+// card, a person on the manager's card, a quotation mark beside a graduate's name. Each drifts a
+// little on hover; the medal's star also twinkles.
+function CardMark({ name, className }: { name: "medal" | "person" | "quote"; className: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className={`pointer-events-none absolute -z-10 transition-[translate] duration-700 ${className}`}
+      style={{ transitionTimingFunction: "var(--ease)" }}
+    >
+      {name === "medal" ? (
+        <>
+          <path d="M6.2 1.5h4.2l2.4 5.6-2.6 2.2zM17.8 1.5h-4.2l-1.5 3.6 2.3 4.4z" />
+          <circle cx="12" cy="15" r="7.5" />
+          <path
+            d={STAR_PATH}
+            transform="translate(7.2 10.2) scale(0.4)"
+            className="fill-white/25 motion-safe:group-hover:animate-[twinkle_2.4s_ease-in-out_infinite]"
+            style={{ transformBox: "fill-box", transformOrigin: "center" }}
+          />
+        </>
+      ) : null}
+      {name === "person" ? (
+        <>
+          <circle cx="12" cy="7.6" r="4.4" />
+          <path d="M3.5 22c0-5.2 3.8-8.8 8.5-8.8s8.5 3.6 8.5 8.8z" />
+        </>
+      ) : null}
+      {name === "quote" ? (
+        <path d="M10.2 6C6.8 7 4.5 9.8 4.5 13.6V19h6.2v-6.2H7.6c0-2.2 1.2-3.8 3.2-4.5zm9.3 0c-3.4 1-5.7 3.8-5.7 7.6V19H20v-6.2h-3.1c0-2.2 1.2-3.8 3.2-4.5z" />
+      ) : null}
+    </svg>
+  );
+}
+
+// The industry internship with NICE: its banner on NICE's building, its three facts, what the
+// program is, what it asks for beside its scholarship and its manager, and what graduates say.
+// The old site's sign-up form is gone, so there is no register button (see docs/08-forms.md).
 export function InternshipPage({ locale }: { locale: Locale }) {
   const copy = locale === "en" ? internshipEn : internshipHe;
+  const dir = locale === "en" ? "ltr" : "rtl";
+  const sections: RailSection[] = [
+    { id: "internship-top", label: copy.title },
+    { id: "internship-about", label: copy.aboutTitle },
+    { id: "internship-requirements", label: copy.requirementsTitle },
+    { id: "internship-graduates", label: copy.quotesTitle },
+  ];
+  const lift =
+    "transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:shadow-[0_30px_60px_-30px_rgba(6,19,71,0.6)]";
+
   return (
-    <>
-      <PageHero title={locale === "en" ? "Industry Internship" : "מסלול לתעשייה"} />
-      <Section>
-        <p className="text-xs font-semibold tracking-[0.2em] text-muted">{copy.kicker}</p>
-        <p className="mt-3 font-mono text-sm" dir="ltr">
-          {copy.data}
-        </p>
-        <div className="mt-6 max-w-3xl space-y-4 text-lg font-light leading-8 text-ink">
-          {copy.body.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
+    <div style={toneStyle("#0f2d96")}>
+      <RevealController />
+      <SectionRail sections={sections} label={locale === "en" ? "Page sections" : "ניווט בין חלקי העמוד"} />
+
+      {/* The photo is a tall shot of NICE's building; the banner keeps its sign in view. */}
+      <PageBanner
+        id="internship-top"
+        image="/media/wp/gate-internship.jpg"
+        imagePosition="50% 0%"
+        locale={locale}
+        title={copy.title}
+        subtitle={copy.intro}
+        eyebrow={copy.kicker}
+        className="pb-10 md:pb-14"
+      />
+
+      <FactCards facts={copy.facts} label={programLabels[locale].details} />
+
+      <section id="internship-about" data-reveal className="mx-auto w-full max-w-3xl scroll-mt-[4.5rem] px-5 pt-12 pb-6 md:px-8 md:pt-20 md:pb-10">
+        <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
+          <span className="club-underline">{copy.aboutTitle}</span>
+        </h2>
+        <div className="mt-8 md:mt-10">
+          {copy.body.map((paragraph, index) => (
+            <p
+              key={paragraph}
+              data-reveal-item={String(Math.min(index + 1, 6))}
+              className={
+                index === 0
+                  ? "text-justify text-xl leading-[1.55] font-bold text-club hyphens-auto md:text-2xl md:leading-[1.5]"
+                  : "mt-4 text-justify text-base leading-7 text-ink hyphens-auto md:text-lg md:leading-8"
+              }
+            >
+              {paragraph}
+            </p>
           ))}
         </div>
-        <h2 className="mt-10 text-2xl font-bold tracking-[0.04em]">{copy.requirementsTitle}</h2>
-        <ul className="mt-4 max-w-3xl space-y-3">
-          {copy.requirements.map((item) => (
-            <li key={item} className="flex gap-3 text-ink">
-              <StarBullet />
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-        <h2 className="mt-10 text-2xl font-bold tracking-[0.04em]">{copy.moreTitle}</h2>
-        <div className="mt-4 max-w-3xl space-y-3 text-ink">
-          {copy.more.map((item) => (
-            <p key={item}>{item}</p>
-          ))}
-        </div>
-        {locale === "he" ? <p className="mt-6">{internshipHe.manager}</p> : null}
-      </Section>
-      {locale === "he" ? (
-        <Section title={internshipHe.quotesTitle}>
-          <div className="grid gap-4">
-            {internshipHe.quotes.map((item) => (
-              <blockquote key={item.by} className="border border-[#e6e6e6] bg-white p-5">
-                <p className="font-light leading-7 text-ink">{item.quote}</p>
-                <footer className="mt-4 text-sm font-semibold tracking-[0.06em]">{item.by}</footer>
-              </blockquote>
+      </section>
+
+      {/* The requirements as a checklist, beside the scholarship and the program's manager. */}
+      <section id="internship-requirements" data-reveal className="mx-auto w-full max-w-5xl scroll-mt-[4.5rem] px-5 py-10 md:px-8 md:py-16">
+        <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
+          <span className="club-underline">{copy.requirementsTitle}</span>
+        </h2>
+        <div className="mt-8 grid gap-4 md:mt-10 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:gap-5">
+          <ul
+            data-reveal-item="1"
+            className={`space-y-3.5 rounded-[24px] border border-[#e6e9f5] bg-white p-6 shadow-[0_24px_50px_-30px_rgba(6,19,71,0.55)] hover:border-club/25 md:p-8 ${lift}`}
+            style={{ transitionTimingFunction: "var(--ease)" }}
+          >
+            {copy.requirements.map((item) => (
+              <li key={item} className="group flex gap-3 text-[15px] leading-7 text-ink md:text-base">
+                <CheckBox />
+                {item}
+              </li>
             ))}
+          </ul>
+          <div className="grid gap-4 md:gap-5">
+            <div
+              data-reveal-item="2"
+              className={`group relative isolate overflow-hidden rounded-[24px] bg-club p-6 text-white shadow-[0_24px_50px_-30px_rgba(6,19,71,0.7)] md:p-7 ${lift}`}
+              style={{ transitionTimingFunction: "var(--ease)" }}
+            >
+              <CardMark name="medal" className="-end-7 -bottom-9 h-40 w-40 fill-white/10 group-hover:-translate-y-2" />
+              <p className="text-sm font-semibold text-white/70">{copy.scholarship.label}</p>
+              <p className="mt-1 text-4xl font-bold md:text-5xl">
+                <span dir="ltr">{copy.scholarship.value}</span>
+              </p>
+              <p className="mt-3 text-justify text-[15px] leading-7 text-white/90">{copy.scholarship.text}</p>
+            </div>
+            <div
+              data-reveal-item="3"
+              className={`group relative isolate overflow-hidden rounded-[24px] border border-[#e6e9f5] bg-white p-6 shadow-[0_24px_50px_-30px_rgba(6,19,71,0.55)] hover:border-club/25 md:p-7 ${lift}`}
+              style={{ transitionTimingFunction: "var(--ease)" }}
+            >
+              <CardMark name="person" className="-end-6 -bottom-7 h-32 w-32 fill-(--tone-light) group-hover:-translate-y-1.5" />
+              <p className="text-sm font-semibold text-club/60">{copy.manager.label}</p>
+              <p className="mt-1 text-xl font-bold text-club md:text-2xl">{copy.manager.name}</p>
+              <p className="mt-1 max-w-[16rem] text-[15px] leading-6 text-ink">{copy.manager.role}</p>
+            </div>
           </div>
-        </Section>
-      ) : null}
-    </>
+        </div>
+        <p data-reveal-item="4" className="mx-auto mt-6 max-w-3xl text-center text-sm leading-6 text-ink/70 md:mt-8">
+          {copy.outline}
+        </p>
+      </section>
+
+      {/* Graduates' words: one card at a time on phones, side by side from lg up (the third
+          centered under the other two on tablets). */}
+      <section id="internship-graduates" className="mx-auto w-full max-w-6xl scroll-mt-[4.5rem] px-5 pt-10 pb-14 md:px-8 md:pt-16 md:pb-24">
+        <div data-reveal>
+          <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
+            <span className="club-underline">{copy.quotesTitle}</span>
+          </h2>
+        </div>
+        <CardSlider
+          titles={copy.quotes.map((item) => item.name)}
+          label={copy.quotesTitle}
+          goTo={clubSliderLabels[locale].goTo}
+          dir={dir}
+          className="mt-8 md:mt-10"
+          grid="md:grid-cols-2 md:gap-5 lg:grid-cols-3"
+          slideClasses={["", "", "md:max-lg:col-span-2 md:max-lg:w-[calc(50%-0.625rem)] md:max-lg:justify-self-center"]}
+        >
+          {copy.quotes.map((item, index) => (
+            <div key={item.name} data-reveal className="h-full">
+              <figure
+                data-reveal-item={String(index + 1)}
+                className={`group relative isolate flex h-full flex-col overflow-hidden rounded-[24px] border border-[#e6e9f5] bg-white p-6 shadow-[0_24px_50px_-30px_rgba(6,19,71,0.55)] hover:border-club/25 md:p-7 ${lift}`}
+                style={{ transitionTimingFunction: "var(--ease)" }}
+              >
+                <CardMark name="quote" className="-end-4 -bottom-9 h-28 w-28 fill-(--tone-light) group-hover:-translate-y-1.5" />
+                <blockquote className="flex-1 text-justify text-sm leading-6 text-ink hyphens-auto md:text-[15px] md:leading-7">{item.quote}</blockquote>
+                <figcaption className="mt-6 flex items-center gap-3 border-t border-[#e9ecf6] pe-16 pt-5">
+                  <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-(--tone-light)">
+                    <Image
+                      src={item.photo}
+                      alt=""
+                      fill
+                      sizes="56px"
+                      className="object-cover transition-[scale] duration-700 group-hover:scale-[1.08]"
+                      style={{ transitionTimingFunction: "var(--ease)" }}
+                    />
+                  </span>
+                  <span>
+                    <span className="block font-bold text-club">{item.name}</span>
+                    <span className="mt-0.5 block text-xs leading-5 text-ink/70">{item.role}</span>
+                  </span>
+                </figcaption>
+              </figure>
+            </div>
+          ))}
+        </CardSlider>
+      </section>
+    </div>
   );
 }
 
@@ -1579,6 +1721,47 @@ function FactIcon({ name }: { name: FactIconName }) {
   );
 }
 
+type FactCard = { icon: FactIconName; label: string; value: string; detail?: string; time?: boolean };
+
+// Three facts that float over a banner's lower edge, in the page's tone (see toneStyle).
+function FactCards({ facts, label }: { facts: FactCard[]; label: string }) {
+  return (
+    <section aria-label={label} data-reveal className="relative z-10 mx-auto -mt-14 w-full max-w-6xl px-5 md:-mt-20 md:px-8">
+      {/* Three small squares side by side on phones; wide cards with a cropped icon from md up. */}
+      <div className="grid grid-cols-3 gap-2.5 md:gap-5">
+        {facts.map((fact, index) => (
+          <div
+            key={fact.icon}
+            data-reveal-item={String(index + 1)}
+            className="group relative isolate flex h-full min-h-28 flex-col items-center justify-center overflow-hidden rounded-[20px] border border-[#e6e9f5] bg-white p-2 text-center shadow-[0_24px_50px_-30px_rgba(6,19,71,0.55)] transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-(--tone)/40 hover:shadow-[0_30px_60px_-30px_rgba(6,19,71,0.6)] md:block md:min-h-0 md:rounded-[24px] md:p-6 md:pe-28 md:text-start"
+            style={{ transitionTimingFunction: "var(--ease)" }}
+          >
+            <FactIcon name={fact.icon} />
+            <p className="relative text-xs font-semibold text-club/60 md:text-sm">{fact.label}</p>
+            <p className="relative mt-0.5 text-sm leading-tight font-bold text-club md:mt-1 md:text-2xl">{fact.value}</p>
+            {fact.detail ? (
+              <p className={`relative mt-0.5 text-xs font-semibold text-(--tone-deep) md:text-base ${fact.time ? "" : "max-md:hidden"}`}>
+                <span dir={fact.time ? "ltr" : undefined} className="inline-block">
+                  {fact.detail}
+                </span>
+              </p>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// The page's own color and the two shades its buttons and icons use.
+function toneStyle(tone: string): CSSProperties {
+  return {
+    "--tone": tone,
+    "--tone-deep": readableShade(tone),
+    "--tone-light": `color-mix(in oklab, ${tone} 24%, white)`,
+  } as CSSProperties;
+}
+
 type SocialName = "instagram" | "linkedin" | "facebook" | "website";
 
 function SocialIcon({ name }: { name: SocialName }) {
@@ -1646,7 +1829,7 @@ function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: Ca
     ...(isAccelerator ? [] : [{ id: "program-more", label: labels.more }]),
   ];
   // A weekly program's three facts come from when it meets; other pages bring their own.
-  const facts: { icon: ProgramFact["icon"]; label: string; value: string; detail?: string; time?: boolean }[] =
+  const facts: FactCard[] =
     details.facts?.map((fact) => ({ icon: fact.icon, label: text(fact.label), value: text(fact.value), detail: fact.detail && text(fact.detail) })) ??
     (details.language && details.meets
       ? [
@@ -1656,14 +1839,8 @@ function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: Ca
         ]
       : []);
   const chevron = <Chevron dir={dir} className="transition-transform duration-500 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />;
-  const toneStyle = {
-    "--tone": tone,
-    "--tone-deep": readableShade(tone),
-    "--tone-light": `color-mix(in oklab, ${tone} 24%, white)`,
-  } as CSSProperties;
-
   return (
-    <div style={toneStyle}>
+    <div style={toneStyle(tone)}>
       <RevealController />
       <SectionRail sections={sections} label={locale === "en" ? "Page sections" : "ניווט בין חלקי העמוד"} />
 
@@ -1695,31 +1872,7 @@ function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: Ca
         ) : null}
       </PageBanner>
 
-      {/* The facts float over the banner's lower edge. */}
-      <section aria-label={labels.details} data-reveal className="relative z-10 mx-auto -mt-14 w-full max-w-6xl px-5 md:-mt-20 md:px-8">
-        {/* Three small squares side by side on phones; wide cards with a cropped icon from md up. */}
-        <div className="grid grid-cols-3 gap-2.5 md:gap-5">
-          {facts.map((fact, index) => (
-            <div
-              key={fact.icon}
-              data-reveal-item={String(index + 1)}
-              className="group relative isolate flex h-full min-h-28 flex-col items-center justify-center overflow-hidden rounded-[20px] border border-[#e6e9f5] bg-white p-2 text-center shadow-[0_24px_50px_-30px_rgba(6,19,71,0.55)] transition-[translate,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-(--tone)/40 hover:shadow-[0_30px_60px_-30px_rgba(6,19,71,0.6)] md:block md:min-h-0 md:rounded-[24px] md:p-6 md:pe-28 md:text-start"
-              style={{ transitionTimingFunction: "var(--ease)" }}
-            >
-              <FactIcon name={fact.icon} />
-              <p className="relative text-xs font-semibold text-club/60 md:text-sm">{fact.label}</p>
-              <p className="relative mt-0.5 text-sm leading-tight font-bold text-club md:mt-1 md:text-2xl">{fact.value}</p>
-              {fact.detail ? (
-                <p className={`relative mt-0.5 text-xs font-semibold text-(--tone-deep) md:text-base ${fact.time ? "" : "max-md:hidden"}`}>
-                  <span dir={fact.time ? "ltr" : undefined} className="inline-block">
-                    {fact.detail}
-                  </span>
-                </p>
-              ) : null}
-            </div>
-          ))}
-        </div>
-      </section>
+      <FactCards facts={facts} label={labels.details} />
 
       <section id="program-about" data-reveal className="mx-auto w-full max-w-3xl scroll-mt-[4.5rem] px-5 pt-12 pb-6 md:px-8 md:pt-20 md:pb-10">
         <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
@@ -1913,6 +2066,7 @@ function PageBanner({
   subtitle,
   eyebrow,
   tone,
+  imagePosition,
   logo,
   back,
   small = false,
@@ -1921,6 +2075,8 @@ function PageBanner({
 }: {
   id: string;
   image: string;
+  // The part of the photo to keep in view when the banner crops it (CSS object-position).
+  imagePosition?: string;
   locale: Locale;
   title: string;
   subtitle?: string;
@@ -1936,7 +2092,15 @@ function PageBanner({
 }) {
   return (
     <section id={id} className={`relative -mt-[4.5rem] flex min-h-[46vh] items-end overflow-hidden md:min-h-[64vh] ${className}`}>
-      <Image src={image} alt="" fill preload sizes="100vw" className="object-cover motion-safe:animate-[hero-zoom_3.2s_var(--ease)_both]" />
+      <Image
+        src={image}
+        alt=""
+        fill
+        preload
+        sizes="100vw"
+        className="object-cover motion-safe:animate-[hero-zoom_3.2s_var(--ease)_both]"
+        style={imagePosition ? { objectPosition: imagePosition } : undefined}
+      />
       {tone ? (
         <div
           className="absolute inset-0"
