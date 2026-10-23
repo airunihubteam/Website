@@ -28,7 +28,7 @@ export const nav: NavItem[] = [
     ],
   },
   { label: { he: "קהילה", en: "Community" }, href: "/community" },
-  { label: { he: "AI", en: "AI" }, href: "/ai" },
+  { label: { he: "חדשנות ו-AI", en: "Innovation & AI" }, href: "/ai" },
 ];
 
 export const social = [
