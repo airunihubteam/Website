@@ -27,7 +27,7 @@ import {
   type JoinSlug,
 } from "@/content/copy";
 import { aboutGroups, advisoryTeam, peopleByIds, peopleIn, personMedia, pitchTeam, type Person } from "@/content/people";
-import { programDetails, type ProgramDetails, type ProgramFact } from "@/content/program-details";
+import { conferenceDetails, programDetails, type ProgramDetails, type ProgramFact } from "@/content/program-details";
 import { TeamSection, type TeamLabels, type TeamMember } from "@/components/about-team";
 import { CardSlider } from "@/components/card-slider";
 import { Journey } from "@/components/journey";
@@ -36,7 +36,7 @@ import { GatePanels, type GatePanel, type GatePanelsLabels } from "@/components/
 import { Chevron } from "@/components/icons";
 import { ImpactStats, JoinSection, type ImpactLabels, type ImpactStat, type JoinCard } from "@/components/impact-section";
 import { RevealController, SectionRail, type RailSection } from "@/components/home-motion";
-import { CatalogCard, PersonCard, Section, StarBullet } from "@/components/ui";
+import { PersonCard, Section, StarBullet } from "@/components/ui";
 import { readableShade } from "@/lib/color";
 import { pick, withLocale, type Locale, type Localized } from "@/lib/locale";
 
@@ -594,7 +594,21 @@ const programSections: Record<Locale, RailSection[]> = {
 // navy at the foot, with its logo, name, summary and a link to its page. Hover (or a tap on
 // phones) zooms the photo, lets the color rise over it, stretches the accent line and fills the
 // button with a shade of the program's color deep enough for its white label.
-function ProgramCard({ item, logo, locale, dir, reveal }: { item: CatalogItem; logo?: string; locale: Locale; dir: "rtl" | "ltr"; reveal: number }) {
+function ProgramCard({
+  item,
+  logo,
+  locale,
+  dir,
+  reveal,
+  open = clubSliderLabels[locale].open,
+}: {
+  item: CatalogItem;
+  logo?: string;
+  locale: Locale;
+  dir: "rtl" | "ltr";
+  reveal: number;
+  open?: string;
+}) {
   const name = pick(item.name, locale) ?? item.name.he;
   const summary = pick(item.summary, locale);
   const target = locale === "en" && !item.summary.en ? "he" : locale;
@@ -643,7 +657,7 @@ function ProgramCard({ item, logo, locale, dir, reveal }: { item: CatalogItem; l
         <h2 className="mt-3 text-2xl font-bold">{name}</h2>
         {summary ? <p className="mt-2 text-justify text-[15px] leading-6 text-white/90">{summary}</p> : null}
         <span className="mt-5 inline-flex items-center gap-2 border border-white/80 px-4 py-2 text-sm font-semibold transition-colors duration-300 group-hover:border-(--tone-deep) group-hover:bg-(--tone-deep)">
-          {clubSliderLabels[locale].open}
+          {open}
           <Chevron dir={dir} className="transition-transform duration-500 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
         </span>
       </div>
@@ -819,25 +833,57 @@ export function MomentumPage({ locale }: { locale: Locale }) {
   return details ? <ProgramDetailPage locale={locale} item={accelerator} details={details} /> : <ItemPage locale={locale} item={accelerator} />;
 }
 
+const conferenceIndexLabels: Record<Locale, { title: string; intro: string; all: string }> = {
+  he: {
+    title: "כנסים",
+    intro: "כנסי המועדון מפגישים סטודנטים עם מובילי התעשייה, וסמינרי המנהלים מכשירים את מי שמוביל את המועדון.",
+    all: "כל הכנסים",
+  },
+  en: {
+    title: "Conferences",
+    intro: "The club's conferences bring students together with industry leaders, and its managers seminars train the people who lead the club.",
+    all: "All conferences",
+  },
+};
+
+// The conferences gate: its banner and the three conferences as program-style cards, side by side
+// from lg up (the third centered under the other two on tablets) and a slider on phones.
 export function ConferenceIndex({ locale }: { locale: Locale }) {
+  const labels = conferenceIndexLabels[locale];
+  const cardLabels = labelsFor("conference", locale);
+  const dir = locale === "en" ? "ltr" : "rtl";
+  const items = locale === "en" ? conferences.filter((item) => item.summary.en) : conferences;
+
   return (
     <>
-      <PageHero title={locale === "en" ? "Conferences" : "כנסים"} />
-      <Section>
-        <div className="grid gap-4 md:grid-cols-3">
-          {conferences.map((item) => (
-            <CatalogCard key={item.slug} item={item} locale="he" />
+      <RevealController />
+      <PageBanner id="conferences-top" image="/media/conferences/banner.webp" locale={locale} title={labels.title} subtitle={labels.intro} />
+
+      <section className="mx-auto w-full max-w-6xl px-5 pt-6 pb-14 md:px-8 md:pt-20 md:pb-24">
+        <CardSlider
+          titles={items.map((item) => pick(item.name, locale) ?? item.name.he)}
+          label={labels.all}
+          goTo={clubSliderLabels[locale].goTo}
+          dir={dir}
+          grid="md:grid-cols-2 md:gap-5 lg:grid-cols-3"
+          slideClasses={["", "", "md:max-lg:col-span-2 md:max-lg:w-[calc(50%-0.625rem)] md:max-lg:justify-self-center"]}
+        >
+          {items.map((item, index) => (
+            <div key={item.slug} data-reveal className="h-full">
+              <ProgramCard item={item} logo={conferenceDetails[item.slug]?.logo} locale={locale} dir={dir} reveal={index + 1} open={cardLabels.open} />
+            </div>
           ))}
-        </div>
-      </Section>
+        </CardSlider>
+      </section>
     </>
   );
 }
 
 export function ConferencePage({ locale, slug }: { locale: Locale; slug: string }) {
   const item = findConference(slug);
-  if (!item || locale === "en") notFound();
-  return <ItemPage locale="he" item={item} />;
+  if (!item || (locale === "en" && !item.summary.en)) notFound();
+  const details = conferenceDetails[slug];
+  return details ? <ProgramDetailPage locale={locale} item={item} details={details} /> : <ItemPage locale={locale} item={item} />;
 }
 
 const STAR_PATH = "M12 1.8l2.9 6.6 7.2.7-5.4 4.8 1.6 7.1L12 17.3 5.7 21l1.6-7.1L1.9 9.1l7.2-.7z";
@@ -1326,28 +1372,31 @@ const dayNames: Record<Locale, string[]> = {
   en: ["Sundays", "Mondays", "Tuesdays", "Wednesdays", "Thursdays", "Fridays", "Saturdays"],
 };
 
-const programLabels: Record<
-  Locale,
-  {
-    eyebrow: string;
-    back: string;
-    language: string;
-    languages: Record<"he" | "en", string>;
-    frequency: string;
-    semester: string;
-    meets: string;
-    details: string;
-    about: string;
-    follow: string;
-    website: string;
-    managers: string;
-    gallery: string;
-    more: string;
-    all: string;
-  }
-> = {
+type ProgramLabels = {
+  eyebrow: string;
+  // The index page the banner leads back to, and its label.
+  index: string;
+  back: string;
+  language: string;
+  languages: Record<"he" | "en", string>;
+  frequency: string;
+  semester: string;
+  meets: string;
+  details: string;
+  about: string;
+  follow: string;
+  website: string;
+  managers: string;
+  gallery: string;
+  more: string;
+  all: string;
+  open: string;
+};
+
+const programLabels: Record<Locale, ProgramLabels> = {
   he: {
     eyebrow: "תוכנית · מועדון היזמות",
+    index: "/programs",
     back: "לכל התוכניות",
     language: "שפה",
     languages: { he: "עברית", en: "אנגלית" },
@@ -1362,9 +1411,11 @@ const programLabels: Record<
     gallery: "גלרייה",
     more: "תוכניות נוספות",
     all: "לכל התוכניות",
+    open: "לעמוד התוכנית",
   },
   en: {
     eyebrow: "Program · Entrepreneurship Club",
+    index: "/programs",
     back: "All programs",
     language: "Language",
     languages: { he: "Hebrew", en: "English" },
@@ -1379,14 +1430,55 @@ const programLabels: Record<
     gallery: "Gallery",
     more: "More Programs",
     all: "All programs",
+    open: "View program",
   },
 };
+
+// The accelerator and the conferences use the program template, worded for themselves.
+const kindLabels: Record<Exclude<CatalogItem["kind"], "program">, Record<Locale, Partial<ProgramLabels>>> = {
+  accelerator: {
+    he: { eyebrow: "אקסלרטור · מועדון היזמות", index: "/accelerator", back: "לאקסלרטור" },
+    en: { eyebrow: "Accelerator · Entrepreneurship Club", index: "/accelerator", back: "Accelerator" },
+  },
+  conference: {
+    he: {
+      eyebrow: "כנס · מועדון היזמות",
+      index: "/conferences",
+      back: "לכל הכנסים",
+      details: "פרטי הכנס",
+      about: "על הכנס",
+      website: "אתר הכנס",
+      managers: "מנהלי הכנס",
+      more: "כנסים נוספים",
+      all: "לכל הכנסים",
+      open: "לעמוד הכנס",
+    },
+    en: {
+      eyebrow: "Conference · Entrepreneurship Club",
+      index: "/conferences",
+      back: "All conferences",
+      details: "Conference Details",
+      about: "About the Conference",
+      website: "Conference website",
+      managers: "Conference Managers",
+      more: "More Conferences",
+      all: "All conferences",
+      open: "View conference",
+    },
+  },
+};
+
+function labelsFor(kind: CatalogItem["kind"], locale: Locale): ProgramLabels {
+  return kind === "program" ? programLabels[locale] : { ...programLabels[locale], ...kindLabels[kind][locale] };
+}
 
 type FactIconName = ProgramFact["icon"];
 
 // An icon in the program's light tone: small above the text in a phone square, large and cropped
 // by the card's edge on wider screens. On hover it acts out its meaning: the speech bubble types,
-// the calendar ticks a day off, the clock's hand sweeps round and the percent sign's dots pulse.
+// the calendar ticks a day off, the clock's hand sweeps round, the percent sign's dots pulse, the
+// second person steps up beside the first, the pin's center pulses and the microphone sends out
+// sound waves.
 function FactIcon({ name }: { name: FactIconName }) {
   const dot = "origin-center fill-white motion-safe:group-hover:animate-[node-pulse_1.2s_ease-in-out_infinite]";
   return (
@@ -1447,6 +1539,42 @@ function FactIcon({ name }: { name: FactIconName }) {
           />
         </>
       ) : null}
+      {name === "people" ? (
+        <>
+          <g className="transition-[translate] duration-700 group-hover:-translate-y-0.5 ltr:group-hover:-translate-x-0.5 rtl:group-hover:translate-x-0.5" style={{ transitionTimingFunction: "var(--ease)" }}>
+            <circle cx="16.4" cy="7.4" r="3.1" />
+            <path d="M11.2 19.6c0-3.6 2.3-6.3 5.2-6.3s5.2 2.7 5.2 6.3v.9H11.2z" />
+          </g>
+          <circle cx="8.6" cy="8.2" r="3.7" stroke="#ffffff" strokeWidth="1.3" />
+          <path d="M2.4 21.2c0-4.3 2.8-7.4 6.2-7.4s6.2 3.1 6.2 7.4v.6H2.4z" stroke="#ffffff" strokeWidth="1.3" />
+        </>
+      ) : null}
+      {name === "location" ? (
+        <>
+          <path d="M12 1.8a7.7 7.7 0 0 1 7.7 7.7c0 5.5-6.2 11.6-7.1 12.5a.86.86 0 0 1-1.2 0c-.9-.9-7.1-7-7.1-12.5A7.7 7.7 0 0 1 12 1.8z" />
+          <circle cx="12" cy="9.5" r="2.9" className={dot} style={{ transformBox: "fill-box" }} />
+        </>
+      ) : null}
+      {name === "mic" ? (
+        <>
+          <rect x="8.6" y="2" width="6.8" height="12.2" rx="3.4" />
+          <path d="M10.6 6.4h2.8M10.6 9.2h2.8" stroke="#ffffff" strokeWidth="1.2" strokeLinecap="round" />
+          <path d="M5.6 10.6a6.4 6.4 0 0 0 12.8 0" fill="none" className="stroke-(--tone-light)" strokeWidth="1.8" strokeLinecap="round" />
+          <rect x="11.1" y="17" width="1.8" height="3.6" />
+          <rect x="7.8" y="20.2" width="8.4" height="1.8" rx="0.9" />
+          {["M20.6 5.6a7.4 7.4 0 0 1 0 7.2", "M3.4 5.6a7.4 7.4 0 0 0 0 7.2"].map((wave) => (
+            <path
+              key={wave}
+              d={wave}
+              fill="none"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              pathLength={1}
+              className="stroke-(--tone-light) [stroke-dasharray:1] [stroke-dashoffset:1] transition-[stroke-dashoffset] delay-150 duration-700 group-hover:[stroke-dashoffset:0]"
+            />
+          ))}
+        </>
+      ) : null}
     </svg>
   );
 }
@@ -1484,15 +1612,17 @@ function SocialIcon({ name }: { name: SocialName }) {
 
 // A program's page, one template for every program: its photo in its own color, the three
 // facts of when and how it meets, what it is about with its social accounts, its photos when
-// it has some, its managers, and a way on to other programs.
+// it has some, its managers, and a way on to other programs. The accelerator and the
+// conferences use it too, worded for themselves (see kindLabels).
 function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: CatalogItem; details: ProgramDetails }) {
   const dir = locale === "en" ? "ltr" : "rtl";
-  const labels = programLabels[locale];
-  // The accelerator uses the same page, worded for itself and pointing back to /accelerator.
+  const labels = labelsFor(item.kind, locale);
+  // The accelerator is the club's only one, so its page leads on to no others.
   const isAccelerator = item.kind === "accelerator";
+  const isConference = item.kind === "conference";
   const name = pick(item.name, locale) ?? item.name.he;
   const tone = item.color ?? "#0f2d96";
-  const logo = clubLogos.find((entry) => entry.slug === item.slug)?.logo;
+  const logo = details.logo ?? clubLogos.find((entry) => entry.slug === item.slug)?.logo;
   const about = (locale === "en" ? details.about.en : undefined) ?? details.about.he;
   const managers: TeamMember[] = details.managers.flatMap((person, index) => {
     const personName = pick(person.name, locale);
@@ -1502,7 +1632,8 @@ function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: Ca
     const href = details.links[key];
     return href ? [{ key, href, label: key === "website" ? labels.website : { instagram: "Instagram", linkedin: "LinkedIn", facebook: "Facebook" }[key] }] : [];
   });
-  const listed = locale === "en" ? programs.filter((entry) => entry.summary.en) : programs;
+  const siblings = isConference ? conferences : programs;
+  const listed = locale === "en" ? siblings.filter((entry) => entry.summary.en) : siblings;
   const at = listed.findIndex((entry) => entry.slug === item.slug);
   const others = [1, 2, 3].map((step) => listed[(at + step) % listed.length]).filter((entry) => entry.slug !== item.slug);
   const managersTitle = (details.managersTitle && pick(details.managersTitle, locale)) ?? labels.managers;
@@ -1542,14 +1673,10 @@ function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: Ca
         locale={locale}
         title={name}
         subtitle={pick(item.summary, locale)}
-        eyebrow={isAccelerator ? (locale === "en" ? "Accelerator · Entrepreneurship Club" : "אקסלרטור · מועדון היזמות") : labels.eyebrow}
+        eyebrow={labels.eyebrow}
         tone={tone}
         logo={logo}
-        back={
-          isAccelerator
-            ? { href: withLocale("/accelerator", locale), label: locale === "en" ? "Accelerator" : "לאקסלרטור" }
-            : { href: withLocale("/programs", locale), label: labels.back }
-        }
+        back={{ href: withLocale(labels.index, locale), label: labels.back }}
         className="pb-10 md:pb-14"
       >
         {details.registration ? (
@@ -1723,19 +1850,26 @@ function ProgramDetailPage({ locale, item, details }: { locale: Locale; item: Ca
           label={labels.more}
           goTo={clubSliderLabels[locale].goTo}
           dir={dir}
-          className="mt-8 md:mt-10"
-          grid="md:grid-cols-2 md:gap-5 lg:grid-cols-3"
-          slideClasses={["", "", "md:max-lg:hidden"]}
+          className={`mt-8 md:mt-10 ${isConference ? "md:mx-auto md:max-w-3xl" : ""}`}
+          grid={isConference ? "md:grid-cols-2 md:gap-5" : "md:grid-cols-2 md:gap-5 lg:grid-cols-3"}
+          slideClasses={isConference ? [] : ["", "", "md:max-lg:hidden"]}
         >
           {others.map((entry, index) => (
             <div key={entry.slug} data-reveal className="h-full">
-              <ProgramCard item={entry} logo={clubLogos.find((logoEntry) => logoEntry.slug === entry.slug)?.logo} locale={locale} dir={dir} reveal={index + 1} />
+              <ProgramCard
+                item={entry}
+                logo={(isConference ? conferenceDetails[entry.slug]?.logo : undefined) ?? clubLogos.find((logoEntry) => logoEntry.slug === entry.slug)?.logo}
+                locale={locale}
+                dir={dir}
+                reveal={index + 1}
+                open={labels.open}
+              />
             </div>
           ))}
         </CardSlider>
         <div data-reveal className="mt-8 flex justify-center md:mt-10">
           <Link
-            href={withLocale("/programs", locale)}
+            href={withLocale(labels.index, locale)}
             data-press
             data-reveal-item="1"
             className="group inline-flex items-center gap-2 border border-club px-6 py-3 text-sm font-semibold text-club transition-colors duration-300 hover:bg-club hover:text-white"

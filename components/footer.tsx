@@ -24,10 +24,12 @@ export function Footer({ locale }: { locale: Locale }) {
     },
     {
       title: locale === "en" ? "Conferences" : "כנסים",
-      links: conferences.map((item) => ({
-        href: withLocale(catalogPath(item), "he"),
-        label: item.name.he,
-      })),
+      links: conferences
+        .filter((item) => locale === "he" || item.summary.en)
+        .map((item) => ({
+          href: withLocale(catalogPath(item), locale),
+          label: pick(item.name, locale) ?? item.name.he,
+        })),
     },
   ];
 

@@ -156,32 +156,40 @@ export const accelerator: CatalogItem = {
   },
 };
 
+// The conferences, with the lines from the old site's conference index (ruec.co.il/conferences and
+// /en/conferences). BEYOND SUMMIT's color is its logo's blue; the FoodTech conference is run by
+// the FoodTech program's managers and shares its color.
 export const conferences: CatalogItem[] = [
   {
     slug: "beyondsummit",
     kind: "conference",
-    name: { he: "BEYOND SUMMIT" },
+    name: { he: "BEYOND SUMMIT", en: "BEYOND SUMMIT" },
     image: "/media/beyond.jpg",
+    color: "#4b6bf2",
     summary: {
-      he: "כנס הספורט הסטודנטיאלי הגדול בישראל אשר משמש כפסגה המאחדת בין אקדמיה לתעשיית הספורטק בישראל.",
+      he: "דור העתיד של היזמות והחדשנות לצד השמות הגדולים ביותר בתעשייה – ביום אחד של פריצה מחשבתית, חיבורים משמעותיים והשפעה.",
+      en: "The next generation of entrepreneurship and innovation alongside the biggest names in the industry – one day of breakthrough thinking, meaningful connections, and real impact.",
     },
   },
   {
     slug: "food-tech",
     kind: "conference",
-    name: { he: "כנס ה-FoodTech" },
+    name: { he: "כנס ה-FoodTech", en: "FoodTech Conference" },
     image: "/media/food-tech-conf.jpg",
+    color: "#8b72fd",
     summary: {
       he: "הצצה להתפתחויות החדשות, מאיר את הקשיים והאתגרים, מפגיש בין יזמים, מדענים ומשקיעים ונותן טעימה מהאוכל של העתיד.",
+      en: "A glimpse of the new developments, difficulties and challenges, bringing together entrepreneurs, scientists and investors giving a taste of the food of the future.",
     },
   },
   {
     slug: "managers-seminar",
     kind: "conference",
-    name: { he: "סמינר מנהלים" },
+    name: { he: "סמינר מנהלים", en: "Managers Seminar" },
     image: "/media/managers.jpg",
     summary: {
-      he: "סמינרי המנהלים של מועדון היזמות מתקיימים שלוש פעמים במהלך השנה. סמינר פתיחה, אמצע וסוף. בכל אחד מהמפגשים, המנהלים והמטה מקבלים כלים פרקטיים בנושאי הנהגה, שיווק ויזמות, וכן מיומנויות ניהול והעשרה מקצועית.",
+      he: "בכל אחד מהמפגשים, המנהלים והמטה מקבלים כלים פרקטיים בנושאי הנהגה, שיווק ויזמות, וכן מיומנויות ניהול והעשרה מקצועית.",
+      en: "In every meeting, the managers and staff receive practical leadership, marketing, and entrepreneurship tools, as well as management skills and professional enrichment.",
     },
   },
 ];

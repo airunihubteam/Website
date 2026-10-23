@@ -6,7 +6,12 @@ import type { Localized } from "@/lib/locale";
 // names only and show on the Hebrew pages.
 export type ProgramManager = { name: Localized; role: Localized; photo: string; linkedin?: string };
 
-export type ProgramFact = { icon: "language" | "calendar" | "clock" | "percent"; label: Localized; value: Localized; detail?: Localized };
+export type ProgramFact = {
+  icon: "language" | "calendar" | "clock" | "percent" | "people" | "location" | "mic";
+  label: Localized;
+  value: Localized;
+  detail?: Localized;
+};
 
 export type ProgramDetails = {
   about: { he: string[]; en?: string[] };
@@ -18,6 +23,8 @@ export type ProgramDetails = {
   facts?: ProgramFact[];
   // A photo for the banner other than the catalog card's.
   banner?: string;
+  // A logo for the banner and the card, when it is not one of the club logos (a conference's own).
+  logo?: string;
   // An open registration, shown in the banner and under the description (see docs/08-forms.md).
   registration?: { title: Localized; cta: Localized; href: string };
   // Who gets priority, as a checklist under the description.
@@ -364,5 +371,89 @@ export const programDetails: Record<string, ProgramDetails> = {
     managersTitle: { he: "מנהלי האקסלרטור", en: "Accelerator Managers" },
     links: {},
     gallery: [2, 3, 4, 5, 1].map((n) => `/media/programs/momentum/gallery-${n}.webp`),
+  },
+};
+
+// The conference pages use the same template, from the old site's pages
+// (ruec.co.il/conferences/<slug>). The old pages list no conference managers, and their
+// "הרשמה לכנס" buttons led to a placeholder address (see docs/08-forms.md), so only BEYOND
+// SUMMIT, whose registration opens on its own site, shows a way to sign up. The old site had no
+// English conference pages, so the English here is a translation of the Hebrew.
+export const conferenceDetails: Record<string, ProgramDetails> = {
+  beyondsummit: {
+    about: {
+      he: [
+        "BEYOND SUMMIT הוא כנס הסטודנטים הגדול בישראל ואירוע ייחודי ראשון מסוגו, שיתקיים ב-22.03.26 באוניברסיטת רייכמן.",
+        "הכנס מציע טעימה מגישת ה-Beyond של רייכמן – גישה של מעבר למה שמוכר, למה שנוח ולמה שקיים, ופתיחת נקודת מבט רחבה וגלובלית על עשייה, יזמות והשפעה.",
+        "הכנס מפגיש את השמות הגדולים והמובילים ביותר בתעשייה עם כ-150 סטודנטים נבחרים מכל הפקולטות והאוניברסיטאות בארץ – דור העתיד של היזמות, החדשנות והעשייה בישראל. זהו יום של חשיפה משמעותית, חיבור לאקוסיסטם יזמי רחב, והזדמנות להיות חלק מהרגע שבו דברים מתחילים לקרות – לא אחרי התואר ולא אחרי הטייטל, אלא כבר עכשיו.",
+        "BEYOND SUMMIT מרכז ביום אחד את האנשים, הידע והחיבורים שבדרך כלל לוקח שנים לפגוש, ונותן נקודת פתיחה טובה יותר למי שרוצה להיות שם כשדברים מתחילים לקרות.",
+      ],
+      en: [
+        "BEYOND SUMMIT is Israel's largest student conference and a one-of-a-kind event, taking place on March 22, 2026 at Reichman University.",
+        "The conference offers a taste of Reichman's Beyond approach – going beyond the familiar, the comfortable and the existing, and opening a broad, global view of action, entrepreneurship and impact.",
+        "It brings the biggest names in the industry together with about 150 selected students from every faculty and university in Israel – the next generation of Israeli entrepreneurship, innovation and action. It is a day of real exposure, a connection to a wide entrepreneurial ecosystem, and a chance to be part of the moment things start to happen – not after the degree or the title, but right now.",
+        "In a single day, BEYOND SUMMIT brings together the people, the knowledge and the connections that usually take years to meet, and gives a better starting point to anyone who wants to be there when things start to happen.",
+      ],
+    },
+    facts: [
+      { icon: "calendar", label: { he: "תאריך", en: "Date" }, value: { he: "22.03.2026", en: "Mar 22, 2026" } },
+      { icon: "people", label: { he: "משתתפים", en: "Participants" }, value: { he: "כ-150 סטודנטים", en: "~150 students" }, detail: { he: "מכל האוניברסיטאות", en: "From every university" } },
+      { icon: "location", label: { he: "מיקום", en: "Venue" }, value: { he: "אוניברסיטת רייכמן", en: "Reichman University" } },
+    ],
+    logo: "/media/conferences/beyondsummit/logo.webp",
+    registration: {
+      title: { he: "ההרשמה תיפתח בקרוב · מספר המקומות מוגבל", en: "Registration opens soon · Limited spots" },
+      cta: { he: "לאתר הכנס", en: "Visit Site" },
+      href: "https://beyond-summit-runi.com/",
+    },
+    managers: [],
+    links: { instagram: "https://www.instagram.com/beyondsummit.runi/", linkedin: "https://www.linkedin.com/company/beyond-summit-runi/" },
+    gallery: [1, 2, 3, 4, 5].map((n) => `/media/conferences/beyondsummit/gallery-${n}.webp`),
+  },
+  "food-tech": {
+    about: {
+      he: [
+        "כנס הפודטק מתרחש פעמיים בשנה ומאגד את מיטב המומחים והמובילים בתעשיית הפודטק בישראל, ביחד עם סטודנטים המתעניינים בתעשייה ונחשפים אליה דרך הכנס.",
+        "הכנס נותן הצצה להתפתחויות החדשות בתחום, מאיר את הקשיים והאתגרים העומדים בפני חברות כיום, מפגיש בין יזמים, מדענים ומשקיעים ונותן טעימה מהאוכל של העתיד.",
+        "בכנס מתקיימים פאנלים והרצאות של אנשים פורצי דרך בתחום, והוא שם במרכז את הסוגיות החשובות ביותר בעולם האקלים. הכנס בתמיכת Food Tech Nation.",
+        "תעשיית הפודטק הישראלית נענית לאתגר זה ובכנס התקיימו פאנלים והרצאות ששמו דגש על האתגרים, ההצלחות, והצורך הממשי בביטחון מזון, בישראל ובעולם. זאת השנה השביעית בה הכנס נערך באוניברסיטת רייכמן ומובל בשנים האחרונות על ידי מנהלי מועדון הפודטק.",
+      ],
+      en: [
+        "The FoodTech Conference takes place twice a year and brings together the best experts and leaders of Israel's food-tech industry with students who are interested in the industry and get to know it through the conference.",
+        "The conference offers a glimpse of the field's new developments, sheds light on the difficulties and challenges companies face today, brings together entrepreneurs, scientists and investors, and gives a taste of the food of the future.",
+        "It features panels and talks by groundbreaking people in the field and puts the most important issues of the climate world at its center. The conference is supported by Food Tech Nation.",
+        "Israel's food-tech industry is rising to this challenge, and the conference's panels and talks focused on the challenges, the successes and the real need for food security, in Israel and around the world. This is the seventh year the conference is held at Reichman University, led in recent years by the managers of the FoodTech program.",
+      ],
+    },
+    facts: [
+      { icon: "calendar", label: { he: "תדירות", en: "Frequency" }, value: { he: "פעמיים בשנה", en: "Twice a year" } },
+      { icon: "mic", label: { he: "בכנס", en: "Format" }, value: { he: "פאנלים והרצאות", en: "Panels & talks" } },
+      { icon: "location", label: { he: "מיקום", en: "Venue" }, value: { he: "אוניברסיטת רייכמן", en: "Reichman University" }, detail: { he: "זו השנה השביעית", en: "For the seventh year" } },
+    ],
+    managers: [],
+    links: {},
+    gallery: [1, 2, 3, 4, 5].map((n) => `/media/conferences/food-tech/gallery-${n}.webp`),
+  },
+  "managers-seminar": {
+    about: {
+      he: [
+        "סמינרי המנהלים של מועדון היזמות מתקיימים שלוש פעמים במהלך השנה – סמינר פתיחה, אמצע וסוף.",
+        "בכל אחד מהמפגשים, המנהלים והמטה מקבלים כלים פרקטיים בנושאי הנהגה, שיווק ויזמות, וכן מיומנויות ניהול והעשרה מקצועית.",
+        "הסמינרים מהווים הזדמנות לחשיבה קדימה על פיתוחים עתידיים למועדון, יחד עם בחינה מחודשת של הישגי העבר והפקת לקחים. הסמינרים נועדו להעניק לכל חברי ההנהלה את הכלים הדרושים להובלת התוכניות והפרויקטים השונים במועדון, תוך חיזוק החזון ושיפור הפעילות השוטפת.",
+      ],
+      en: [
+        "The Entrepreneurship Club's managers seminars take place three times a year – an opening, a mid-year and a closing seminar.",
+        "In every meeting, the managers and staff receive practical leadership, marketing, and entrepreneurship tools, as well as management skills and professional enrichment.",
+        "The seminars are a chance to think ahead about the club's future developments, together with a fresh look at past achievements and lessons learned. They are meant to give every member of the management the tools needed to lead the club's programs and projects, while strengthening the vision and improving day-to-day activity.",
+      ],
+    },
+    facts: [
+      { icon: "calendar", label: { he: "תדירות", en: "Frequency" }, value: { he: "שלוש פעמים בשנה", en: "Three times a year" }, detail: { he: "פתיחה, אמצע וסוף", en: "Opening, mid-year, closing" } },
+      { icon: "people", label: { he: "משתתפים", en: "Participants" }, value: { he: "המנהלים והמטה", en: "Managers & staff" } },
+      { icon: "mic", label: { he: "תכנים", en: "Topics" }, value: { he: "כלים פרקטיים", en: "Practical tools" }, detail: { he: "הנהגה, שיווק ויזמות", en: "Leadership, marketing, entrepreneurship" } },
+    ],
+    managers: [],
+    links: {},
+    gallery: [1, 2, 3, 4].map((n) => `/media/conferences/managers-seminar/gallery-${n}.webp`),
   },
 };

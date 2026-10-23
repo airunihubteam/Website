@@ -32,6 +32,7 @@ const englishPaths = [
   "/ai",
   ...programs.filter((item) => item.summary.en).map(catalogPath),
   catalogPath(accelerator),
+  ...conferences.filter((item) => item.summary.en).map(catalogPath),
 ].map((path) => withLocale(path, "en"));
 
 export default function sitemap(): MetadataRoute.Sitemap {
