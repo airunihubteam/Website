@@ -17,16 +17,6 @@ export const stats = [
   { value: "1", label: { he: "אקסלרטור", en: "Accelerator" } },
 ] as const;
 
-export const reichmanQuote: Localized = {
-  he: "פרופ׳ אוריאל רייכמן, הנשיא המייסד ויו״ר דירקטוריון אוניברסיטת רייכמן אמר: ״מיום היווסדו, המרכז הבינתחומי, לימים אוניברסיטת רייכמן, פועל להכשרת מנהיגות העתיד של החברה הישראלית ושל העם היהודי. ישראל זקוקה היום למנהיגות גדולה, שתחדש חזון ותביא למימושו. הכל תלוי בדור הבא של המדינה.״",
-  en: "Professor Oriel Reichman, the founding president and chairman of the board of directors of Reichman University said: “Since its founding, the Interdisciplinary Center, Reichman University, has been working to train the future leadership of Israeli society and the Jewish people. Israel needs great leaders today, who will renew vision and bring it to fruition. Everything depends on the next generation of the country.”",
-};
-
-export const chairLine: Localized = {
-  he: "עומר בירן, יו״ר מועדון היזמות, אוניברסיטת רייכמן",
-  en: "Omer Biran, Chair of the Entrepreneurship Club, Reichman University",
-};
-
 export const aboutParagraphs: Localized[] = [
   {
     he: "מועדון היזמות של אוניברסיטת רייכמן הינו אחד ממועדוני היזמות הסטודנטיאלים הגדולים בעולם ושימש כאבן דרך משמעותית להקמת בית הספר אדלסון ליזמות.",

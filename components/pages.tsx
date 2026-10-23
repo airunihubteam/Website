@@ -9,7 +9,6 @@ import {
   joinNote,
   aiEn,
   aiHe,
-  chairLine,
   homePartners,
   communityEn,
   communityHe,
@@ -23,7 +22,6 @@ import {
   pitchRegistration,
   pitchStages,
   pitchStats,
-  reichmanQuote,
   stats,
   type JoinSlug,
 } from "@/content/copy";
@@ -219,7 +217,6 @@ const homeSections: Record<Locale, RailSection[]> = {
     { id: "about-us", label: "קצת עלינו" },
     { id: "activity", label: "מוקדי עיסוק" },
     { id: "our-programs", label: "התוכניות" },
-    { id: "chair", label: "יו״ר המועדון" },
     { id: "partners", label: "שותפים" },
   ],
   en: [
@@ -229,7 +226,6 @@ const homeSections: Record<Locale, RailSection[]> = {
     { id: "about-us", label: "About" },
     { id: "activity", label: "Activity" },
     { id: "our-programs", label: "Programs" },
-    { id: "chair", label: "Chair" },
     { id: "partners", label: "Partners" },
   ],
 };
@@ -313,19 +309,6 @@ export function HomePage({ locale }: { locale: Locale }) {
       <div id="our-programs" data-reveal className="scroll-mt-[4.5rem]">
         <ClubSlider slides={clubSlides(locale)} labels={clubSliderLabels[locale]} dir={dir} />
       </div>
-      <section id="chair" data-reveal className="scroll-mt-[4.5rem] bg-gradient-to-b from-band to-club px-5 py-16 text-white md:px-8">
-        <div className="mx-auto w-full max-w-4xl">
-          <h2 data-reveal-item="0" className="text-center text-[32px] font-bold">
-            {locale === "en" ? "The Chairman" : "יו״ר המועדון"}
-          </h2>
-          <blockquote data-reveal-item="1" className="mt-8 text-lg leading-8">
-            {pick(reichmanQuote, locale)}
-          </blockquote>
-          <p data-reveal-item="2" className="mt-6 font-medium">
-            {pick(chairLine, locale)}
-          </p>
-        </div>
-      </section>
       <section id="partners" data-reveal className="scroll-mt-[4.5rem] pt-14 pb-14 md:pt-20 md:pb-24">
         <h2 data-reveal-item="0" className="text-center text-[32px] font-bold text-club">
           <Underline>{locale === "en" ? "Our Partners" : "השותפים שלנו לדרך"}</Underline>
