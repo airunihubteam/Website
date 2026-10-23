@@ -168,8 +168,9 @@ export const homePartners: { name: string; logo: string; width: number; height: 
 
 // The industry internship with NICE, from the old site's page (ruec.co.il/internship). The old
 // English page described an earlier round (6–8 students, 6 hours a week, a ₪1,000 scholarship),
-// so the English here is a translation of the current Hebrew page instead. The old "register"
-// button led to a form that no longer exists (see docs/08-forms.md).
+// so the English here is a translation of the current Hebrew page instead. The register button
+// still points at the old site's form, which no longer exists, until the club's forms are built
+// (see docs/08-forms.md).
 export type InternshipCopy = {
   kicker: string;
   title: string;
@@ -181,9 +182,10 @@ export type InternshipCopy = {
   requirements: string[];
   scholarship: { label: string; value: string; text: string };
   outline: string;
-  manager: { label: string; name: string; role: string };
+  manager: { label: string; name: string; role: string; photo: string; linkedin: string };
   quotesTitle: string;
   quotes: { quote: string; name: string; role: string; photo: string }[];
+  registration: { cta: string; href: string };
 };
 
 export const internshipHe: InternshipCopy = {
@@ -213,7 +215,13 @@ export const internshipHe: InternshipCopy = {
   ],
   scholarship: { label: "מלגה", value: "2,000 ₪", text: "סטודנט שיעמוד בכל הדרישות יקבל מלגה של 2,000 ₪ מטעם מועדון היזמות." },
   outline: "מתווה קבלת הסטודנטים וההתנהלות מולם יקבע בהמשך בשיתוף חברת NICE ומועדון היזמות.",
-  manager: { label: "מנהל התוכנית", name: "אופיר מור", role: "מנהל תכנית המתמחים בשיתוף חברת NICE" },
+  manager: {
+    label: "מנהל התוכנית",
+    name: "אופיר מור",
+    role: "מנהל תכנית המתמחים בשיתוף חברת NICE",
+    photo: "/media/team/ofir-mor.webp",
+    linkedin: "https://www.linkedin.com/in/ofir-mor/",
+  },
   quotesTitle: "בוגרי התוכנית מספרים",
   quotes: [
     {
@@ -238,6 +246,7 @@ export const internshipHe: InternshipCopy = {
       photo: "/media/internship/graduate-3.webp",
     },
   ],
+  registration: { cta: "להרשמה לתוכנית", href: "https://ruec.co.il/en/forms/nice-x-ruec/" },
 };
 
 export const internshipEn: InternshipCopy = {
@@ -267,7 +276,13 @@ export const internshipEn: InternshipCopy = {
   ],
   scholarship: { label: "Scholarship", value: "₪2,000", text: "A student who meets all the requirements will receive a ₪2,000 scholarship from the Entrepreneurship Club." },
   outline: "How students are accepted and managed will be set later, together with NICE and the Entrepreneurship Club.",
-  manager: { label: "Program Manager", name: "Ofir Mor", role: "Interns program manager, in partnership with NICE" },
+  manager: {
+    label: "Program Manager",
+    name: "Ofir Mor",
+    role: "Interns program manager, in partnership with NICE",
+    photo: "/media/team/ofir-mor.webp",
+    linkedin: "https://www.linkedin.com/in/ofir-mor/",
+  },
   quotesTitle: "From Our Graduates",
   quotes: [
     {
@@ -292,6 +307,7 @@ export const internshipEn: InternshipCopy = {
       photo: "/media/internship/graduate-3.webp",
     },
   ],
+  registration: { cta: "Apply", href: "https://ruec.co.il/en/forms/nice-x-ruec/" },
 };
 
 // The community page, from the old site's /alumni page. Its alumni sign-up form is not part of this

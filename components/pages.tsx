@@ -1129,9 +1129,9 @@ export function PitchPage({ locale }: { locale: Locale }) {
 }
 
 // A large light shape cropped by a card's edge: a medal with the club's star on the scholarship
-// card, a person on the manager's card, a quotation mark beside a graduate's name, the club's
-// star on the alumni invitation. Each drifts a little on hover; the medal's star also twinkles.
-function CardMark({ name, className }: { name: "medal" | "person" | "quote" | "star"; className: string }) {
+// card, a quotation mark beside a graduate's name, the club's star on the alumni invitation. Each
+// drifts a little on hover; the medal's star also twinkles.
+function CardMark({ name, className }: { name: "medal" | "quote" | "star"; className: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -1151,12 +1151,6 @@ function CardMark({ name, className }: { name: "medal" | "person" | "quote" | "s
           />
         </>
       ) : null}
-      {name === "person" ? (
-        <>
-          <circle cx="12" cy="7.6" r="4.4" />
-          <path d="M3.5 22c0-5.2 3.8-8.8 8.5-8.8s8.5 3.6 8.5 8.8z" />
-        </>
-      ) : null}
       {name === "star" ? <path d={STAR_PATH} /> : null}
       {name === "quote" ? (
         <path d="M10.2 6C6.8 7 4.5 9.8 4.5 13.6V19h6.2v-6.2H7.6c0-2.2 1.2-3.8 3.2-4.5zm9.3 0c-3.4 1-5.7 3.8-5.7 7.6V19H20v-6.2h-3.1c0-2.2 1.2-3.8 3.2-4.5z" />
@@ -1167,7 +1161,8 @@ function CardMark({ name, className }: { name: "medal" | "person" | "quote" | "s
 
 // The industry internship with NICE: its banner on NICE's building, its three facts, what the
 // program is, what it asks for beside its scholarship and its manager, and what graduates say.
-// The old site's sign-up form is gone, so there is no register button (see docs/08-forms.md).
+// Its register button, in the banner and under the requirements, points at the old site's form
+// until the club's forms are built (see docs/08-forms.md).
 export function InternshipPage({ locale }: { locale: Locale }) {
   const copy = locale === "en" ? internshipEn : internshipHe;
   const dir = locale === "en" ? "ltr" : "rtl";
@@ -1195,7 +1190,17 @@ export function InternshipPage({ locale }: { locale: Locale }) {
         subtitle={copy.intro}
         eyebrow={copy.kicker}
         className="pb-10 md:pb-14"
-      />
+      >
+        <a
+          href={copy.registration.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group inline-flex items-center gap-2 border border-white bg-white px-7 py-3 text-sm font-bold whitespace-nowrap text-club transition-colors duration-300 hover:border-[#0a1f6e] hover:bg-[#0a1f6e] hover:text-white"
+        >
+          {copy.registration.cta}
+          <Chevron dir={dir} className="transition-transform duration-500 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+        </a>
+      </PageBanner>
 
       <FactCards facts={copy.facts} label={programLabels[locale].details} />
 
@@ -1251,21 +1256,62 @@ export function InternshipPage({ locale }: { locale: Locale }) {
               </p>
               <p className="mt-3 text-justify text-[15px] leading-7 text-white/90">{copy.scholarship.text}</p>
             </div>
+            {/* The manager: his portrait fills the card's side, edge to edge like the team cards, beside
+                his name with the site's accent line, his role and a LinkedIn button. On hover the photo
+                eases closer and the line stretches; the button fills on its own hover. */}
             <div
               data-reveal-item="3"
-              className={`group relative isolate overflow-hidden rounded-[24px] border border-[#e6e9f5] bg-white p-6 shadow-[0_24px_50px_-30px_rgba(6,19,71,0.55)] hover:border-club/25 md:p-7 ${lift}`}
+              className={`group relative isolate grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)] overflow-hidden rounded-[24px] border border-[#e6e9f5] bg-white shadow-[0_24px_50px_-30px_rgba(6,19,71,0.55)] hover:border-club/25 ${lift}`}
               style={{ transitionTimingFunction: "var(--ease)" }}
             >
-              <CardMark name="person" className="-end-6 -bottom-7 h-32 w-32 fill-(--tone-light) group-hover:-translate-y-1.5" />
-              <p className="text-sm font-semibold text-club/60">{copy.manager.label}</p>
-              <p className="mt-1 text-xl font-bold text-club md:text-2xl">{copy.manager.name}</p>
-              <p className="mt-1 max-w-[16rem] text-[15px] leading-6 text-ink">{copy.manager.role}</p>
+              <div className="relative min-h-48 overflow-hidden bg-(--tone-light)">
+                <Image
+                  src={copy.manager.photo}
+                  alt={copy.manager.name}
+                  fill
+                  unoptimized
+                  className="object-cover transition-[scale] duration-[1200ms] group-hover:scale-[1.06]"
+                  style={{ objectPosition: "50% 25%", transitionTimingFunction: "var(--ease)" }}
+                />
+                <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-club/35 to-transparent" />
+              </div>
+              <div className="flex flex-col justify-center p-5 md:p-6">
+                <p className="text-sm font-semibold text-club/60">{copy.manager.label}</p>
+                <p className="mt-1 text-xl font-bold text-club md:text-2xl">{copy.manager.name}</p>
+                <span
+                  aria-hidden="true"
+                  className="mt-2 block h-[3px] w-10 bg-club transition-[width] duration-500 group-hover:w-16"
+                  style={{ transitionTimingFunction: "var(--ease)" }}
+                />
+                <p className="mt-3 text-[15px] leading-6 text-ink">{copy.manager.role}</p>
+                <a
+                  href={copy.manager.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group/in mt-4 inline-flex items-center gap-2 self-start border border-club/25 px-4 py-2.5 text-sm font-semibold whitespace-nowrap text-club transition-[background-color,color,border-color] duration-300 hover:border-club hover:bg-club hover:text-white"
+                >
+                  <SocialIcon name="linkedin" />
+                  LinkedIn
+                  <Chevron dir={dir} className="transition-transform duration-500 group-hover/in:translate-x-1 rtl:group-hover/in:-translate-x-1" />
+                </a>
+              </div>
             </div>
           </div>
         </div>
         <p data-reveal-item="4" className="mx-auto mt-6 max-w-3xl text-center text-sm leading-6 text-ink/70 md:mt-8">
           {copy.outline}
         </p>
+        <div data-reveal-item="5" className="mt-8 flex justify-center">
+          <a
+            href={copy.registration.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-2 border border-club bg-club px-7 py-3 text-sm font-bold whitespace-nowrap text-white transition-colors duration-300 hover:border-[#0a1f6e] hover:bg-[#0a1f6e]"
+          >
+            {copy.registration.cta}
+            <Chevron dir={dir} className="transition-transform duration-500 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+          </a>
+        </div>
       </section>
 
       {/* Graduates' words: one card at a time on phones, side by side from lg up (the third
